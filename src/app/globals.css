@@ -46,6 +46,18 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* 브랜드 컬러 및 그라디언트 (Snapmove) */
+  --color-brand-bg: #F0FDFA;
+  --color-brand-border: #CCFBF1;
+  --color-brand-icon: #5EEAD4;
+  --color-brand-DEFAULT: #14B8A6;
+  --color-brand-button: #0D9488;
+  --color-brand-hover: #0F766E;
+
+  --background-image-hero-gradient: linear-gradient(to right, var(--color-teal-50), #ffffff, var(--color-teal-50));
+  --background-image-mint-gradient: linear-gradient(to right, var(--color-teal-700), var(--color-teal-600));
+  --background-image-card-gradient: linear-gradient(to right, var(--color-teal-700), var(--color-teal-600));
 }
 
 :root {
@@ -55,8 +67,9 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: 173 80% 40%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 173 80% 40%;
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -66,7 +79,6 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
