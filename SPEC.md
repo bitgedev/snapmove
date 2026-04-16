@@ -23,7 +23,7 @@
 
 ---
 
-## - [ ] Phase 1: 프로젝트 초기 세팅 & 기반 구조
+## - [x] Phase 1: 프로젝트 초기 세팅 & 기반 구조
 
 ### 개요
 새로운 Next.js 프로젝트를 `/Desktop/snapmove` 디렉토리에 설정한다. 이미 `.git`, `PRD.md`, `.gitignore`가 존재하는 디렉토리이므로 `--yes` 플래그로 충돌 없이 설치한다. 이 단계가 완료되면 이후 모든 Phase의 공통 기반(타입 정의, mock 데이터, 레이아웃 컴포넌트)이 갖춰진다.
@@ -72,75 +72,75 @@ src/
 
 ### 구현 체크리스트
 
-- [ ] `create-next-app` 실행 완료 (`PRD.md` 보존 확인)
-- [ ] Shadcn `init` 완료, `components.json` 생성 확인
-- [ ] Shadcn 컴포넌트 13종 설치 완료
-- [ ] `src/types/index.ts` 작성
-  - [ ] `MuscleGroup` 타입: `"chest" | "back" | "shoulders" | "arms" | "legs" | "core" | "cardio" | "full-body"`
-  - [ ] `Exercise` 인터페이스
-  - [ ] `Routine` 인터페이스
-  - [ ] `SetRecord` 인터페이스
-  - [ ] `ExerciseRecord` 인터페이스
-  - [ ] `WorkoutSession` 인터페이스
-- [ ] `src/lib/mock-data.ts` 작성
-  - [ ] `MOCK_ROUTINES` — Push Day / Pull Day / Leg Day / Core&Cardio 4개 루틴, 각 4~5개 운동
-  - [ ] `MOCK_SESSIONS` — 최근 30일 내 8개 완료 세션
-  - [ ] `getMockRoutineById(id: string)` 헬퍼 함수
-  - [ ] `getMockSessionsByMonth(year: number, month: number)` 헬퍼 함수
-- [ ] `tailwind.config.ts` 커스터마이징 — 전체 컬러 시스템
-  - [ ] **브랜드 색상 (연한 민트 계층)**
-    - [ ] `brand.bg: "#F0FDFA"` — `teal-50` — 섹션 교체 배경 (가장 연한 민트)
-    - [ ] `brand.border: "#CCFBF1"` — `teal-100` — 카드 테두리, 구분선
-    - [ ] `brand.icon: "#5EEAD4"` — `teal-300` — **장식 전용** 아이콘/도형 (대비율 낮아 정보 전달 불가, 의미 있는 아이콘은 teal-600 사용)
-    - [ ] `brand.DEFAULT: "#14B8A6"` — `teal-500` — 칩, 비인터랙티브 장식 강조 (텍스트/Progress 바에는 사용 금지 — 대비율 2.4:1)
-    - [ ] `brand.button: "#0D9488"` — `teal-600` — CTA 버튼, 활성 탭, 정보성 아이콘, Progress 바 (흰색 텍스트 대비율 ~3.9:1, 대형/굵은 텍스트 AA 통과)
-    - [ ] `brand.hover: "#0F766E"` — `teal-700` — 버튼 hover
-    - [ ] ※ 보조 강조색 없음 — 민트 단일 계열로 통일
-  - [ ] **배경 시스템**
-    - [ ] 페이지: `bg-white`
-    - [ ] 대체 섹션: `bg-teal-50` (연한 민트, 흰색과 자연스러운 교차)
-    - [ ] 카드: `bg-white border border-teal-100 shadow-sm`
-    - [ ] Footer: `bg-teal-800` (다크 민트, 흰색 텍스트)
-  - [ ] **그라디언트**
-    - [ ] `hero-gradient`: `from-teal-50 via-white to-teal-50`
-    - [ ] `mint-gradient`: `from-teal-700 to-teal-600` — CTA 섹션 배경 (흰색 텍스트 대비율 확보: teal-700 기준 ~6.2:1 ✅)
-    - [ ] `card-gradient`: `from-teal-700 to-teal-600` — WorkoutShareCard 전용 (모든 텍스트 `text-white` 사용 가능, 대비율 확보)
-- [ ] `src/app/globals.css` — Shadcn CSS 변수 재매핑
-  - [ ] `--primary: 173 80% 40%` → teal-600 HSL 값으로 설정 (Shadcn Button이 brand 색상 따라가도록)
-  - [ ] `--primary-foreground: 0 0% 100%` → 흰색 유지
-  - [ ] `--ring: 173 80% 40%` → 포커스 링도 teal 계열로
-- [ ] `src/app/layout.tsx` — `<html lang="ko">` (dark 클래스 없음), Geist Sans 폰트 적용
-- [ ] `src/components/shared/MuscleGroupBadge.tsx` (SERVER)
-  - [ ] chest: `bg-red-100 text-red-700` — 강함/파워
-  - [ ] back: `bg-blue-100 text-blue-700` — 넓이/안정 (틸과 충분히 구분되는 순수 파랑)
-  - [ ] shoulders: `bg-violet-100 text-violet-700` — 독립적인 보라
-  - [ ] arms: `bg-rose-100 text-rose-700` — 핑크-레드 계열
-  - [ ] legs: `bg-amber-100 text-amber-700` — 따뜻한 앰버 (배지 전용, 브랜드 색과 무관)
-  - [ ] core: `bg-green-100 text-green-700` — 초록 (틸과 색조 다름, 파란 기운 없는 순수 초록)
-  - [ ] cardio: `bg-pink-100 text-pink-700` — 심박/에너지
-  - [ ] full-body: `bg-slate-100 text-slate-600` — 중립/포괄
-- [ ] `src/components/shared/StatBadge.tsx` — sets×reps 표시 배지 (SERVER)
-- [ ] `src/components/shared/EmptyState.tsx` — 빈 상태 플레이스홀더 with CTA (SERVER)
-- [ ] `src/components/layout/BottomNav.tsx` (CLIENT)
-  - [ ] `usePathname()`으로 활성 탭 강조
-  - [ ] 탭 구성: Routines(Dumbbell) / History(Clock) / Profile(User, 장식)
-  - [ ] `/workout` 경로 진입 시 자동 숨김
-- [ ] `src/components/layout/TopBar.tsx` (CLIENT)
-  - [ ] `useRouter()`로 뒤로가기 버튼
-  - [ ] `title` prop 지원
-  - [ ] 우측 액션 slot 지원
-- [ ] `src/app/(app)/layout.tsx` (SERVER wrapper)
-  - [ ] `<main className="flex-1 pb-20">{children}</main>`
-  - [ ] `<BottomNav />` 포함
+- [x] `create-next-app` 실행 완료 (`PRD.md` 보존 확인)
+- [x] Shadcn `init` 완료, `components.json` 생성 확인
+- [x] Shadcn 컴포넌트 13종 설치 완료
+- [x] `src/types/index.ts` 작성
+  - [x] `MuscleGroup` 타입: `"chest" | "back" | "shoulders" | "arms" | "legs" | "core" | "cardio" | "full-body"`
+  - [x] `Exercise` 인터페이스
+  - [x] `Routine` 인터페이스
+  - [x] `SetRecord` 인터페이스
+  - [x] `ExerciseRecord` 인터페이스
+  - [x] `WorkoutSession` 인터페이스
+- [x] `src/lib/mock-data.ts` 작성
+  - [x] `MOCK_ROUTINES` — Push Day / Pull Day / Leg Day / Core&Cardio 4개 루틴, 각 4~5개 운동
+  - [x] `MOCK_SESSIONS` — 최근 30일 내 8개 완료 세션
+  - [x] `getMockRoutineById(id: string)` 헬퍼 함수
+  - [x] `getMockSessionsByMonth(year: number, month: number)` 헬퍼 함수
+- [x] `tailwind.config.ts` 커스터마이징 — 전체 컬러 시스템 (Tailwind v4 — `globals.css`의 `@theme inline`으로 대체)
+  - [x] **브랜드 색상 (연한 민트 계층)**
+    - [x] `brand.bg: "#F0FDFA"` — `teal-50` — 섹션 교체 배경 (가장 연한 민트)
+    - [x] `brand.border: "#CCFBF1"` — `teal-100` — 카드 테두리, 구분선
+    - [x] `brand.icon: "#5EEAD4"` — `teal-300` — **장식 전용** 아이콘/도형 (대비율 낮아 정보 전달 불가, 의미 있는 아이콘은 teal-600 사용)
+    - [x] `brand.DEFAULT: "#14B8A6"` — `teal-500` — 칩, 비인터랙티브 장식 강조 (텍스트/Progress 바에는 사용 금지 — 대비율 2.4:1)
+    - [x] `brand.button: "#0D9488"` — `teal-600` — CTA 버튼, 활성 탭, 정보성 아이콘, Progress 바 (흰색 텍스트 대비율 ~3.9:1, 대형/굵은 텍스트 AA 통과)
+    - [x] `brand.hover: "#0F766E"` — `teal-700` — 버튼 hover
+    - [x] ※ 보조 강조색 없음 — 민트 단일 계열로 통일
+  - [x] **배경 시스템**
+    - [x] 페이지: `bg-white`
+    - [x] 대체 섹션: `bg-teal-50` (연한 민트, 흰색과 자연스러운 교차)
+    - [x] 카드: `bg-white border border-teal-100 shadow-sm`
+    - [x] Footer: `bg-teal-800` (다크 민트, 흰색 텍스트)
+  - [x] **그라디언트**
+    - [x] `hero-gradient`: `from-teal-50 via-white to-teal-50`
+    - [x] `mint-gradient`: `from-teal-700 to-teal-600` — CTA 섹션 배경 (흰색 텍스트 대비율 확보: teal-700 기준 ~6.2:1 ✅)
+    - [x] `card-gradient`: `from-teal-700 to-teal-600` — WorkoutShareCard 전용 (모든 텍스트 `text-white` 사용 가능, 대비율 확보)
+- [x] `src/app/globals.css` — Shadcn CSS 변수 재매핑
+  - [x] `--primary: 173 80% 40%` → teal-600 HSL 값으로 설정 (Shadcn Button이 brand 색상 따라가도록)
+  - [x] `--primary-foreground: 0 0% 100%` → 흰색 유지
+  - [x] `--ring: 173 80% 40%` → 포커스 링도 teal 계열로
+- [x] `src/app/layout.tsx` — `<html lang="ko">` (dark 클래스 없음), Geist Sans 폰트 적용
+- [x] `src/components/shared/MuscleGroupBadge.tsx` (SERVER)
+  - [x] chest: `bg-red-100 text-red-700` — 강함/파워
+  - [x] back: `bg-blue-100 text-blue-700` — 넓이/안정 (틸과 충분히 구분되는 순수 파랑)
+  - [x] shoulders: `bg-violet-100 text-violet-700` — 독립적인 보라
+  - [x] arms: `bg-rose-100 text-rose-700` — 핑크-레드 계열
+  - [x] legs: `bg-amber-100 text-amber-700` — 따뜻한 앰버 (배지 전용, 브랜드 색과 무관)
+  - [x] core: `bg-green-100 text-green-700` — 초록 (틸과 색조 다름, 파란 기운 없는 순수 초록)
+  - [x] cardio: `bg-pink-100 text-pink-700` — 심박/에너지
+  - [x] full-body: `bg-slate-100 text-slate-600` — 중립/포괄
+- [x] `src/components/shared/StatBadge.tsx` — sets×reps 표시 배지 (SERVER)
+- [x] `src/components/shared/EmptyState.tsx` — 빈 상태 플레이스홀더 with CTA (SERVER)
+- [x] `src/components/layout/BottomNav.tsx` (CLIENT)
+  - [x] `usePathname()`으로 활성 탭 강조
+  - [x] 탭 구성: Routines(Dumbbell) / History(Clock) / Profile(User, 장식)
+  - [x] `/workout` 경로 진입 시 자동 숨김
+- [x] `src/components/layout/TopBar.tsx` (CLIENT)
+  - [x] `useRouter()`로 뒤로가기 버튼
+  - [x] `title` prop 지원
+  - [x] 우측 액션 slot 지원
+- [x] `src/app/(app)/layout.tsx` (SERVER wrapper)
+  - [x] `<main className="flex-1 pb-20">{children}</main>`
+  - [x] `<BottomNav />` 포함
 
 ### 검증 체크리스트
 
-- [ ] `npm run dev` 오류 없이 실행
-- [ ] `http://localhost:3000` 접속 시 페이지 렌더링 확인 (빈 상태 OK)
-- [ ] `src/components/ui/` 폴더에 Shadcn 파일 존재 확인
-- [ ] 라이트 배경(`bg-white`) 적용 확인
-- [ ] Geist 폰트 적용 확인
-- [ ] TypeScript 타입 오류 없음 (`npm run build`)
+- [x] `npm run dev` 오류 없이 실행
+- [x] `http://localhost:3000` 접속 시 페이지 렌더링 확인 (빈 상태 OK)
+- [x] `src/components/ui/` 폴더에 Shadcn 파일 존재 확인
+- [x] 라이트 배경(`bg-white`) 적용 확인
+- [x] Geist 폰트 적용 확인
+- [x] TypeScript 타입 오류 없음 (`npm run build`)
 
 ---
 
