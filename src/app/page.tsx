@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Users, CheckCircle, ImageIcon, ClipboardList, PlayCircle, Share2, ArrowRight } from 'lucide-react';
+import { Users, CheckCircle, ImageIcon, ClipboardList, PlayCircle, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 import LandingNav from '@/components/landing/LandingNav';
@@ -119,9 +119,9 @@ export default function LandingPage() {
         <div className="mx-auto max-w-5xl">
           <p className="mb-6 text-2xl font-black tracking-tighter text-gray-900">Snapmove</p>
           <div className="mb-8 flex justify-center gap-8 text-sm font-medium text-gray-500">
-            <a href="#" className="hover:text-brand transition-colors">서비스 소개</a>
-            <a href="#" className="hover:text-brand transition-colors">개인정보처리방침</a>
-            <a href="#" className="hover:text-brand transition-colors">문의하기</a>
+            <Link href="#" className="hover:text-brand transition-colors">서비스 소개</Link>
+            <Link href="#" className="hover:text-brand transition-colors">개인정보처리방침</Link>
+            <Link href="#" className="hover:text-brand transition-colors">문의하기</Link>
           </div>
           <p className="text-xs text-slate-400">
             © 2026 Snapmove. All rights reserved.
