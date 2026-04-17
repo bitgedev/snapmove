@@ -157,6 +157,7 @@ src/
 
 ```
 src/
+├── middleware.ts                 # 라우팅 보호 — 미인증 시 /login redirect
 ├── app/
 │   ├── page.tsx                  # 랜딩 (/)
 │   ├── login/
@@ -232,6 +233,8 @@ src/
 - [ ] 회원가입 폼: 비밀번호 입력 시 강도 바 색상 변화
 - [ ] 회원가입 폼: 제출 → 로딩 → `/dashboard` 이동
 - [ ] `/` ↔ `/login` ↔ `/signup` 링크 이동 정상
+- [ ] 미인증 상태에서 `/dashboard` 직접 접근 시 `/login` redirect 확인
+- [ ] 로그인 후 `/login` 접근 시 `/dashboard` redirect 확인
 
 ---
 
@@ -368,7 +371,6 @@ src/
 >
 > **TODO (DB 연동 시 구현):**
 > - "Done" 후 히스토리에서 방금 저장한 실제 세션 조회
-> - html2canvas로 인증샷 카드 PNG 실제 저장
 
 ### 설치 명령어
 
@@ -441,7 +443,8 @@ src/
   - [ ] 날짜 표시 (크게, `text-white font-bold`)
   - [ ] 운동 목록 + 각 볼륨 (`text-white` — 불투명도 변형 사용 금지, 대비율 유지)
   - [ ] 하단 "Total Volume" + 수동 입력한 운동 시간 통계 (`text-white font-bold`)
-  - [ ] Download / Share 버튼 (`border-white/50 text-white hover:bg-white/10`, 아웃라인, 장식)
+  - [ ] Download 버튼 — html2canvas로 카드 PNG 저장 (실제 구현)
+  - [ ] Share 버튼 (`border-white/50 text-white hover:bg-white/10`, 아웃라인, 장식)
 
 ### 검증 체크리스트
 

@@ -54,12 +54,13 @@
 - 시간 퀵 버튼: 15분 / 30분 / 60분 / 90분 + 직접 입력 필드
 - 운동 완료 시 Supabase DB에 세션 저장
 
-**인증샷 카드**
+**인증샷 카드** ✅ 실제 구현
 
 - 운동 완료 시 `canvas-confetti` 폭죽 효과 + 카드 생성 유도
 - 사진 촬영 / 갤러리 업로드 (`<input type="file" capture="environment">`) — 모바일 브라우저에서 카메라 직접 연동
 - 사진 + 운동 데이터(날짜·운동 목록·총 볼륨·운동 시간)를 합성한 감성 카드
 - 인스타그램 비율 대응: 1:1 / 4:5 전환 토글
+- html2canvas로 인증샷 카드 PNG 저장
 - 이미지 저장 / 공유 버튼
 
 **운동 히스토리 (캘린더 뷰)** ⚠️ mock 데이터
@@ -78,6 +79,7 @@
 | 상태 관리 | React 상태 (Client Component) |
 | UI 패턴 | Server Component 우선, 입력 폼은 Shadcn Drawer (바텀 시트) |
 | 인증 / DB | Supabase Auth + Supabase Database (부분 연동) |
+| 인증샷 카드 저장 | html2canvas |
 | 폭죽 효과 | canvas-confetti |
 | 배포 | Vercel |
 
@@ -118,7 +120,6 @@
 
 ### 기능 확장 (Post-MVP)
 
-- [ ] html2canvas로 인증샷 카드 PNG 저장
 - [ ] 무게 증가 그래프 (데이터 시각화)
 - [ ] 스트릭 히트맵
 - [ ] 소셜 피드 / 친구 기능
