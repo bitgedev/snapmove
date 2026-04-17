@@ -5,7 +5,7 @@
 | 항목 | 내용 |
 |---|---|
 | **기술 스택** | Next.js 14+ App Router, TypeScript, Tailwind CSS, Shadcn UI |
-| **제약 조건** | DB 없음, mock 데이터, 기능 구현 없이 UI만 제작 |
+| **제약 조건** | Supabase Auth + 운동 기록 저장은 실제 구현, 루틴/대시보드/히스토리는 mock 데이터 |
 | **디자인 방향** | 라이트 모드, 연한 민트(teal) 단일 계열, 흰색 + teal-50 교차 배경, 보조 강조색 없음, 모바일 퍼스트 |
 | **컴포넌트 원칙** | Server Component 우선, Client Component는 상태·인터랙션 필요 시만 |
 
@@ -16,10 +16,11 @@
 | 랜딩 | `/` | 서비스 소개, CTA |
 | 로그인 | `/login` | 이메일 로그인 |
 | 회원가입 | `/signup` | 이메일 회원가입 |
+| 대시보드 | `/dashboard` | 주간 게이지, 최근 활동 요약 — **로그인 후 첫 화면** |
 | 루틴 목록 | `/routines` | 루틴 카드 그리드 |
 | 루틴 상세 | `/routines/[id]` | 운동 목록, 운동 시작 버튼 |
 | 운동 실행 | `/workout/[id]` | 세트별 입력, 완료 카드 |
-| 히스토리 | `/history` | 날짜별 운동 기록 |
+| 히스토리 | `/history` | 달력 + 선택 날짜 운동 기록 |
 
 ---
 
@@ -39,7 +40,7 @@ npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --
 npx shadcn@latest init -d
 
 # 3. Shadcn 컴포넌트 설치
-npx shadcn@latest add button card badge input label separator avatar progress dialog tabs skeleton dropdown-menu form checkbox
+npx shadcn@latest add button card badge input label separator avatar progress dialog drawer tabs skeleton dropdown-menu form checkbox
 
 # 4. 아이콘 패키지
 npm install lucide-react
@@ -76,15 +77,16 @@ src/
 - [x] Shadcn `init` 완료, `components.json` 생성 확인
 - [x] Shadcn 컴포넌트 13종 설치 완료
 - [x] `src/types/index.ts` 작성
+  - [x] `ExerciseCategory` 타입: `"strength" | "cardio" | "flexibility" | "other"` ← **신규**
   - [x] `MuscleGroup` 타입: `"chest" | "back" | "shoulders" | "arms" | "legs" | "core" | "cardio" | "full-body"`
-  - [x] `Exercise` 인터페이스
+  - [x] `Exercise` 인터페이스 (`category: ExerciseCategory` 필드 포함)
   - [x] `Routine` 인터페이스
   - [x] `SetRecord` 인터페이스
-  - [x] `ExerciseRecord` 인터페이스
+  - [x] `ExerciseRecord` 인터페이스 (`category: ExerciseCategory` 필드 포함)
   - [x] `WorkoutSession` 인터페이스
 - [x] `src/lib/mock-data.ts` 작성
-  - [x] `MOCK_ROUTINES` — Push Day / Pull Day / Leg Day / Core&Cardio 4개 루틴, 각 4~5개 운동
-  - [x] `MOCK_SESSIONS` — 최근 30일 내 8개 완료 세션
+  - [x] `MOCK_ROUTINES` — Push Day / Pull Day / Leg Day / Core&Cardio / Mobility&Stretch 5개 루틴, 각 4~5개 운동 (`category` 필드 포함)
+  - [x] `MOCK_SESSIONS` — 최근 30일 내 8개 완료 세션 (exerciseRecord에 `category` 포함)
   - [x] `getMockRoutineById(id: string)` 헬퍼 함수
   - [x] `getMockSessionsByMonth(year: number, month: number)` 헬퍼 함수
 - [x] `tailwind.config.ts` 커스터마이징 — 전체 컬러 시스템 (Tailwind v4 — `globals.css`의 `@theme inline`으로 대체)
@@ -123,7 +125,7 @@ src/
 - [x] `src/components/shared/EmptyState.tsx` — 빈 상태 플레이스홀더 with CTA (SERVER)
 - [x] `src/components/layout/BottomNav.tsx` (CLIENT)
   - [x] `usePathname()`으로 활성 탭 강조
-  - [x] 탭 구성: Routines(Dumbbell) / History(Clock) / Profile(User, 장식)
+  - [x] 탭 구성: Dashboard(Home) / Routines(Dumbbell) / History(Clock) / Profile(User, 장식)
   - [x] `/workout` 경로 진입 시 자동 숨김
 - [x] `src/components/layout/TopBar.tsx` (CLIENT)
   - [x] `useRouter()`로 뒤로가기 버튼
@@ -147,7 +149,9 @@ src/
 ## - [ ] Phase 2: 랜딩 & 인증 페이지
 
 ### 개요
-서비스 진입점인 랜딩 페이지(`/`)와 인증 페이지(`/login`, `/signup`)를 구현한다. Phase 1 완료 후 진행. 랜딩 페이지는 전체 Server Component, 인증 폼은 상태 관리가 필요하므로 Client Component. 실제 인증 없음 — 제출 시 1.5초 로딩 → `/routines` 이동.
+서비스 진입점인 랜딩 페이지(`/`)와 인증 페이지(`/login`, `/signup`)를 구현한다. **Supabase Auth 실제 연동** — 이메일/비밀번호 회원가입·로그인, Next.js middleware 라우팅 보호 포함. 랜딩 페이지는 전체 Server Component, 인증 폼은 Client Component.
+
+> **실제 구현 범위**: Supabase Auth 회원가입/로그인, `src/middleware.ts` 라우팅 보호 (`/dashboard`, `/routines`, `/workout`, `/history` → 미인증 시 `/login` redirect)
 
 ### 파일 구조
 
@@ -202,7 +206,7 @@ src/
   - [ ] 이메일 `<Input>` + `<Label>`
   - [ ] 비밀번호 `<Input type="password">` + Eye/EyeOff 표시 토글
   - [ ] "Forgot password?" 링크 (장식)
-  - [ ] 제출 버튼 — `isLoading` state → 스피너 → 1.5초 후 `/routines` push
+  - [ ] 제출 버튼 — Supabase `signInWithPassword` 호출 → 성공 시 `/dashboard` push, 실패 시 에러 메시지
 - [ ] "Don't have an account? Sign up" → `/signup` 링크
 
 **회원가입 페이지 (`/signup`)**
@@ -214,7 +218,7 @@ src/
   - [ ] 비밀번호 `<Input>` + 강도 표시 바 (길이 기반: red → yellow → green)
   - [ ] 비밀번호 확인 `<Input>`
   - [ ] 약관 동의 `<Checkbox>` + 레이블
-  - [ ] 제출 버튼 — 1.5초 로딩 → `/routines` push
+  - [ ] 제출 버튼 — Supabase `signUp` 호출 → 성공 시 `/dashboard` push, 실패 시 에러 메시지
 - [ ] "Already have an account? Log in" → `/login` 링크
 
 ### 검증 체크리스트
@@ -223,18 +227,23 @@ src/
 - [ ] 랜딩 페이지 모바일(375px) 레이아웃 이상 없음
 - [ ] `/login` 카드 중앙 정렬 확인
 - [ ] 로그인 폼: 비밀번호 표시/숨김 토글 동작
-- [ ] 로그인 폼: 제출 → 로딩 스피너 → `/routines` 이동
+- [ ] 로그인 폼: 제출 → 로딩 스피너 → `/dashboard` 이동
 - [ ] `/signup` 카드 중앙 정렬 확인
 - [ ] 회원가입 폼: 비밀번호 입력 시 강도 바 색상 변화
-- [ ] 회원가입 폼: 제출 → 로딩 → `/routines` 이동
+- [ ] 회원가입 폼: 제출 → 로딩 → `/dashboard` 이동
 - [ ] `/` ↔ `/login` ↔ `/signup` 링크 이동 정상
 
 ---
 
-## - [ ] Phase 3: 루틴 페이지 (목록 & 상세)
+## - [ ] Phase 3: 대시보드 & 루틴 페이지
 
 ### 개요
-운동 루틴을 탐색/관리하는 두 페이지를 구현한다. `(app)` 라우트 그룹 안에 위치해 Phase 1의 BottomNav, TopBar가 자동 적용된다. `getMockRoutineById(id)`로 동적 라우트 mock 데이터를 조회한다.
+로그인 후 첫 화면인 대시보드(`/dashboard`)와 루틴 탐색/관리 페이지를 구현한다. 모든 입력 폼은 모바일 최적화를 위해 Shadcn `<Drawer>` (바텀 시트)를 사용한다. `(app)` 라우트 그룹 안에 위치해 Phase 1의 BottomNav, TopBar가 자동 적용된다.
+
+> **TODO (DB 연동 시 구현):**
+> - 대시보드 주간 게이지 → 로그인 유저의 실제 `workout_sessions` 조회로 교체
+> - 루틴 목록 → Supabase `routines` 테이블 CRUD로 교체 (현재 AddRoutineDrawer는 UI만)
+> - 루틴 상세 → `exercises` 테이블 연동, AddExerciseDrawer 실제 저장
 
 ### 파일 구조
 
@@ -242,6 +251,8 @@ src/
 src/
 ├── app/
 │   └── (app)/
+│       ├── dashboard/
+│       │   └── page.tsx            # 대시보드 (SERVER)
 │       └── routines/
 │           ├── page.tsx            # 루틴 목록 (SERVER)
 │           ├── loading.tsx
@@ -249,16 +260,32 @@ src/
 │               ├── page.tsx        # 루틴 상세 (SERVER)
 │               └── loading.tsx
 └── components/
+    ├── dashboard/
+    │   ├── WeeklyGauge.tsx         # CLIENT — 주간 게이지 바
+    │   └── RecentSessionList.tsx   # SERVER — 최근 운동 카드 2~3개
     └── routines/
         ├── RoutineCard.tsx         # SERVER
         ├── RoutineGrid.tsx         # SERVER
         ├── RoutineFilterTabs.tsx   # CLIENT
-        ├── AddRoutineButton.tsx    # CLIENT
-        ├── AddExerciseButton.tsx   # CLIENT
+        ├── AddRoutineDrawer.tsx    # CLIENT — Drawer 사용
+        ├── AddExerciseDrawer.tsx   # CLIENT — Drawer 사용
         └── ExerciseListItem.tsx    # SERVER
 ```
 
 ### 구현 체크리스트
+
+**대시보드 (`/dashboard`)**
+
+- [ ] `dashboard/page.tsx` (SERVER) — TopBar("안녕하세요 👋") + WeeklyGauge + RecentSessionList 조합
+- [ ] `WeeklyGauge.tsx` (CLIENT)
+  - [ ] 이번 주 목표 운동 횟수 (mock: 목표 5회, 현재 N회)
+  - [ ] Shadcn `<Progress>` 바 — `value={(완료/목표)*100}`, `bg-teal-600`
+  - [ ] "이번 주 3 / 5 완료" 텍스트 + 퍼센트
+  - [ ] 요일별 dot 마커 행 (월~일, 운동한 날은 `bg-teal-500` 채움)
+- [ ] `RecentSessionList.tsx` (SERVER)
+  - [ ] 섹션 제목 "최근 운동"
+  - [ ] 최근 3개 `MOCK_SESSIONS` → 미니 카드 (날짜 / 루틴명 / 총 볼륨)
+  - [ ] "전체 기록 보기 →" → `/history` 링크
 
 **루틴 목록 (`/routines`)**
 
@@ -276,10 +303,10 @@ src/
   - [ ] "Last performed: 3 days ago" 상대 날짜
   - [ ] 예상 소요 시간 칩
   - [ ] 전체 카드 `<Link href="/routines/[id]">`
-- [ ] `AddRoutineButton.tsx` (CLIENT)
+- [ ] `AddRoutineDrawer.tsx` (CLIENT)
   - [ ] 화면 우하단 FAB "+" 버튼
-  - [ ] 클릭 시 Shadcn `<Dialog>` 열림
-  - [ ] Dialog: 루틴 이름 `<Input>` + 취소/생성 버튼 (실제 동작 없음)
+  - [ ] 클릭 시 Shadcn `<Drawer>` (바텀 시트) 열림
+  - [ ] Drawer 내용: 루틴 이름 `<Input>` + 취소/생성 버튼 (실제 동작 없음)
 - [ ] `loading.tsx` — 4개 Skeleton 카드 그리드
 
 **루틴 상세 (`/routines/[id]`)**
@@ -292,31 +319,40 @@ src/
   - [ ] `MuscleGroupBadge` 행
 - [ ] TopBar: 뒤로가기(→ `/routines`), 루틴 이름, 우측 케밥 메뉴 (`DropdownMenu` — Edit/Delete 장식)
 - [ ] `ExerciseListItem.tsx` (SERVER)
-  - [ ] 운동 이름 + `MuscleGroupBadge`
+  - [ ] 운동 이름 + `MuscleGroupBadge` + 카테고리 칩 (근력/유산소/유연성/기타)
   - [ ] 세트×반복×무게: "4 × 10 @ 60 kg" 형식
   - [ ] 휴식 시간 칩
   - [ ] 드래그 핸들 아이콘 (장식)
   - [ ] 우측 삭제 버튼 (X 아이콘, 장식)
   - [ ] `<Separator>`로 항목 구분
-- [ ] `AddExerciseButton.tsx` (CLIENT)
+- [ ] `AddExerciseDrawer.tsx` (CLIENT)
   - [ ] 운동 목록 하단 "운동 추가 +" 버튼
-  - [ ] 클릭 시 `<Dialog>` 열림
-  - [ ] Dialog: 운동 이름 / 세트 수 / 횟수 / 무게 / 휴식 시간 `<Input>` + 취소/추가 버튼 (실제 동작 없음)
+  - [ ] 클릭 시 Shadcn `<Drawer>` (바텀 시트) 열림
+  - [ ] Drawer 내용:
+    - [ ] **카테고리 셀렉터** (근력 / 유산소 / 유연성 / 기타) — 선택에 따라 근육군 셀렉터 표시 여부 결정
+    - [ ] 근력 선택 시: 근육군 셀렉터 노출 (chest/back/…)
+    - [ ] 운동 이름 / 세트 수 / 횟수 / 무게 / 휴식 시간 `<Input>`
+    - [ ] 취소/추가 버튼 (실제 동작 없음)
 - [ ] 하단 고정 "Start Workout" 버튼 (CLIENT, fixed position) → `<Link href="/workout/[id]">`
 - [ ] `loading.tsx` — 통계 스켈레톤 + 4개 운동 행 스켈레톤
 
 ### 검증 체크리스트
 
-- [ ] `/routines` 접속 시 4개 루틴 카드 렌더링
+- [ ] `/dashboard` 접속 시 WeeklyGauge + RecentSessionList 렌더링
+- [ ] WeeklyGauge Progress 바 수치 정상 표시
+- [ ] "전체 기록 보기" 링크 → `/history` 이동
+- [ ] BottomNav "Dashboard" 탭 활성 강조 확인
+- [ ] `/routines` 접속 시 루틴 카드 렌더링
 - [ ] BottomNav "Routines" 탭 활성 강조 확인
 - [ ] 필터 탭 클릭 시 탭 전환 (UI 변화만)
-- [ ] "+" FAB 클릭 시 Dialog 열림/닫힘
+- [ ] "+" FAB 클릭 시 Drawer(바텀 시트) 열림/닫힘
 - [ ] 루틴 카드 클릭 시 `/routines/[id]` 이동
 - [ ] `/routines/1` 접속 시 루틴 상세 정상 렌더링
 - [ ] `/routines/999` 접속 시 404 페이지
 - [ ] 케밥 메뉴 클릭 시 DropdownMenu 표시
-- [ ] `ExerciseListItem` 우측 삭제(X) 버튼 렌더링 확인
-- [ ] "운동 추가 +" 버튼 클릭 시 Dialog 열림/닫힘 확인
+- [ ] `ExerciseListItem` 카테고리 칩 렌더링 확인
+- [ ] "운동 추가 +" 버튼 클릭 시 Drawer 열림/닫힘
+- [ ] AddExerciseDrawer: 근력 선택 시 근육군 셀렉터 표시 확인
 - [ ] "Start Workout" 버튼 클릭 시 `/workout/1` 이동
 - [ ] TopBar 뒤로가기 버튼 클릭 시 `/routines` 이동
 - [ ] 모바일(375px) — 카드 2열, BottomNav 정상
@@ -326,7 +362,20 @@ src/
 ## - [ ] Phase 4: 운동 실행 페이지
 
 ### 개요
-운동 기록의 핵심 인터랙션 페이지. `(app)` 그룹 **밖**에 위치해 BottomNav 없이 풀스크린으로 표시된다. 타이머·세트 입력·운동 네비게이션 모두 Client Component 상태로 관리. 완료 시 인스타그램 공유 카드 미리보기 다이얼로그 표시.
+운동 기록의 핵심 인터랙션 페이지. `(app)` 그룹 **밖**에 위치해 BottomNav 없이 풀스크린으로 표시된다. **실시간 타이머 없음** — 웹 백그라운드 제한 이슈와 회고 중심 UX를 위해 수동 입력 방식 채택. 완료 시 `canvas-confetti` 폭죽 + 공유 카드 다이얼로그.
+
+> **실제 구현 범위**: "Complete Workout" 완료 시 Supabase DB에 `workout_sessions` + `set_records` 저장 (로그인 유저 기준)
+>
+> **TODO (DB 연동 시 구현):**
+> - "Done" 후 히스토리에서 방금 저장한 실제 세션 조회
+> - html2canvas로 인증샷 카드 PNG 실제 저장
+
+### 설치 명령어
+
+```bash
+npm install canvas-confetti
+npm install -D @types/canvas-confetti
+```
 
 ### 파일 구조
 
@@ -348,10 +397,10 @@ src/
 
 - [ ] `page.tsx` — `getMockRoutineById(params.id)` → `<WorkoutSession routine={routine} />` (SERVER)
 - [ ] `WorkoutSession.tsx` (CLIENT)
-  - [ ] **헤더 바**
+  - [ ] **헤더 바** (타이머 없음)
     - [ ] "×" 닫기 버튼 → 확인 Dialog ("운동을 종료하시겠습니까?") → `/routines` 이동
     - [ ] 루틴 이름 중앙 표시
-    - [ ] 경과 타이머 우측 (`setInterval` 1초마다 증가, "mm:ss" 포맷)
+    - [ ] ~~경과 타이머~~ — **제거됨** (수동 입력으로 대체)
   - [ ] **진행 바**
     - [ ] "Exercise 2 of 5" 텍스트
     - [ ] Shadcn `<Progress>` 바
@@ -368,29 +417,48 @@ src/
     - [ ] 완료 체크 버튼 (클릭 시 해당 행 `bg-teal-50 border-l-2 border-teal-500`)
   - [ ] "Add Set" 버튼 → `sets` state에 새 행 push
 - [ ] 하단 고정 "Complete Workout" 버튼 (CLIENT)
+  - [ ] 클릭 시 **`canvas-confetti` 폭죽 실행** (`confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } })`)
   - [ ] 클릭 시 `<Dialog>` 열림
-  - [ ] Dialog: 운동 요약 (경과 시간 / 총 볼륨 / 완료 운동 수)
-  - [ ] Dialog: `<WorkoutShareCard>` 미리보기
+  - [ ] Dialog 상단: 운동 요약 (총 볼륨 / 완료 운동 수)
+  - [ ] Dialog 중앙: **운동 시간 수동 입력 섹션**
+    - [ ] "오늘 운동은 얼마나 했나요?" 레이블
+    - [ ] **퀵 버튼 행**: "15분" / "30분" / "60분" / "90분" — 클릭 시 `durationMinutes` state 세팅, 선택된 버튼 `bg-teal-600 text-white`
+    - [ ] `<Input type="number" placeholder="직접 입력 (분)">` — 퀵 버튼과 양방향 동기화
+  - [ ] Dialog: **사진 업로드 섹션** (운동 인증샷)
+    - [ ] "운동 사진 추가 (선택)" 레이블 + 카메라 아이콘 업로드 버튼
+    - [ ] `<input type="file" accept="image/*" capture="environment">` — 모바일에서 카메라/갤러리 선택 가능
+    - [ ] 선택 시 `URL.createObjectURL(file)`로 미리보기 썸네일 표시
+    - [ ] 선택 취소(×) 버튼으로 사진 제거
+  - [ ] Dialog 하단: `<WorkoutShareCard>` 미리보기 (업로드한 사진 반영)
   - [ ] "Save & Share" 버튼 (장식)
   - [ ] "Done" 버튼 → `/history` 이동
 - [ ] `WorkoutShareCard.tsx` (CLIENT, `components/shared/`)
+  - [ ] `photoUrl?: string` prop 수신
+  - [ ] **사진 있을 때**: 카드 상단 1/3 영역에 `<img>` `object-cover` 배치, 하단 2/3에 운동 데이터
+  - [ ] **사진 없을 때**: 기존 `card-gradient` 전체 배경 유지
   - [ ] 비율 전환 토글 — "1:1" / "4:5" 버튼, `ratio` state로 `aspect-square` ↔ `aspect-[4/5]` 전환
-  - [ ] `card-gradient` 배경 (`from-teal-700 to-teal-600`, 흰색 텍스트 대비 충분히 확보)
   - [ ] 좌상단 Snapmove 로고 (`text-white`)
   - [ ] 날짜 표시 (크게, `text-white font-bold`)
   - [ ] 운동 목록 + 각 볼륨 (`text-white` — 불투명도 변형 사용 금지, 대비율 유지)
-  - [ ] 하단 "Total Volume" 통계 (`text-white font-bold`)
+  - [ ] 하단 "Total Volume" + 수동 입력한 운동 시간 통계 (`text-white font-bold`)
   - [ ] Download / Share 버튼 (`border-white/50 text-white hover:bg-white/10`, 아웃라인, 장식)
 
 ### 검증 체크리스트
 
 - [ ] `/workout/1` 접속 시 풀스크린 레이아웃 (BottomNav 없음)
-- [ ] 페이지 진입 즉시 타이머 카운트업 시작
+- [ ] 헤더에 타이머 없음 확인
 - [ ] 이전/다음 화살표로 운동 전환, Progress 바 업데이트
 - [ ] 세트 체크 버튼 클릭 시 해당 행 초록 강조
 - [ ] "Add Set" 클릭 시 새 세트 행 추가
 - [ ] "×" 닫기 버튼 → 확인 다이얼로그 표시
-- [ ] "Complete Workout" 클릭 → 완료 다이얼로그 + 공유 카드 표시
+- [ ] "Complete Workout" 클릭 → confetti 폭죽 실행 확인
+- [ ] 완료 다이얼로그 열림 + 퀵 버튼(15m/30m/60m/90m) 표시
+- [ ] 퀵 버튼 클릭 시 입력 필드 값 동기화 + 선택 버튼 강조
+- [ ] 직접 입력 시 퀵 버튼 선택 해제
+- [ ] 완료 다이얼로그: 사진 업로드 버튼 표시 확인
+- [ ] 사진 선택 시 썸네일 미리보기 표시
+- [ ] 사진 있을 때 WorkoutShareCard 상단에 사진 반영 확인
+- [ ] 사진 없을 때 card-gradient 배경 유지 확인
 - [ ] WorkoutShareCard "1:1" / "4:5" 토글 버튼 클릭 시 비율 전환
 - [ ] "Done" 클릭 시 `/history` 이동
 - [ ] 모바일(375px) — 세트 입력 행 가로 스크롤 없음
@@ -400,7 +468,11 @@ src/
 ## - [ ] Phase 5: 히스토리 페이지 & 마무리 폴리시
 
 ### 개요
-날짜별 운동 기록 히스토리 페이지를 구현하고, Phase 4의 `WorkoutShareCard`를 재사용해 과거 운동의 공유 카드를 볼 수 있게 한다. 완료 후 전체 앱 loading 상태, 반응형 레이아웃, 시각적 일관성을 최종 점검한다.
+달력 뷰 기반 히스토리 페이지를 구현한다. 상단 캘린더 그리드에서 운동한 날을 한눈에 파악하고, 날짜를 선택하면 하단 패널에 해당 날의 운동 기록이 표시된다. Phase 4의 `WorkoutShareCard`를 재사용.
+
+> **TODO (DB 연동 시 구현):**
+> - `MOCK_SESSIONS` → 로그인 유저의 실제 `workout_sessions` 조회로 교체
+> - Phase 4에서 저장한 세션이 캘린더에 즉시 반영되도록 연동
 
 ### 파일 구조
 
@@ -413,7 +485,8 @@ src/
 │           └── loading.tsx
 └── components/
     └── history/
-        ├── HistoryList.tsx           # CLIENT — 월 필터링
+        ├── HistoryCalendar.tsx       # CLIENT — 캘린더 그리드 + 날짜 선택
+        ├── HistoryDayPanel.tsx       # CLIENT — 선택 날짜 운동 목록
         └── HistoryCard.tsx           # SERVER
 ```
 
@@ -421,40 +494,51 @@ src/
 
 **히스토리 페이지 (`/history`)**
 
-- [ ] `page.tsx` — TopBar("Workout History") + `<HistoryList />` (SERVER wrapper)
-- [ ] `HistoryList.tsx` (CLIENT)
-  - [ ] `currentMonth` state (기본값: 현재 년월)
-  - [ ] 좌/우 화살표로 월 이동, "April 2026" 형식 표시
-  - [ ] `getMockSessionsByMonth(year, month)` 호출로 해당 월 세션 필터링
-  - [ ] 날짜별 그룹 헤더 ("Monday, April 1") + `HistoryCard` 목록
-  - [ ] 세션 없는 월 → `<EmptyState />` 표시
+- [ ] `page.tsx` — TopBar("운동 기록") + `<HistoryCalendar sessions={MOCK_SESSIONS} />` (SERVER wrapper)
+- [ ] `HistoryCalendar.tsx` (CLIENT)
+  - [ ] `currentMonth`, `selectedDate` state (기본값: 현재 년월, 선택 없음)
+  - [ ] 헤더: `←` / `→` 월 이동 버튼 + "2026년 4월" 형식 표시
+  - [ ] **7열 CSS grid** 캘린더 그리드
+    - [ ] 요일 헤더 행: 일/월/화/수/목/금/토 (`text-xs text-gray-400`)
+    - [ ] 날짜 셀: 날짜 숫자 표시
+    - [ ] 운동 있는 날: 날짜 숫자 아래 `w-1.5 h-1.5 bg-teal-500 rounded-full` dot 표시
+    - [ ] 선택된 날: `bg-teal-600 text-white rounded-full` 강조
+    - [ ] 오늘 날짜: `font-bold text-teal-700` (선택 안 된 상태)
+  - [ ] 날짜 클릭 → `selectedDate` 업데이트
+  - [ ] `getMockSessionsByMonth(year, month)`으로 해당 월 세션 조회
+- [ ] `HistoryDayPanel.tsx` (CLIENT)
+  - [ ] `selectedDate`가 없으면: "날짜를 선택하면 기록을 볼 수 있어요" 안내 (`EmptyState` 변형)
+  - [ ] 선택한 날에 세션 있으면: 날짜 헤더 ("4월 14일 월요일") + `HistoryCard` 목록
+  - [ ] 선택한 날에 세션 없으면: `<EmptyState>` ("이 날은 기록된 운동이 없어요")
 - [ ] `HistoryCard.tsx` (SERVER)
   - [ ] 루틴 이름 + 소요 시간 칩
   - [ ] 총 볼륨 배지 ("4,320 kg total")
   - [ ] 운동 요약 "5 exercises · 18 sets"
   - [ ] `MuscleGroupBadge` 행
   - [ ] "View Card" 버튼 → `WorkoutShareCard` Dialog (CLIENT island)
-- [ ] `loading.tsx` — 월 선택기 스켈레톤 + 3개 히스토리 카드 스켈레톤
+- [ ] `loading.tsx` — 캘린더 그리드 스켈레톤 + 3개 히스토리 카드 스켈레톤
 
 **마무리 폴리시**
 
 - [ ] 모든 `loading.tsx` 파일 존재 확인 (routines / routines/[id] / history)
 - [ ] `/workout/[id]/loading.tsx` 불필요 확인 (전체 CLIENT라 제외)
-- [ ] BottomNav "History" 탭 활성 강조 확인
+- [ ] BottomNav "Dashboard" / "Routines" / "History" 탭 활성 강조 확인
 - [ ] 전체 페이지 라이트 모드 색상 일관성 점검 (흰색 배경, teal-50 교체 섹션)
 - [ ] `MuscleGroupBadge` 색상이 모든 페이지에서 동일하게 표시되는지 확인
-- [ ] 모든 Shadcn 컴포넌트 라이트 테마 가독성 확인 (버튼·인풋·다이얼로그 teal 적용 여부)
+- [ ] 모든 Shadcn 컴포넌트 라이트 테마 가독성 확인 (버튼·인풋·다이얼로그·드로어 teal 적용 여부)
 
 ### 검증 체크리스트
 
-- [ ] `/history` 접속 시 현재 월 세션 렌더링
+- [ ] `/history` 접속 시 캘린더 그리드 정상 렌더링
+- [ ] 운동 있는 날에 teal dot 표시 확인
+- [ ] 날짜 클릭 시 선택 강조 + 하단 패널 업데이트
+- [ ] 운동 없는 날 클릭 시 EmptyState 표시
+- [ ] 선택 없는 초기 상태에서 안내 메시지 표시
+- [ ] 월 이동 화살표 클릭 시 캘린더 월 변경
 - [ ] BottomNav "History" 탭 활성 강조 확인
-- [ ] 월 이동 화살표 클릭 시 월 변경 + 해당 월 세션 표시
-- [ ] 세션 없는 월 이동 시 `EmptyState` 컴포넌트 표시
 - [ ] "View Card" 클릭 시 `WorkoutShareCard` Dialog 열림
 - [ ] 공유 카드 내 1:1 / 4:5 비율 전환 동작 확인
-- [ ] 공유 카드 내 운동 데이터 정상 표시
-- [ ] **전체 흐름 E2E 테스트**: `/` → `/signup` → `/routines` → `/routines/1` → `/workout/1` → `/history`
+- [ ] **전체 흐름 E2E 테스트**: `/` → `/signup` → `/dashboard` → `/routines` → `/routines/1` → `/workout/1` → `/history`
 - [ ] 모바일(375px) 전 페이지 레이아웃 이상 없음
 - [ ] `npm run build` 오류 없이 통과
 - [ ] TypeScript 타입 오류 없음

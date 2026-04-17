@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Dumbbell, Clock, User } from "lucide-react";
+import { Home, Dumbbell, Clock, User } from "lucide-react";
 
 const tabs = [
-  { href: "/routines", label: "Routines", icon: Dumbbell },
-  { href: "/history", label: "History", icon: Clock },
-  { href: "/profile", label: "Profile", icon: User },
+  { href: "/dashboard", label: "홈", icon: Home },
+  { href: "/routines", label: "루틴", icon: Dumbbell },
+  { href: "/history", label: "기록", icon: Clock },
+  { href: "/profile", label: "프로필", icon: User },
 ];
 
 export default function BottomNav() {

@@ -1,3 +1,5 @@
+export type ExerciseCategory = "strength" | "cardio" | "flexibility" | "other";
+
 export type MuscleGroup =
 | "chest"
 | "back"
@@ -11,11 +13,12 @@ export type MuscleGroup =
 export interface Exercise {
     id:string;
     name:string;
+    category: ExerciseCategory;
     muscleGroup: MuscleGroup;
     sets:number;
     reps:number;
     weight:number;
-    restSeconds:number                               
+    restSeconds:number
 }
 
 export interface Routine {
@@ -35,8 +38,9 @@ export interface SetRecord {
 }
 
 export interface ExerciseRecord {
-    exerciseId:string; 
+    exerciseId:string;
     exerciseName:string;
+    category: ExerciseCategory;
     muscleGroup: MuscleGroup;
     sets: SetRecord[]
 }

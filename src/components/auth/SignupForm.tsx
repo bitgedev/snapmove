@@ -29,7 +29,7 @@ export default function SignupForm() {
   function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => router.push('/routines'), 1500);
+    setTimeout(() => router.push('/dashboard'), 1500);
   }
 
   return (
