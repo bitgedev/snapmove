@@ -1,4 +1,5 @@
 'use client';
+
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -6,16 +7,34 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { createClient } from '@/lib/supabase/client';
 
 export default function LoginForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  function handleSubmit(e:React.SubmitEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
-    setTimeout(() => router.push('/dashboard'), 1500);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    const supabase = createClient();
+    const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (authError) {
+      setError(authError.message);
+      setIsLoading(false);
+      return;
+    }
+
+    router.push('/dashboard');
+    router.refresh();
   }
 
   return (
@@ -24,6 +43,7 @@ export default function LoginForm() {
         <Label htmlFor="email">이메일</Label>
         <Input
           id="email"
+          name="email"
           type="email"
           placeholder="example@email.com"
           required
@@ -35,6 +55,7 @@ export default function LoginForm() {
         <div className="relative">
           <Input
             id="password"
+            name="password"
             type={showPassword ? 'text' : 'password'}
             placeholder="비밀번호를 입력하세요"
             className="pr-10"
@@ -56,6 +77,10 @@ export default function LoginForm() {
           비밀번호를 잊으셨나요?
         </Link>
       </div>
+
+      {error && (
+        <p className="text-sm text-red-500">{error}</p>
+      )}
 
       <Button
         type="submit"

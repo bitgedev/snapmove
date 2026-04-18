@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { createClient } from '@/lib/supabase/client';
 
 function getPasswordStrength(password: string): {
   level: 0 | 1 | 2 | 3;
@@ -23,31 +24,60 @@ export default function SignupForm() {
   const router = useRouter();
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const strength = getPasswordStrength(password);
 
-  function handleSubmit(e: React.SubmitEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
-    setTimeout(() => router.push('/dashboard'), 1500);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const name = formData.get('name') as string;
+    const passwordConfirm = formData.get('passwordConfirm') as string;
+
+    if (password !== passwordConfirm) {
+      setError('비밀번호가 일치하지 않습니다.');
+      setIsLoading(false);
+      return;
+    }
+
+    const supabase = createClient();
+    const { error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: name } },
+    });
+
+    if (authError) {
+      setError(authError.message);
+      setIsLoading(false);
+      return;
+    }
+
+    router.push('/dashboard');
+    router.refresh();
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="name">이름</Label>
-        <Input id="name" type="text" placeholder="홍길동" required />
+        <Input id="name" name="name" type="text" placeholder="홍길동" required />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="email">이메일</Label>
-        <Input id="email" type="email" placeholder="example@email.com" required />
+        <Input id="email" name="email" type="email" placeholder="example@email.com" required />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="password">비밀번호</Label>
         <Input
           id="password"
+          name="password"
           type="password"
           placeholder="비밀번호를 입력하세요"
           value={password}
@@ -84,6 +114,7 @@ export default function SignupForm() {
         <Label htmlFor="passwordConfirm">비밀번호 확인</Label>
         <Input
           id="passwordConfirm"
+          name="passwordConfirm"
           type="password"
           placeholder="비밀번호를 다시 입력하세요"
           required
@@ -96,6 +127,10 @@ export default function SignupForm() {
           이용약관 및 개인정보처리방침에 동의합니다
         </Label>
       </div>
+
+      {error && (
+        <p className="text-sm text-red-500">{error}</p>
+      )}
 
       <Button
         type="submit"
