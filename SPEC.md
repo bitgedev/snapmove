@@ -4,23 +4,51 @@
 
 | 항목 | 내용 |
 |---|---|
-| **기술 스택** | Next.js 14+ App Router, TypeScript, Tailwind CSS, Shadcn UI |
+| **기술 스택** | Next.js 16.2.2 App Router, TypeScript, Tailwind CSS, Shadcn UI |
+| **Supabase** | @supabase/supabase-js 2.103.3, @supabase/ssr 0.10.2 |
+| **환경변수** | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (`ANON_KEY` 아님) |
 | **제약 조건** | Supabase Auth + 운동 기록 저장은 실제 구현, 루틴/대시보드/히스토리는 mock 데이터 |
 | **디자인 방향** | 라이트 모드, 연한 민트(teal) 단일 계열, 흰색 + teal-50 교차 배경, 보조 강조색 없음, 모바일 퍼스트 |
 | **컴포넌트 원칙** | Server Component 우선, Client Component는 상태·인터랙션 필요 시만 |
 
+## DB 스키마 (`public.workout_logs`) ✅ 생성 완료
+
+```
+id               uuid        PK
+user_id          uuid        → auth.users(id) ON DELETE CASCADE
+date             date        NOT NULL
+routine_name     text        NOT NULL
+duration_minutes integer     NOT NULL, CHECK > 0
+category         text        NOT NULL
+photo_url        text        NULL
+exercises        jsonb       NOT NULL, default '[]'
+created_at       timestamptz NOT NULL, default now()
+```
+
+**exercises JSONB 구조**
+```json
+[{ "name": "스쿼트", "sets": [{ "w": 60, "r": 10 }] }]
+```
+
+- RLS 4개 정책: SELECT / INSERT / UPDATE / DELETE 모두 `auth.uid() = user_id`
+- 인덱스: `(user_id, date DESC)` — 달력 조회 최적화
+- TypeScript 타입: `src/lib/supabase/types.ts` (`WorkoutLog`, `WorkoutLogInsert`, `Exercise`, `ExerciseSet`)
+- **존재하지 않는 테이블**: `workout_sessions`, `set_records`, `routines`, `exercises` — MVP에서는 단일 `workout_logs`만 사용
+
+---
+
 ## 라우트 구조
 
-| 페이지 | 경로 | 설명 |
+| 페이지 | 경로 | 상태 |
 |---|---|---|
-| 랜딩 | `/` | 서비스 소개, CTA |
-| 로그인 | `/login` | 이메일 로그인 |
-| 회원가입 | `/signup` | 이메일 회원가입 |
-| 대시보드 | `/dashboard` | 주간 게이지, 최근 활동 요약 — **로그인 후 첫 화면** |
-| 루틴 목록 | `/routines` | 루틴 카드 그리드 |
-| 루틴 상세 | `/routines/[id]` | 운동 목록, 운동 시작 버튼 |
-| 운동 실행 | `/workout/[id]` | 세트별 입력, 완료 카드 |
-| 히스토리 | `/history` | 달력 + 선택 날짜 운동 기록 |
+| 랜딩 | `/` | ✅ |
+| 로그인 | `/login` | ✅ Supabase Auth 연결 |
+| 회원가입 | `/signup` | ✅ Supabase Auth 연결 |
+| 대시보드 | `/dashboard` | ❌ 미생성 |
+| 루틴 목록 | `/routines` | ❌ 미생성 |
+| 루틴 상세 | `/routines/[id]` | ❌ 미생성 |
+| 운동 실행 | `/workout/[id]` | ❌ 미생성 |
+| 히스토리 | `/history` | ❌ 미생성 |
 
 ---
 
@@ -146,95 +174,79 @@ src/
 
 ---
 
-## - [ ] Phase 2: 랜딩 & 인증 페이지
+## - [x] Phase 2: 랜딩 & 인증 페이지
 
 ### 개요
 서비스 진입점인 랜딩 페이지(`/`)와 인증 페이지(`/login`, `/signup`)를 구현한다. **Supabase Auth 실제 연동** — 이메일/비밀번호 회원가입·로그인, Next.js middleware 라우팅 보호 포함. 랜딩 페이지는 전체 Server Component, 인증 폼은 Client Component.
 
-> **실제 구현 범위**: Supabase Auth 회원가입/로그인, `src/middleware.ts` 라우팅 보호 (`/dashboard`, `/routines`, `/workout`, `/history` → 미인증 시 `/login` redirect)
+> **실제 구현 범위**: Supabase Auth 회원가입/로그인 ✅ 완료.
+> `middleware.ts` 라우팅 보호 — 로직은 `proxy.ts`에 작성되어 있으나 **파일명이 `middleware.ts`가 아니므로 현재 동작하지 않음** ⚠️
 
 ### 파일 구조
 
 ```
 src/
-├── middleware.ts                 # 라우팅 보호 — 미인증 시 /login redirect
+├── middleware.ts                 # ⚠️ 미생성 — proxy.ts로 존재하나 Next.js가 인식 못함
 ├── app/
-│   ├── page.tsx                  # 랜딩 (/)
+│   ├── page.tsx                  # 랜딩 (/) ✅
 │   ├── login/
-│   │   └── page.tsx              # 로그인
+│   │   └── page.tsx              # 로그인 ✅
 │   └── signup/
-│       └── page.tsx              # 회원가입
+│       └── page.tsx              # 회원가입 ✅
 └── components/
     ├── landing/
-    │   ├── LandingNav.tsx        # SERVER
-    │   ├── HeroSection.tsx       # SERVER
-    │   └── FeaturesSection.tsx   # SERVER
+    │   ├── LandingNav.tsx        # SERVER ✅
+    │   ├── HeroSection.tsx       # SERVER ✅
+    │   └── FeaturesSection.tsx   # SERVER ✅
     └── auth/
-        ├── LoginForm.tsx         # CLIENT
-        └── SignupForm.tsx        # CLIENT
+        ├── LoginForm.tsx         # CLIENT ✅ — Supabase Auth 연결 완료
+        └── SignupForm.tsx        # CLIENT ✅ — Supabase Auth 연결 완료
 ```
 
 ### 구현 체크리스트
 
 **랜딩 페이지 (`/`)**
 
-- [ ] `LandingNav.tsx` (SERVER)
-  - [ ] 로고 좌측 (`text-teal-700 font-bold`)
-  - [ ] Login 고스트 버튼 — `text-teal-700 border-teal-200 hover:bg-teal-50`
-  - [ ] Get Started 솔리드 버튼 — `bg-teal-600 text-white hover:bg-teal-700`
-- [ ] `HeroSection.tsx` (SERVER)
-  - [ ] 헤드라인: "Track your grind. Share your gains." (틸 강조 텍스트)
-  - [ ] 서브텍스트
-  - [ ] CTA1: "Get Started" → `/signup` (틸 솔리드 버튼)
-  - [ ] CTA2: "See Demo" → `/routines` (틸 아웃라인 버튼)
-  - [ ] 배경: `bg-hero-gradient` (연한 민트→흰색→연한 민트 그라디언트)
-- [ ] 통계 스트립 (SERVER) — `bg-white` 배경, 아이콘 `text-teal-500`, 수치 `text-gray-900 font-bold`, 레이블 `text-gray-500`
-  - [ ] "2,400+ routines logged"
-  - [ ] "98% completion rate"
-  - [ ] "10K+ cards shared"
-- [ ] `FeaturesSection.tsx` — 3열 카드 그리드 (SERVER)
-  - [ ] 루틴 빌더 카드 (Dumbbell 아이콘)
-  - [ ] 운동 트래커 카드 (Timer 아이콘)
-  - [ ] 인스타 카드 생성기 카드 (Share2 아이콘)
-- [ ] How It Works 섹션 — 3단계 번호 흐름 (SERVER)
-- [ ] 하단 CTA 배너 — `mint-gradient` (`from-teal-700 to-teal-600`) 배경, `text-white`, 흰색 아웃라인 버튼 (SERVER)
-- [ ] Footer — `bg-teal-900` 배경, `text-white`, 로고/저작권/링크 (SERVER)
+- [x] `LandingNav.tsx` (SERVER)
+- [x] `HeroSection.tsx` (SERVER)
+- [x] `FeaturesSection.tsx` — 3열 카드 그리드 (SERVER)
+- [x] How It Works 섹션
+- [x] 하단 CTA 배너
+- [x] Footer
 
-**로그인 페이지 (`/login`)**
+**로그인 페이지 (`/login`) ✅**
 
-- [ ] 전체 화면 중앙 정렬 카드 레이아웃
-- [ ] `LoginForm.tsx` (CLIENT)
-  - [ ] 이메일 `<Input>` + `<Label>`
-  - [ ] 비밀번호 `<Input type="password">` + Eye/EyeOff 표시 토글
-  - [ ] "Forgot password?" 링크 (장식)
-  - [ ] 제출 버튼 — Supabase `signInWithPassword` 호출 → 성공 시 `/dashboard` push, 실패 시 에러 메시지
-- [ ] "Don't have an account? Sign up" → `/signup` 링크
+- [x] 전체 화면 중앙 정렬 카드 레이아웃
+- [x] `LoginForm.tsx` (CLIENT)
+  - [x] 이메일 `<Input>` + `<Label>`
+  - [x] 비밀번호 `<Input type="password">` + Eye/EyeOff 표시 토글
+  - [x] "Forgot password?" 링크 (장식)
+  - [x] 제출 버튼 — `supabase.auth.signInWithPassword` → 성공 시 `/dashboard` push, 실패 시 에러 메시지
 
-**회원가입 페이지 (`/signup`)**
+**회원가입 페이지 (`/signup`) ✅**
 
-- [ ] 전체 화면 중앙 정렬 카드 레이아웃
-- [ ] `SignupForm.tsx` (CLIENT)
-  - [ ] 이름 `<Input>`
-  - [ ] 이메일 `<Input>`
-  - [ ] 비밀번호 `<Input>` + 강도 표시 바 (길이 기반: red → yellow → green)
-  - [ ] 비밀번호 확인 `<Input>`
-  - [ ] 약관 동의 `<Checkbox>` + 레이블
-  - [ ] 제출 버튼 — Supabase `signUp` 호출 → 성공 시 `/dashboard` push, 실패 시 에러 메시지
-- [ ] "Already have an account? Log in" → `/login` 링크
+- [x] 전체 화면 중앙 정렬 카드 레이아웃
+- [x] `SignupForm.tsx` (CLIENT)
+  - [x] 이름 `<Input>` — `options.data.full_name`으로 전달
+  - [x] 이메일 `<Input>`
+  - [x] 비밀번호 `<Input>` + 강도 표시 바 (≤5자: 약함/red, ≤9자: 보통/yellow, 10자+: 강함/green)
+  - [x] 비밀번호 확인 `<Input>` + 불일치 시 클라이언트 검증 에러
+  - [x] 약관 동의 `<Checkbox>` + 레이블
+  - [x] 제출 버튼 — `supabase.auth.signUp` → 성공 시 `/dashboard` push, 실패 시 에러 메시지
+
+**미들웨어 라우트 가드 ✅ 완료**
+
+- [x] `src/middleware.ts` 생성 (`proxy.ts`의 함수명 `proxy` → `middleware`로 수정)
+  - 보호 경로: `/dashboard`, `/routines`, `/workout`, `/history`
+  - 미인증 → `/login` redirect (307 확인)
+  - 인증 후 `/login`, `/signup` 접근 → `/dashboard` redirect
 
 ### 검증 체크리스트
 
-- [ ] `/` 랜딩 페이지 정상 렌더링
-- [ ] 랜딩 페이지 모바일(375px) 레이아웃 이상 없음
-- [ ] `/login` 카드 중앙 정렬 확인
-- [ ] 로그인 폼: 비밀번호 표시/숨김 토글 동작
-- [ ] 로그인 폼: 제출 → 로딩 스피너 → `/dashboard` 이동
-- [ ] `/signup` 카드 중앙 정렬 확인
-- [ ] 회원가입 폼: 비밀번호 입력 시 강도 바 색상 변화
-- [ ] 회원가입 폼: 제출 → 로딩 → `/dashboard` 이동
-- [ ] `/` ↔ `/login` ↔ `/signup` 링크 이동 정상
-- [ ] 미인증 상태에서 `/dashboard` 직접 접근 시 `/login` redirect 확인
-- [ ] 로그인 후 `/login` 접근 시 `/dashboard` redirect 확인
+- [x] `/` 랜딩 페이지 정상 렌더링
+- [x] `/login` 폼 정상 렌더링 + 비밀번호 토글
+- [x] `/signup` 폼 정상 렌더링 + 강도 바
+- [x] 미인증 상태에서 `/dashboard` 직접 접근 시 `/login` redirect — 307 확인 ✅
 
 ---
 
@@ -244,9 +256,9 @@ src/
 로그인 후 첫 화면인 대시보드(`/dashboard`)와 루틴 탐색/관리 페이지를 구현한다. 모든 입력 폼은 모바일 최적화를 위해 Shadcn `<Drawer>` (바텀 시트)를 사용한다. `(app)` 라우트 그룹 안에 위치해 Phase 1의 BottomNav, TopBar가 자동 적용된다.
 
 > **TODO (DB 연동 시 구현):**
-> - 대시보드 주간 게이지 → 로그인 유저의 실제 `workout_sessions` 조회로 교체
-> - 루틴 목록 → Supabase `routines` 테이블 CRUD로 교체 (현재 AddRoutineDrawer는 UI만)
-> - 루틴 상세 → `exercises` 테이블 연동, AddExerciseDrawer 실제 저장
+> - 대시보드 주간 게이지 → 로그인 유저의 실제 `workout_logs` 조회로 교체
+> - 루틴 목록 → 현재 MVP에서는 mock 데이터 유지 (Supabase 루틴 테이블 없음)
+> - 루틴 상세 → 현재 MVP에서는 mock 데이터 유지
 
 ### 파일 구조
 
@@ -367,10 +379,21 @@ src/
 ### 개요
 운동 기록의 핵심 인터랙션 페이지. `(app)` 그룹 **밖**에 위치해 BottomNav 없이 풀스크린으로 표시된다. **실시간 타이머 없음** — 웹 백그라운드 제한 이슈와 회고 중심 UX를 위해 수동 입력 방식 채택. 완료 시 `canvas-confetti` 폭죽 + 공유 카드 다이얼로그.
 
-> **실제 구현 범위**: "Complete Workout" 완료 시 Supabase DB에 `workout_sessions` + `set_records` 저장 (로그인 유저 기준)
+> **실제 구현 범위**: "Done" 버튼 클릭 시 Supabase `workout_logs` 테이블에 단건 INSERT (로그인 유저 기준)
 >
-> **TODO (DB 연동 시 구현):**
-> - "Done" 후 히스토리에서 방금 저장한 실제 세션 조회
+> **INSERT 페이로드 구조:**
+> ```ts
+> {
+>   date: "2026-04-18",           // 오늘 날짜
+>   routine_name: routine.name,
+>   duration_minutes: durationMinutes,  // 수동 입력값
+>   category: "strength",              // 루틴 주 카테고리
+>   photo_url: uploadedPhotoUrl,       // null 허용
+>   exercises: [                       // JSONB — SetTracker 입력값
+>     { name: "스쿼트", sets: [{ w: 60, r: 10 }] }
+>   ]
+> }
+> ```
 
 ### 설치 명령어
 
@@ -473,9 +496,18 @@ src/
 ### 개요
 달력 뷰 기반 히스토리 페이지를 구현한다. 상단 캘린더 그리드에서 운동한 날을 한눈에 파악하고, 날짜를 선택하면 하단 패널에 해당 날의 운동 기록이 표시된다. Phase 4의 `WorkoutShareCard`를 재사용.
 
-> **TODO (DB 연동 시 구현):**
-> - `MOCK_SESSIONS` → 로그인 유저의 실제 `workout_sessions` 조회로 교체
-> - Phase 4에서 저장한 세션이 캘린더에 즉시 반영되도록 연동
+> **실제 구현 범위**: 로그인 유저의 `workout_logs`를 SELECT해서 달력과 상세 패널에 표시
+>
+> **SELECT 쿼리:**
+> ```ts
+> supabase
+>   .from('workout_logs')
+>   .select('*')
+>   .eq('user_id', user.id)
+>   .gte('date', firstDayOfMonth)
+>   .lte('date', lastDayOfMonth)
+>   .order('date', { ascending: false })
+> ```
 
 ### 파일 구조
 
