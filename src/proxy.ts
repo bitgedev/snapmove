@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
-const protectedRoutes = ['/dashboard', '/routines', '/workout', '/history']
+const protectedRoutes = ['/calendar', '/workout', '/settings']
 const authRoutes = ['/login', '/signup']
 
 export async function proxy(request: NextRequest) {
@@ -36,7 +36,7 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isAuthRoute && user) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    return NextResponse.redirect(new URL('/calendar', request.url))
   }
 
   return response
