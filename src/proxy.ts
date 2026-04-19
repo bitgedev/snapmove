@@ -4,7 +4,7 @@ import { createServerClient } from '@supabase/ssr'
 const protectedRoutes = ['/dashboard', '/routines', '/workout', '/history']
 const authRoutes = ['/login', '/signup']
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname
   const isProtectedRoute = protectedRoutes.some((r) => path.startsWith(r))
   const isAuthRoute = authRoutes.includes(path)

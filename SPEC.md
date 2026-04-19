@@ -177,16 +177,16 @@ src/
 ## - [x] Phase 2: 랜딩 & 인증 페이지
 
 ### 개요
-서비스 진입점인 랜딩 페이지(`/`)와 인증 페이지(`/login`, `/signup`)를 구현한다. **Supabase Auth 실제 연동** — 이메일/비밀번호 회원가입·로그인, Next.js middleware 라우팅 보호 포함. 랜딩 페이지는 전체 Server Component, 인증 폼은 Client Component.
+서비스 진입점인 랜딩 페이지(`/`)와 인증 페이지(`/login`, `/signup`)를 구현한다. **Supabase Auth 실제 연동** — 이메일/비밀번호 회원가입·로그인, Next.js proxy 라우팅 보호 포함. 랜딩 페이지는 전체 Server Component, 인증 폼은 Client Component.
 
 > **실제 구현 범위**: Supabase Auth 회원가입/로그인 ✅ 완료.
-> `middleware.ts` 라우팅 보호 — 로직은 `proxy.ts`에 작성되어 있으나 **파일명이 `middleware.ts`가 아니므로 현재 동작하지 않음** ⚠️
+> `proxy.ts` 라우팅 보호 ✅ — Next.js 16에서 `middleware` 파일 컨벤션이 deprecated되고 `proxy`로 변경됨.
 
 ### 파일 구조
 
 ```
 src/
-├── middleware.ts                 # ⚠️ 미생성 — proxy.ts로 존재하나 Next.js가 인식 못함
+├── proxy.ts                      # 라우트 가드 ✅
 ├── app/
 │   ├── page.tsx                  # 랜딩 (/) ✅
 │   ├── login/
@@ -234,9 +234,9 @@ src/
   - [x] 약관 동의 `<Checkbox>` + 레이블
   - [x] 제출 버튼 — `supabase.auth.signUp` → 성공 시 `/dashboard` push, 실패 시 에러 메시지
 
-**미들웨어 라우트 가드 ✅ 완료**
+**Proxy 라우트 가드 ✅ 완료**
 
-- [x] `src/middleware.ts` 생성 (`proxy.ts`의 함수명 `proxy` → `middleware`로 수정)
+- [x] `src/proxy.ts` 생성 (Next.js 16: `middleware` → `proxy` 파일 컨벤션 변경)
   - 보호 경로: `/dashboard`, `/routines`, `/workout`, `/history`
   - 미인증 → `/login` redirect (307 확인)
   - 인증 후 `/login`, `/signup` 접근 → `/dashboard` redirect
