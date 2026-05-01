@@ -9,7 +9,7 @@ import { useState } from "react";
 export default function CalendarPage() {
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
   const [today] = useState(() => new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(() => new Date());
 
   const handlePrev = () => {
     setCurrentMonth(
@@ -21,11 +21,10 @@ export default function CalendarPage() {
       new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1),
     );
   };
-  //CalendarGrid에서 클릭한 날짜를 넘겨받음
   const handleSelectDate = (date: Date) => {
     setSelectedDate(date);
   };
-  //현재 달의 세션만 필터링해서 가져오기. getMonth는 0부터 시작하므로 +1하기
+
   const sessions = getMockSessionsByMonth(
     currentMonth.getFullYear(),
     currentMonth.getMonth() + 1,
@@ -38,6 +37,7 @@ export default function CalendarPage() {
         currentMonth={currentMonth}
         onPrev={handlePrev}
         onNext={handleNext}
+        sessionCount={sessions.length}
       />
       <CalendarGrid
         currentMonth={currentMonth}
