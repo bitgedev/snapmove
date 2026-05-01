@@ -31,8 +31,8 @@ export default function DayDetailCard({ selectedDate, sessions }: Props) {
 
   if (!session) {
     return (
-      <div className="px-4 py-2">
-        <p className="mb-2 text-sm font-medium text-gray-500">{koreanDate}</p>
+      <div className="px-4 py-4">
+        <p className="mb-2 text-sm text-gray-400">{koreanDate}</p>
         <EmptyState title="이 날은 기록된 운동이 없어요" />
       </div>
     );
