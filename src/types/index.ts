@@ -38,7 +38,6 @@ export interface SetRecord {
 }
 
 export interface ExerciseRecord {
-    exerciseId:string;
     exerciseName:string;
     category: ExerciseCategory;
     muscleGroup: MuscleGroup;
@@ -47,8 +46,6 @@ export interface ExerciseRecord {
 
 export interface WorkoutSession {
     id:string;
-    routineId:string;
-    routineName:string;
     date:string;
     durationSeconds:number;
     exercises: ExerciseRecord[]

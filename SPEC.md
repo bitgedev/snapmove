@@ -327,7 +327,7 @@ src/
   - [ ] 날짜 셀:
     - [ ] 운동 있는 날: 날짜 숫자 아래 `size-1.5 rounded-full bg-teal-500` dot
     - [ ] 선택된 날: `bg-teal-600 text-white rounded-full` 강조
-    - [ ] 오늘 날짜: `font-bold text-teal-700` (선택 안 된 상태)
+    - [ ] 오늘 날짜: `bg-red-500 text-white rounded-full` (선택 안 된 상태)
   - [ ] 날짜 클릭 → `selectedDate` 업데이트
   - [ ] `getMockSessionsByMonth(year, month)`으로 해당 월 세션 조회
   - [ ] 운동한 날 Set: `new Set(sessions.map(s => s.date.slice(0, 10)))`
