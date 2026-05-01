@@ -16,10 +16,21 @@ interface Props {
   muscleGroup: MuscleGroup;
 }
 
+const labelMap: Record<MuscleGroup, string> = {
+  chest: "가슴",
+  back: "등",
+  shoulders: "어깨",
+  arms: "팔",
+  legs: "하체",
+  core: "복근",
+  cardio: "유산소",
+  "full-body": "전신",
+};
+
 export default function MuscleGroupBadge({ muscleGroup }: Props) {
   return (
     <Badge className={colorMap[muscleGroup]}>
-      {muscleGroup}
+      {labelMap[muscleGroup]}
     </Badge>
   );
 }
