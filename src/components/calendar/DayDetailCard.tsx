@@ -11,7 +11,7 @@ interface Props {
 export default function DayDetailCard({ selectedDate, sessions }: Props) {
   if (!selectedDate) {
     return (
-      <div className="px-4 py-8 text-center text-sm text-gray-400">
+      <div className="px-4 py-6 text-center text-sm text-gray-400">
         날짜를 선택하면 기록을 볼 수 있어요
       </div>
     );
@@ -21,11 +21,18 @@ export default function DayDetailCard({ selectedDate, sessions }: Props) {
     selectedDate.getMonth() + 1,
   ).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`;
 
+  const koreanDate = selectedDate.toLocaleDateString("ko-KR", {
+    month: "long",
+    day: "numeric",
+    weekday: "short",
+  });
+
   const session = sessions?.find((s) => s.date === dateStr) ?? null;
 
   if (!session) {
     return (
-      <div className="px-4">
+      <div className="px-4 py-2">
+        <p className="mb-2 text-sm font-medium text-gray-500">{koreanDate}</p>
         <EmptyState title="이 날은 기록된 운동이 없어요" />
       </div>
     );
@@ -41,26 +48,21 @@ export default function DayDetailCard({ selectedDate, sessions }: Props) {
     <div className="px-4 py-4">
       {/* 헤더 */}
       <div className="mb-4">
-        <p className="text-lg text-gray-400">{dateStr}</p>
-        <h2 className="text-lg font-bold text-gray-800">
+        <p className="text-sm text-gray-400">{koreanDate}</p>
+        <h2 className="mb-2 text-lg font-bold text-gray-800">
           {getWorkoutLabel([
             ...new Set(session.exercises.map((ex) => ex.category)),
           ])}
         </h2>
-        {/* 하루 요약 */}
-        <div className="mt-4 flex gap-6 rounded-xl border border-teal-100 px-4 py-3">
+        <div className="flex items-center gap-2">
           {totalVolume > 0 && (
-            <div>
-              <p className="text-xs text-gray-400">총 볼륨</p>
-              <p className="font-bold text-gray-800">
-                {totalVolume.toLocaleString()}kg
-              </p>
-            </div>
+            <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700">
+              🏋️ {totalVolume.toLocaleString()}kg
+            </span>
           )}
-          <div>
-            <p className="text-xs text-gray-400">운동 시간</p>
-            <p className="font-bold text-gray-800">{durationMin}분</p>
-          </div>
+          <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700">
+            ⏱️ {durationMin}분
+          </span>
         </div>
       </div>
 
