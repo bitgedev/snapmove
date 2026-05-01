@@ -9,6 +9,7 @@ export default function CalendarPage() {
     const [currentMonth, setCurrentMonth] = useState(
         () => new Date()
     );
+    const [today] = useState(() => new Date());
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     const handlePrev = () => {
@@ -28,7 +29,7 @@ export default function CalendarPage() {
     return (
         <main>
             <MonthNav currentMonth={currentMonth} onPrev={handlePrev} onNext={handleNext} />
-            <CalendarGrid currentMonth={currentMonth} workoutDates={workoutDates} selectedDate={selectedDate} onSelectDate={handleSelectDate}/>
+            <CalendarGrid currentMonth={currentMonth} today={today} workoutDates={workoutDates} selectedDate={selectedDate} onSelectDate={handleSelectDate}/>
         </main>
     );
 }
