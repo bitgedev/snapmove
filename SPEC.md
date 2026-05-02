@@ -27,8 +27,19 @@ created_at       timestamptz NOT NULL, default now()
 
 **exercises JSONB 구조**
 
+category에 따라 set 내부 필드가 달라짐:
+
 ```json
-[{ "name": "스쿼트", "sets": [{ "w": 60, "r": 10 }] }]
+// 근력 (strength) — 무게 optional, 횟수 필수
+[{ "name": "스쿼트", "category": "strength", "sets": [{ "w": 60, "r": 10 }] }]
+[{ "name": "풀업",   "category": "strength", "sets": [{ "r": 10 }] }]
+
+// 유산소 (cardio) / 유연성 (flexibility) — 시간만 (초 단위), 세트 개념 없음
+[{ "name": "달리기",   "category": "cardio",      "sets": [{ "duration": 1800 }] }]
+[{ "name": "스트레칭", "category": "flexibility", "sets": [{ "duration": 600 }] }]
+
+// 기타 (other) — 무게 없음, 횟수만
+[{ "name": "버피",   "category": "other", "sets": [{ "r": 20 }] }]
 ```
 
 - RLS 4개 정책: SELECT / INSERT / UPDATE / DELETE 모두 `auth.uid() = user_id`
@@ -437,16 +448,24 @@ src/
 
 - [ ] `ExerciseCard.tsx` (CLIENT)
   - [ ] 운동 이름 헤더 + 우측 삭제 `[✕]` 버튼
-  - [ ] `<SetTable>` 포함
-  - [ ] `[+ 세트 추가]` 버튼 — 이전 세트 값 복사하여 새 행 push
+  - [ ] category에 따라 분기:
+    - [ ] `"strength"` / `"other"` → `<SetTable>` + `[+ 세트 추가]` 버튼
+    - [ ] `"cardio"` / `"flexibility"` → `<DurationInput>` (시간 단일 입력, 세트 없음)
+  - [ ] `[+ 세트 추가]` 버튼 (근력/기타만) — 이전 세트 값 복사하여 새 행 push
 
-- [ ] `SetTable.tsx` (CLIENT)
-  - [ ] 헤더 행: 세트 / 무게(kg) / 횟수 / 완료
+- [ ] `SetTable.tsx` (CLIENT) — 근력·기타 전용
+  - [ ] `category === "strength"` 헤더 행: 세트 / 무게(kg) / 횟수 / 완료
+  - [ ] `category === "other"` 헤더 행: 세트 / 횟수 / 완료
   - [ ] 각 세트 행:
     - [ ] 세트 번호 레이블
-    - [ ] 무게 `<input type="number" inputMode="decimal">`
+    - [ ] 무게 `<input type="number" inputMode="decimal">` — strength만, 비워도 됨 (placeholder="0")
     - [ ] 횟수 `<input type="number" inputMode="numeric">`
-    - [ ] 완료 체크박스 — 체크 시 행 `opacity-50 line-through`
+    - [ ] 완료 체크박스 — 체크 시 행 `opacity-50`
+  - [ ] props: `sets`, `onChange`, `category`
+
+- [ ] `DurationInput.tsx` (CLIENT) — 유산소·유연성 전용
+  - [ ] `<input type="number" inputMode="numeric" placeholder="시간 (분)">` 단일 입력
+  - [ ] props: `duration`, `onChange`
 
 - [ ] `FinishModal.tsx` (CLIENT)
   - [ ] `canvas-confetti` 폭죽 실행 (`confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } })`)
@@ -480,9 +499,12 @@ src/
 - [ ] `[+ 운동 추가]` 클릭 → Drawer(바텀 시트) 열림/닫힘
 - [ ] 운동 선택 시 ExerciseCard 추가 확인
 - [ ] 근력 카테고리 선택 시 근육군 셀렉터 표시
-- [ ] SetTable 무게·횟수 inline 입력 동작
+- [ ] 근력 운동 선택 시 SetTable (세트/무게/횟수) 렌더링 확인
+- [ ] 풀업 등 맨몸 근력 — 무게 비운 채로 횟수만 입력 가능 확인
+- [ ] 유산소·유연성 운동 선택 시 DurationInput (시간 단일 입력) 렌더링 확인
+- [ ] 기타 운동 선택 시 SetTable (세트/횟수, 무게 없음) 렌더링 확인
 - [ ] 완료 체크 시 행 opacity 변화
-- [ ] `[+ 세트 추가]` 클릭 시 이전 값 복사 새 행 추가
+- [ ] `[+ 세트 추가]` 클릭 시 이전 값 복사 새 행 추가 (근력/기타만)
 - [ ] "Finish" 클릭 → FinishModal 열림 + confetti 폭죽 실행
 - [ ] 퀵 버튼 클릭 시 입력 필드 값 동기화 + 선택 버튼 강조
 - [ ] 사진 선택 시 썸네일 미리보기 표시
