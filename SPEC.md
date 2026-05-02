@@ -70,10 +70,10 @@ created_at       timestamptz NOT NULL, default now()
 | 랜딩          | `/`                 | ✅                    |
 | 로그인        | `/login`            | ✅ Supabase Auth 연결 |
 | 회원가입      | `/signup`           | ✅ Supabase Auth 연결 |
-| 캘린더 (메인) | `/calendar`         | ❌ 미생성             |
+| 캘린더 (메인) | `/calendar`         | ✅ 구현 완료          |
 | 운동 기록     | `/workout`          | ❌ 미생성             |
 | 인증 카드     | `/workout/complete` | ❌ 미생성             |
-| 설정          | `/settings`         | ❌ 미생성             |
+| 설정          | `/settings`         | ✅ 구현 완료          |
 
 ---
 
@@ -278,7 +278,7 @@ src/
 
 ---
 
-## - [ ] Phase 3: Calendar 페이지 & Settings 페이지
+## - [ ] Phase 3: Calendar 페이지 & Settings 페이지 (캘린더 ✅ / 설정 ✅)
 
 ### 개요
 
@@ -317,49 +317,49 @@ src/
 
 **캘린더 페이지 (`/calendar`)**
 
-- [ ] `calendar/page.tsx` (CLIENT) — TopBar("") + MonthNav + CalendarGrid + DayDetailCard 조합
-- [ ] `MonthNav.tsx` (CLIENT)
-  - [ ] `< 2026년 4월 >` 형식 헤더
-  - [ ] `←` / `→` 버튼으로 `currentMonth` state 업데이트
-- [ ] `CalendarGrid.tsx` (CLIENT)
-  - [ ] `currentMonth`, `selectedDate` state (기본값: 현재 월, 선택 없음)
-  - [ ] **7열 CSS grid** — 요일 헤더 행: 일/월/화/수/목/금/토 (`text-xs text-gray-400`)
-  - [ ] 날짜 셀:
-    - [ ] 운동 있는 날: 날짜 숫자 아래 `size-1.5 rounded-full bg-teal-500` dot
-    - [ ] 선택된 날: `bg-teal-600 text-white rounded-full` 강조
-    - [ ] 오늘 날짜: `bg-red-500 text-white rounded-full` (선택 안 된 상태)
-  - [ ] 날짜 클릭 → `selectedDate` 업데이트
-  - [ ] `getMockSessionsByMonth(year, month)`으로 해당 월 세션 조회
-  - [ ] 운동한 날 Set: `new Set(sessions.map(s => s.date.slice(0, 10)))`
-- [ ] `DayDetailCard.tsx` (SERVER)
-  - [ ] `selectedDate`가 없으면: "날짜를 선택하면 기록을 볼 수 있어요" 안내
-  - [ ] 선택한 날에 세션 있으면: 날짜 헤더 + 운동 목록 (이름·세트·최대무게)
-  - [ ] 선택한 날에 세션 없으면: `<EmptyState>` ("이 날은 기록된 운동이 없어요")
-  - [ ] 총 볼륨, 운동 시간 표시
+- [x] `calendar/page.tsx` (CLIENT) — MonthNav + CalendarGrid + DayDetailCard 조합 (TopBar 대신 MonthNav가 헤더 역할)
+- [x] `MonthNav.tsx` (CLIENT)
+  - [x] `< 2026년 4월 >` 형식 헤더
+  - [x] `←` / `→` 버튼으로 `currentMonth` state 업데이트
+- [x] `CalendarGrid.tsx` (CLIENT)
+  - [x] `currentMonth`, `selectedDate` state (기본값: 현재 월, 오늘 날짜 선택)
+  - [x] **7열 CSS grid** — 요일 헤더 행: 일/월/화/수/목/금/토
+  - [x] 날짜 셀:
+    - [x] 운동 있는 날: 날짜 숫자 아래 dot
+    - [x] 선택된 날: `bg-brand-button text-white rounded-full` 강조
+    - [x] 오늘 날짜: `bg-red-500 text-white rounded-full` (선택 안 된 상태)
+  - [x] 날짜 클릭 → `selectedDate` 업데이트
+  - [x] `getMockSessionsByMonth(year, month)`으로 해당 월 세션 조회
+  - [x] 운동한 날 Set: `new Set(sessions.map(s => s.date.slice(0, 10)))`
+- [x] `DayDetailCard.tsx` (SERVER)
+  - [x] `selectedDate`가 없으면: "날짜를 선택하면 기록을 볼 수 있어요" 안내
+  - [x] 선택한 날에 세션 있으면: 날짜 헤더 + 운동 목록 (이름·세트·최대무게)
+  - [x] 선택한 날에 세션 없으면: `<EmptyState>` ("이 날은 기록된 운동이 없어요")
+  - [x] 총 볼륨, 운동 시간 표시
   - [ ] "인증 카드 보기" 버튼 → `WorkoutShareCard` Dialog
 
 **설정 페이지 (`/settings`)**
 
-- [ ] `settings/page.tsx` — TopBar("설정") + 섹션 구성 (SERVER wrapper)
-- [ ] **프로필 섹션**
-  - [ ] 이름, 이메일 표시 (정적, `supabase.auth.getUser()` 후속 연동)
-- [ ] **목표 설정 섹션**
-  - [ ] 주간 운동 목표 횟수 (정적 표시, 후속 연동)
-  - [ ] 목표 체중 (정적 표시, 후속 연동)
-- [ ] **서비스 섹션**
-  - [ ] 로그아웃 버튼 (CLIENT) — `supabase.auth.signOut()` → `/login` redirect
+- [x] `settings/page.tsx` — TopBar("설정") + 섹션 구성 (SERVER wrapper)
+- [x] **프로필 섹션**
+  - [x] 이름, 이메일 표시 (정적, `supabase.auth.getUser()` 후속 연동)
+- [x] **목표 설정 섹션**
+  - [x] 주간 운동 목표 횟수 (정적 표시, 후속 연동)
+  - [x] 목표 체중 (정적 표시, 후속 연동)
+- [x] **서비스 섹션**
+  - [x] 로그아웃 버튼 (CLIENT) — `supabase.auth.signOut()` → `/login` redirect
 
 ### 검증 체크리스트
 
-- [ ] `/calendar` 접속 시 캘린더 그리드 정상 렌더링
-- [ ] 운동 있는 날에 teal dot 표시 확인
-- [ ] 날짜 클릭 시 선택 강조 + 하단 DayDetailCard 업데이트
-- [ ] 운동 없는 날 클릭 시 EmptyState 표시
-- [ ] 월 이동 화살표 클릭 시 캘린더 월 변경
-- [ ] BottomNav Calendar 탭 활성 강조 확인
-- [ ] `/settings` 접속 시 프로필·목표·서비스 섹션 렌더링
-- [ ] 로그아웃 버튼 클릭 시 `/login` redirect
-- [ ] BottomNav Settings 탭 활성 강조 확인
+- [x] `/calendar` 접속 시 캘린더 그리드 정상 렌더링
+- [x] 운동 있는 날에 teal dot 표시 확인
+- [x] 날짜 클릭 시 선택 강조 + 하단 DayDetailCard 업데이트
+- [x] 운동 없는 날 클릭 시 EmptyState 표시
+- [x] 월 이동 화살표 클릭 시 캘린더 월 변경
+- [x] BottomNav Calendar 탭 활성 강조 확인
+- [x] `/settings` 접속 시 프로필·목표·서비스 섹션 렌더링
+- [x] 로그아웃 버튼 클릭 시 `/login` redirect
+- [x] BottomNav Settings 탭 활성 강조 확인
 - [ ] 모바일(375px) — 캘린더 그리드 7열 가로 넘침 없음
 
 ---
