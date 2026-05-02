@@ -3,6 +3,7 @@
 import CalendarGrid from "@/components/calendar/CalendarGrid";
 import DayDetailCard from "@/components/calendar/DayDetailCard";
 import MonthNav from "@/components/calendar/MonthNav";
+import TopBar from "@/components/layout/TopBar";
 import { getMockSessionsByMonth } from "@/lib/mock-data";
 import { useState } from "react";
 
@@ -34,21 +35,24 @@ export default function CalendarPage() {
   const workoutDates = new Set(sessions.map((s) => s.date.slice(0, 10)));
 
   return (
-    <main>
-      <MonthNav
-        currentMonth={currentMonth}
-        onPrev={handlePrev}
-        onNext={handleNext}
-        sessionCount={sessions.length}
-      />
-      <CalendarGrid
-        currentMonth={currentMonth}
-        today={today}
-        workoutDates={workoutDates}
-        selectedDate={selectedDate}
-        onSelectDate={handleSelectDate}
-      />
-      <DayDetailCard selectedDate={selectedDate} sessions={sessions} />
-    </main>
+    <>
+      <TopBar title="캘린더" />
+      <main>
+        <MonthNav
+          currentMonth={currentMonth}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          sessionCount={sessions.length}
+        />
+        <CalendarGrid
+          currentMonth={currentMonth}
+          today={today}
+          workoutDates={workoutDates}
+          selectedDate={selectedDate}
+          onSelectDate={handleSelectDate}
+        />
+        <DayDetailCard selectedDate={selectedDate} sessions={sessions} />
+      </main>
+    </>
   );
 }
