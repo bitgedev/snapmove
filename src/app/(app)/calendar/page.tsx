@@ -9,7 +9,9 @@ import { useState } from "react";
 export default function CalendarPage() {
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
   const [today] = useState(() => new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(() => new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    () => new Date(),
+  );
 
   const handlePrev = () => {
     setCurrentMonth(

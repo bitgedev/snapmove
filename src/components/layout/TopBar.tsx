@@ -20,7 +20,7 @@ export default function TopBar({ title, showBack, rightSlot }: Props) {
           <ChevronLeft />
         </Button>
       )}
-      <h1 className="flex-1 text-base font-semibold text-gray-900">{title}</h1>
+      <h1 className="flex-1 text-lg font-bold text-gray-900">{title}</h1>
       {rightSlot && <div>{rightSlot}</div>}
     </header>
   );
