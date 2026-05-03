@@ -1,6 +1,7 @@
 "use client";
 
-type SetEntry = { id: number; w: string; r: string; done: boolean };
+import { SetEntry } from "@/types";
+
 interface Props {
   sets: SetEntry[];
   onChange: (sets: SetEntry[]) => void;
@@ -29,7 +30,7 @@ export default function SetTable({ sets, onChange, category }: Props) {
       </thead>
       <tbody>
         {sets.map((set, i) => (
-          <tr key={set.id} className={set.done ? "opacity-50" : ""}>
+          <tr key={i} className={set.done ? "opacity-50" : ""}>
             <td>{i + 1}</td>
             {category === "strength" && (
               <td>

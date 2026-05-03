@@ -11,6 +11,7 @@ export default function DurationInput({ duration, onChange }: Props) {
         type="number"
         inputMode="numeric"
         value={duration}
+        placeholder="시간 (분)"
         onChange={(e) => onChange(Number(e.target.value))}
       />
       <span>분</span>
