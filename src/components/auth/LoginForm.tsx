@@ -61,14 +61,14 @@ export default function LoginForm() {
             className="pr-10"
             required
           />
-          <button
+          <Button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
             className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 표시'}
           >
             {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-          </button>
+          </Button>
         </div>
       </div>
 
