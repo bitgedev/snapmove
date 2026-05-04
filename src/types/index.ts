@@ -63,5 +63,5 @@ export interface ExerciseEntry {
     category: ExerciseCategory;
     durationMinutes?: number;
     muscleGroup?: MuscleGroup;
-    sets: SetEntry[];
+    sets?: SetEntry[];
 }
