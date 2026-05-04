@@ -8,7 +8,6 @@ const colorMap: Record<MuscleGroup, string> = {
   arms: "bg-rose-100 text-rose-700",
   legs: "bg-amber-100 text-amber-700",
   core: "bg-green-100 text-green-700",
-  cardio: "bg-pink-100 text-pink-700",
   "full-body": "bg-slate-100 text-slate-600",
 };
 
@@ -23,7 +22,6 @@ const labelMap: Record<MuscleGroup, string> = {
   arms: "팔",
   legs: "하체",
   core: "복근",
-  cardio: "유산소",
   "full-body": "전신",
 };
 

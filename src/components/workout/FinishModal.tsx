@@ -1,15 +1,15 @@
 "use client";
-import { ExerciseEntry } from "@/types";
+import { ExerciseRecord } from "@/types";
 import confetti from "canvas-confetti";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  exercises: ExerciseEntry[];
+  exercises: ExerciseRecord[];
   totalVolume: number;
-  onComplete: (durationMin: number, photoFile?: File) => Promise<void>;
+  onComplete: (durationMinutes: number, photoFile?: File) => Promise<void>;
 }
 export default function FinishModal({
   open,
@@ -18,13 +18,24 @@ export default function FinishModal({
   totalVolume,
   onComplete,
 }: Props) {
+  const [photoFile, setPhotoFile] = useState<File | undefined>();
+  const [durationMinutes, setDurationMinutes] = useState<number>(0);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+
   useEffect(() => {
     if (open) confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
   }, [open]);
-  const totalMin = exercises.reduce(
-    (total, ex) => total + (ex?.durationMinutes ?? 0),
-    0,
-  );
+  useEffect(() => {
+    if (!photoFile) {
+      setPreviewUrl("");
+      return;
+    }
+    const objectUrl = URL.createObjectURL(photoFile);
+    setPreviewUrl(objectUrl);
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    }
+  }, [photoFile]);
 
   return (
     <>
@@ -42,26 +53,56 @@ export default function FinishModal({
           </Fragment>
         ))}
       </ul>
-      {totalMin > 0 ? (
-        <>
-          <h3>
-            <label>소요 시간 (분)</label>
-          </h3>
-          <div>{totalMin}</div>
-        </>
-      ) : (
-        ""
-      )}
+      <>
+        <h3>
+          <label>소요 시간 (분)</label>
+        </h3>
+      </>
       <h3>
         <label>사진 (선택)</label>
       </h3>
+      {/* 퀵 버튼 */}
       <div>
-        <Input type="file" />+ 파일 선택
+        {[15, 30, 60, 90].map((min) => (
+          <button
+            key={min}
+            onClick={() => setDurationMinutes(min)}
+            className={
+              durationMinutes === min
+                ? "bg-teal-600 text-white"
+                : "border"
+            }
+          >
+            {min}분
+          </button>
+        ))}
+      </div>
+
+      {/* 직접 입력 */}
+      <Input
+        type="number"
+        min={1}
+        value={durationMinutes ?? ""}
+        onChange={(e) => {
+          const val = e.target.valueAsNumber;
+          setDurationMinutes(isNaN(val) ? 0 : val);
+        }}
+        placeholder="직접 입력"
+      />
+      <div>
+        <Input type="file" accept="image/*" capture="environment" onChange={(e) => {
+          if (e.target.files && e.target.files?.[0]) {
+            setPhotoFile(e.target.files[0]);
+          }
+        }} />
+        {previewUrl && (
+          <img src={previewUrl} alt="Preview" />
+        )}
       </div>
       <div>
         <button>취소</button>
-        <button>저장하기</button>
-      </div>
+        <button onClick={() => onComplete(durationMinutes, photoFile)}>저장하기</button>
+      </div >
     </>
   );
 }

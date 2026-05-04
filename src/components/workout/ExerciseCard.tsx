@@ -1,31 +1,31 @@
 "use client";
-import { ExerciseEntry } from "@/types";
+import { ExerciseRecord } from "@/types";
 import { Button } from "@/components/ui/button";
 import SetTable from "./SetTable";
 import DurationInput from "./DurationInput";
 
 interface Props {
-  entry: ExerciseEntry;
-  onChange: (updated: ExerciseEntry) => void;
+  record: ExerciseRecord;
+  onChange: (updated: ExerciseRecord) => void;
   onRemove: () => void;
 }
-export default function ExerciseCard({ entry, onChange, onRemove }: Props) {
+export default function ExerciseCard({ record, onChange, onRemove }: Props) {
   const addSet = () =>
     onChange({
-      ...entry,
-      sets: [...(entry.sets ?? []), { done: false }],
+      ...record,
+      sets: [...(record.sets ?? []), { weight: 0, reps: 0 }],
     });
   return (
     <div className="flex items-center gap-3">
-      <span>{entry.name}</span>
+      <span>{record.name}</span>
       <Button variant="ghost" size="icon" onClick={onRemove}>
         X
       </Button>
-      {entry.category === "strength" ? (
+      {record.category === "strength" ? (
         <>
           <SetTable
-            sets={entry.sets ?? []}
-            onChange={(newSets) => onChange({ ...entry, sets: newSets })}
+            sets={record.sets ?? []}
+            onChange={(newSets) => onChange({ ...record, sets: newSets })}
             category="strength"
           />
           <Button variant="outline" onClick={addSet}>
@@ -34,9 +34,9 @@ export default function ExerciseCard({ entry, onChange, onRemove }: Props) {
         </>
       ) : (
         <DurationInput
-          duration={entry.durationMinutes ?? 0}
+          duration={record.durationMinutes ?? 0}
           onChange={(minutes) =>
-            onChange({ ...entry, durationMinutes: minutes })
+            onChange({ ...record, durationMinutes: minutes })
           }
         />
       )}

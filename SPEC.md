@@ -11,6 +11,47 @@
 | **디자인 방향**   | 라이트 모드, 연한 민트(teal) 단일 계열, 흰색 + teal-50 교차 배경, 보조 강조색 없음, 모바일 퍼스트 |
 | **컴포넌트 원칙** | Server Component 우선, Client Component는 상태·인터랙션 필요 시만                                 |
 
+## 타입 & 파일 역할 정의
+
+### `src/types/index.ts` — 앱 전역 TypeScript 타입
+
+| 타입/인터페이스 | 역할 |
+|---|---|
+| `ExerciseCategory` | 운동 카테고리 유니온 타입: `"strength" \| "cardio" \| "flexibility" \| "other"` |
+| `MuscleGroup` | 근육 그룹 유니온 타입: chest / back / shoulders / arms / legs / core / full-body |
+| `SetRecord` | **근력·기타 운동 전용** 세트 1개의 기록. `{ weight: number, reps: number }` — 유산소·유연성은 세트 개념 없이 `durationMinutes`로 대체 |
+| `ExerciseRecord` | 완료된 운동 1종목의 기록. id·name·category 필수, muscleGroup?·durationMinutes?·sets? 선택. category에 따라 사용 필드가 다름: 근력/기타 → `sets`, 유산소/유연성 → `durationMinutes` |
+| `WorkoutSession` | 완료된 운동 세션 전체. id·date·durationMinutes·exercises(ExerciseRecord[]) |
+
+> `SetEntry`, `ExerciseEntry`, `Exercise`, `Routine` — 초기 설계 단계 잔재, 전부 삭제됨.  
+> "진행 중 운동 추적" 개념 없음 — 이 앱은 **완료된 운동을 사후 기록**하는 앱.
+
+---
+
+### `src/lib/exercise.ts` — 운동 카탈로그
+
+선택 가능한 운동 목록(`EXERCISES`)과 빠른 조회용 Map(`EXERCISE_MAP`)을 정의.  
+`ExerciseItem` 인터페이스: `{ name, category, muscleGroup? }` — 근력은 muscleGroup 필수, 유산소·유연성은 생략.  
+운동을 DB에 저장하지 않으며 코드에서 정적으로 관리.
+
+---
+
+### `src/lib/mock-data.ts` — 개발용 가짜 세션 데이터
+
+`MOCK_SESSIONS: WorkoutSession[]` — 4~6월 실제 날짜 기반 운동 기록.  
+`getMockSessionsByMonth(year, month)` — Calendar 페이지에서 월별 필터링에 사용.  
+Phase 5 DB 연동 시 삭제 예정.
+
+---
+
+### `src/lib/supabase/types.ts` — DB 저장용 타입
+
+Supabase `workout_logs` 테이블에 실제로 저장·조회하는 타입.  
+`WorkoutLog`, `WorkoutLogInsert`, `Exercise`, `ExerciseSet` 정의.  
+`index.ts`의 타입과 별개 — index.ts는 클라이언트 상태용, 이쪽은 DB 스키마 매핑용.
+
+---
+
 ## DB 스키마 (`public.workout_logs`) ✅ 생성 완료
 
 ```
@@ -31,15 +72,15 @@ category에 따라 set 내부 필드가 달라짐:
 
 ```json
 // 근력 (strength) — 무게 optional, 횟수 필수
-[{ "name": "스쿼트", "category": "strength", "sets": [{ "w": 60, "r": 10 }] }]
-[{ "name": "풀업",   "category": "strength", "sets": [{ "r": 10 }] }]
+[{ "name": "스쿼트", "category": "strength", "sets": [{ "weight": 60, "reps": 10 }] }]
+[{ "name": "풀업",   "category": "strength", "sets": [{ "weight": 0, "reps": 10 }] }]
 
-// 유산소 (cardio) / 유연성 (flexibility) — 시간만 (초 단위), 세트 개념 없음
-[{ "name": "달리기",   "category": "cardio",      "sets": [{ "duration": 1800 }] }]
-[{ "name": "스트레칭", "category": "flexibility", "sets": [{ "duration": 600 }] }]
+// 유산소 (cardio) / 유연성 (flexibility) — durationMinutes만, 세트 개념 없음
+[{ "name": "달리기",   "category": "cardio",      "durationMinutes": 30 }]
+[{ "name": "스트레칭", "category": "flexibility", "durationMinutes": 10 }]
 
 // 기타 (other) — 무게 없음, 횟수만
-[{ "name": "버피",   "category": "other", "sets": [{ "r": 20 }] }]
+[{ "name": "버피",   "category": "other", "sets": [{ "weight": 0, "reps": 20 }] }]
 ```
 
 - RLS 4개 정책: SELECT / INSERT / UPDATE / DELETE 모두 `auth.uid() = user_id`
@@ -130,7 +171,8 @@ src/
 │       ├── StatBadge.tsx         # SERVER
 │       └── EmptyState.tsx        # SERVER
 ├── lib/
-│   ├── mock-data.ts
+│   ├── exercises.ts    # 운동 카탈로그 (영구 보존)
+│   ├── mock-data.ts    # 세션 mock 데이터 (Phase 5에서 삭제)
 │   └── utils.ts
 └── types/
     └── index.ts
@@ -142,18 +184,23 @@ src/
 - [x] Shadcn `init` 완료, `components.json` 생성 확인
 - [x] Shadcn 컴포넌트 13종 설치 완료
 - [x] `src/types/index.ts` 작성
-  - [x] `ExerciseCategory` 타입: `"strength" | "cardio" | "flexibility" | "other"` ← **신규**
-  - [x] `MuscleGroup` 타입: `"chest" | "back" | "shoulders" | "arms" | "legs" | "core" | "cardio" | "full-body"`
-  - [x] `Exercise` 인터페이스 (`category: ExerciseCategory` 필드 포함)
-  - [x] `Routine` 인터페이스
-  - [x] `SetRecord` 인터페이스
-  - [x] `ExerciseRecord` 인터페이스 (`category: ExerciseCategory` 필드 포함)
-  - [x] `WorkoutSession` 인터페이스
+  - [x] `ExerciseCategory` 타입: `"strength" | "cardio" | "flexibility" | "other"`
+  - [x] `MuscleGroup` 타입: `"chest" | "back" | "shoulders" | "arms" | "legs" | "core" | "full-body"` (cardio 제거)
+  - [x] `SetRecord` 인터페이스: `{ weight: number, reps: number }`
+  - [x] `ExerciseRecord` 인터페이스: id·name·category 필수, muscleGroup?·durationMinutes?·sets? 선택
+  - [x] `WorkoutSession` 인터페이스: durationMinutes (초→분 단위 변경)
+  - ~~`Exercise` 인터페이스~~ — 삭제 (계획 기능 없음)
+  - ~~`Routine` 인터페이스~~ — 삭제 (루틴 탭 제거)
+  - ~~`SetEntry`, `ExerciseEntry` 인터페이스~~ — 삭제 (진행 중 추적 개념 없음)
 - [x] `src/lib/mock-data.ts` 작성
-  - [x] `MOCK_ROUTINES` — Push Day / Pull Day / Leg Day / Core&Cardio / Mobility&Stretch 5개 루틴, 각 4~5개 운동 (`category` 필드 포함)
-  - [x] `MOCK_SESSIONS` — 최근 30일 내 8개 완료 세션 (exerciseRecord에 `category` 포함)
-  - [x] `getMockRoutineById(id: string)` 헬퍼 함수
+  - [x] `MOCK_SESSIONS` — 4~6월 38개 완료 세션 (durationMinutes 분 단위, ExerciseRecord 구조)
   - [x] `getMockSessionsByMonth(year: number, month: number)` 헬퍼 함수
+  - ~~`MOCK_ROUTINES`~~ — 삭제 (루틴 기능 없음)
+  - ~~`getMockRoutineById`, `getRoutines`, `getRoutineById`~~ — 삭제
+- [x] `src/lib/exercises.ts` 작성
+  - [x] `ExerciseItem` 인터페이스: `{ name, category, muscleGroup? }` — 유산소·유연성은 muscleGroup 생략
+  - [x] `EXERCISES` — 92개 운동 카탈로그 (근력 56 / 유산소 14 / 유연성 12 / 기타 10)
+  - [x] `EXERCISE_MAP` — `Map<name, ExerciseItem>` (O(1) 조회용)
 - [x] `tailwind.config.ts` 커스터마이징 — 전체 컬러 시스템 (Tailwind v4 — `globals.css`의 `@theme inline`으로 대체)
   - [x] **브랜드 색상 (연한 민트 계층)**
     - [x] `brand.bg: "#F0FDFA"` — `teal-50` — 섹션 교체 배경 (가장 연한 민트)
@@ -200,7 +247,11 @@ src/
 - [x] `src/app/(app)/layout.tsx` (SERVER wrapper)
   - [x] `<main className="flex-1 pb-24">{children}</main>` ← pb-20 → pb-24 변경 완료
   - [x] `<BottomNav />` 포함
-
+- [x] `src/lib/exercise.ts` 작성
+    - [x] `ExerciseItem` 인터페이스: `{ name, category, muscleGroup? }`
+    - [x] `EXERCISES` — 92개 운동 카탈로그 (근력 56 / 유산소 14 / 유연성 12 / 기타 10)
+    - [x] `EXERCISE_MAP` — `Map<name, ExerciseItem>` (O(1) 조회용)
+    
 ### 검증 체크리스트
 
 - [x] `npm run dev` 오류 없이 실행
@@ -433,7 +484,7 @@ src/
 **운동 기록 페이지 (`/workout`)**
 
 - [ ] `workout/page.tsx` (CLIENT)
-  - [ ] 상태: `exercises: ExerciseEntry[]`
+  - [ ] 상태: `exercises: ExerciseRecord[]`
   - [ ] **헤더 바** — TopBar: "오늘의 운동 · 날짜", 우측 "×" 닫기 → 확인 Dialog → `/calendar`
   - [ ] `[+ 운동 추가]` 버튼 — ExerciseDrawer 트리거
   - [ ] ExerciseCard 목록 렌더링
@@ -441,9 +492,12 @@ src/
 
 - [ ] `ExerciseDrawer.tsx` (CLIENT)
   - [ ] Shadcn `<Drawer>` (바텀 시트)
-  - [ ] 카테고리 탭: 근력 / 유산소 / 유연성 / 기타
-  - [ ] 근력 선택 시 세부 근육군: 가슴 / 등 / 어깨 / 팔 / 하체 / 복근
+  - [ ] `EXERCISES` (exercises.ts) 기반 목록 — mock-data 미사용
+  - [ ] 카테고리 탭: 전체 / 근력 / 유산소 / 유연성 / 기타
+  - [ ] 근력 선택 시 세부 근육군 칩: 가슴 / 등 / 어깨 / 팔 / 하체 / 코어
   - [ ] 운동명 검색 `<Input>` (이름 필터링)
+  - [ ] 검색어 있을 때 목록 하단에 `+ "{검색어}" 직접 추가` 항목 노출
+  - [ ] 직접 추가 시 현재 선택된 카테고리·근육군 자동 적용
   - [ ] 항목 선택 → Drawer 닫힘 + `exercises`에 새 항목 push
 
 - [ ] `ExerciseCard.tsx` (CLIENT)
@@ -454,14 +508,13 @@ src/
   - [ ] `[+ 세트 추가]` 버튼 (근력/기타만) — 이전 세트 값 복사하여 새 행 push
 
 - [ ] `SetTable.tsx` (CLIENT) — 근력·기타 전용
-  - [ ] `category === "strength"` 헤더 행: 세트 / 무게(kg) / 횟수 / 완료
-  - [ ] `category === "other"` 헤더 행: 세트 / 횟수 / 완료
+  - [ ] `category === "strength"` 헤더 행: 세트 / 무게(kg) / 횟수
+  - [ ] `category === "other"` 헤더 행: 세트 / 횟수
   - [ ] 각 세트 행:
     - [ ] 세트 번호 레이블
     - [ ] 무게 `<input type="number" inputMode="decimal">` — strength만, 비워도 됨 (placeholder="0")
     - [ ] 횟수 `<input type="number" inputMode="numeric">`
-    - [ ] 완료 체크박스 — 체크 시 행 `opacity-50`
-  - [ ] props: `sets`, `onChange`, `category`
+  - [ ] props: `sets: SetRecord[]`, `onChange`, `category`
 
 - [ ] `DurationInput.tsx` (CLIENT) — 유산소·유연성 전용
   - [ ] `<input type="number" inputMode="numeric" placeholder="시간 (분)">` 단일 입력

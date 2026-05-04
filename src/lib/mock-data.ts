@@ -1,123 +1,50 @@
-import { Routine, WorkoutSession } from "@/types";
-
-export const MOCK_ROUTINES: Routine[] = [
-  {
-    id: "1",
-    name: "Push Day",
-    description: "가슴·어깨·삼두 위주의 밀기 루틴",
-    exercises: [
-      { id: "e1", name: "벤치 프레스", category: "strength", muscleGroup: "chest", sets: 4, reps: 8, weight: 70, restSeconds: 90 },
-      { id: "e2", name: "인클라인 덤벨 프레스", category: "strength", muscleGroup: "chest", sets: 3, reps: 10, weight: 24, restSeconds: 75 },
-      { id: "e3", name: "숄더 프레스", category: "strength", muscleGroup: "shoulders", sets: 3, reps: 12, weight: 30, restSeconds: 60 },
-      { id: "e4", name: "레터럴 레이즈", category: "strength", muscleGroup: "shoulders", sets: 3, reps: 15, weight: 10, restSeconds: 45 },
-      { id: "e5", name: "트라이셉 푸시다운", category: "strength", muscleGroup: "arms", sets: 3, reps: 12, weight: 20, restSeconds: 60 },
-    ],
-    estimatedMinutes: 55,
-    lastPerformedAt: "2026-04-14T10:00:00Z",
-  },
-  {
-    id: "2",
-    name: "Pull Day",
-    description: "등·이두 위주의 당기기 루틴",
-    exercises: [
-      { id: "e6", name: "데드리프트", category: "strength", muscleGroup: "back", sets: 4, reps: 5, weight: 100, restSeconds: 120 },
-      { id: "e7", name: "바벨 로우", category: "strength", muscleGroup: "back", sets: 4, reps: 8, weight: 60, restSeconds: 90 },
-      { id: "e8", name: "랫 풀다운", category: "strength", muscleGroup: "back", sets: 3, reps: 10, weight: 55, restSeconds: 75 },
-      { id: "e9", name: "케이블 로우", category: "strength", muscleGroup: "back", sets: 3, reps: 12, weight: 45, restSeconds: 60 },
-      { id: "e10", name: "바이셉 컬", category: "strength", muscleGroup: "arms", sets: 3, reps: 12, weight: 15, restSeconds: 60 },
-    ],
-    estimatedMinutes: 60,
-    lastPerformedAt: "2026-04-13T11:00:00Z",
-  },
-  {
-    id: "3",
-    name: "Leg Day",
-    description: "하체 전체를 공략하는 하체 지옥 루틴",
-    exercises: [
-      { id: "e11", name: "스쿼트", category: "strength", muscleGroup: "legs", sets: 5, reps: 5, weight: 90, restSeconds: 120 },
-      { id: "e12", name: "레그 프레스", category: "strength", muscleGroup: "legs", sets: 4, reps: 10, weight: 140, restSeconds: 90 },
-      { id: "e13", name: "루마니안 데드리프트", category: "strength", muscleGroup: "legs", sets: 3, reps: 10, weight: 70, restSeconds: 90 },
-      { id: "e14", name: "레그 컬", category: "strength", muscleGroup: "legs", sets: 3, reps: 12, weight: 40, restSeconds: 60 },
-      { id: "e15", name: "카프 레이즈", category: "strength", muscleGroup: "legs", sets: 4, reps: 15, weight: 60, restSeconds: 45 },
-    ],
-    estimatedMinutes: 65,
-    lastPerformedAt: "2026-04-12T09:00:00Z",
-  },
-  {
-    id: "4",
-    name: "Core & Cardio",
-    description: "코어 강화와 유산소를 결합한 전신 컨디셔닝",
-    exercises: [
-      { id: "e16", name: "플랭크", category: "strength", muscleGroup: "core", sets: 3, reps: 60, weight: 0, restSeconds: 45 },
-      { id: "e17", name: "크런치", category: "strength", muscleGroup: "core", sets: 3, reps: 20, weight: 0, restSeconds: 45 },
-      { id: "e18", name: "레그 레이즈", category: "strength", muscleGroup: "core", sets: 3, reps: 15, weight: 0, restSeconds: 45 },
-      { id: "e19", name: "버피", category: "cardio", muscleGroup: "cardio", sets: 4, reps: 10, weight: 0, restSeconds: 60 },
-      { id: "e20", name: "마운틴 클라이머", category: "cardio", muscleGroup: "cardio", sets: 3, reps: 30, weight: 0, restSeconds: 45 },
-    ],
-    estimatedMinutes: 40,
-    lastPerformedAt: "2026-04-11T08:00:00Z",
-  },
-  {
-    id: "5",
-    name: "Mobility & Stretch",
-    description: "관절 가동성과 유연성을 높이는 회복 루틴",
-    exercises: [
-      { id: "e21", name: "폼롤러 등·허벅지", category: "flexibility", muscleGroup: "full-body", sets: 1, reps: 60, weight: 0, restSeconds: 0 },
-      { id: "e22", name: "고관절 굴곡근 스트레칭", category: "flexibility", muscleGroup: "legs", sets: 2, reps: 30, weight: 0, restSeconds: 15 },
-      { id: "e23", name: "흉추 회전 스트레칭", category: "flexibility", muscleGroup: "back", sets: 2, reps: 10, weight: 0, restSeconds: 15 },
-      { id: "e24", name: "햄스트링 스트레칭", category: "flexibility", muscleGroup: "legs", sets: 2, reps: 30, weight: 0, restSeconds: 15 },
-      { id: "e25", name: "어깨 교차 스트레칭", category: "flexibility", muscleGroup: "shoulders", sets: 2, reps: 30, weight: 0, restSeconds: 15 },
-    ],
-    estimatedMinutes: 25,
-    lastPerformedAt: "2026-04-10T07:30:00Z",
-  },
-];
+import { WorkoutSession } from "@/types";
 
 export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s1",
     date: "2026-04-14",
-    durationSeconds: 3300,
+    durationMinutes: 55,
     exercises: [
       {
-        exerciseName: "벤치 프레스", category: "strength", muscleGroup: "chest",
+        id: "s1-e1", name: "벤치 프레스", category: "strength", muscleGroup: "chest",
         sets: [
-          { setNumber: 1, weight: 70, reps: 8, completed: true },
-          { setNumber: 2, weight: 70, reps: 8, completed: true },
-          { setNumber: 3, weight: 70, reps: 7, completed: true },
-          { setNumber: 4, weight: 65, reps: 8, completed: true },
+          { weight: 70, reps: 8 },
+          { weight: 70, reps: 8 },
+          { weight: 70, reps: 7 },
+          { weight: 65, reps: 8 },
         ],
       },
       {
-        exerciseName: "인클라인 덤벨 프레스", category: "strength", muscleGroup: "chest",
+        id: "s1-e2", name: "인클라인 덤벨 프레스", category: "strength", muscleGroup: "chest",
         sets: [
-          { setNumber: 1, weight: 24, reps: 10, completed: true },
-          { setNumber: 2, weight: 24, reps: 10, completed: true },
-          { setNumber: 3, weight: 22, reps: 10, completed: true },
+          { weight: 24, reps: 10 },
+          { weight: 24, reps: 10 },
+          { weight: 22, reps: 10 },
         ],
       },
       {
-        exerciseName: "숄더 프레스", category: "strength", muscleGroup: "shoulders",
+        id: "s1-e3", name: "숄더 프레스", category: "strength", muscleGroup: "shoulders",
         sets: [
-          { setNumber: 1, weight: 30, reps: 12, completed: true },
-          { setNumber: 2, weight: 30, reps: 11, completed: true },
-          { setNumber: 3, weight: 30, reps: 10, completed: true },
+          { weight: 30, reps: 12 },
+          { weight: 30, reps: 11 },
+          { weight: 30, reps: 10 },
         ],
       },
       {
-        exerciseName: "레터럴 레이즈", category: "strength", muscleGroup: "shoulders",
+        id: "s1-e4", name: "레터럴 레이즈", category: "strength", muscleGroup: "shoulders",
         sets: [
-          { setNumber: 1, weight: 10, reps: 15, completed: true },
-          { setNumber: 2, weight: 10, reps: 15, completed: true },
-          { setNumber: 3, weight: 10, reps: 12, completed: true },
+          { weight: 10, reps: 15 },
+          { weight: 10, reps: 15 },
+          { weight: 10, reps: 12 },
         ],
       },
       {
-        exerciseName: "트라이셉 푸시다운", category: "strength", muscleGroup: "arms",
+        id: "s1-e5", name: "트라이셉 푸시다운", category: "strength", muscleGroup: "arms",
         sets: [
-          { setNumber: 1, weight: 20, reps: 12, completed: true },
-          { setNumber: 2, weight: 20, reps: 12, completed: true },
-          { setNumber: 3, weight: 20, reps: 10, completed: true },
+          { weight: 20, reps: 12 },
+          { weight: 20, reps: 12 },
+          { weight: 20, reps: 10 },
         ],
       },
     ],
@@ -125,40 +52,40 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s2",
     date: "2026-04-13",
-    durationSeconds: 3600,
+    durationMinutes: 60,
     exercises: [
       {
-        exerciseName: "데드리프트", category: "strength", muscleGroup: "back",
+        id: "s2-e1", name: "데드리프트", category: "strength", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 100, reps: 5, completed: true },
-          { setNumber: 2, weight: 100, reps: 5, completed: true },
-          { setNumber: 3, weight: 100, reps: 4, completed: true },
-          { setNumber: 4, weight: 95, reps: 5, completed: true },
+          { weight: 100, reps: 5 },
+          { weight: 100, reps: 5 },
+          { weight: 100, reps: 4 },
+          { weight: 95, reps: 5 },
         ],
       },
       {
-        exerciseName: "바벨 로우", category: "strength", muscleGroup: "back",
+        id: "s2-e2", name: "바벨 로우", category: "strength", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 60, reps: 8, completed: true },
-          { setNumber: 2, weight: 60, reps: 8, completed: true },
-          { setNumber: 3, weight: 60, reps: 7, completed: true },
-          { setNumber: 4, weight: 60, reps: 7, completed: true },
+          { weight: 60, reps: 8 },
+          { weight: 60, reps: 8 },
+          { weight: 60, reps: 7 },
+          { weight: 60, reps: 7 },
         ],
       },
       {
-        exerciseName: "랫 풀다운", category: "strength", muscleGroup: "back",
+        id: "s2-e3", name: "랫 풀다운", category: "strength", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 55, reps: 10, completed: true },
-          { setNumber: 2, weight: 55, reps: 10, completed: true },
-          { setNumber: 3, weight: 55, reps: 9, completed: true },
+          { weight: 55, reps: 10 },
+          { weight: 55, reps: 10 },
+          { weight: 55, reps: 9 },
         ],
       },
       {
-        exerciseName: "바이셉 컬", category: "strength", muscleGroup: "arms",
+        id: "s2-e4", name: "바이셉 컬", category: "strength", muscleGroup: "arms",
         sets: [
-          { setNumber: 1, weight: 15, reps: 12, completed: true },
-          { setNumber: 2, weight: 15, reps: 12, completed: true },
-          { setNumber: 3, weight: 15, reps: 10, completed: true },
+          { weight: 15, reps: 12 },
+          { weight: 15, reps: 12 },
+          { weight: 15, reps: 10 },
         ],
       },
     ],
@@ -166,42 +93,42 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s3",
     date: "2026-04-12",
-    durationSeconds: 3900,
+    durationMinutes: 65,
     exercises: [
       {
-        exerciseName: "스쿼트", category: "strength", muscleGroup: "legs",
+        id: "s3-e1", name: "스쿼트", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 90, reps: 5, completed: true },
-          { setNumber: 2, weight: 90, reps: 5, completed: true },
-          { setNumber: 3, weight: 90, reps: 5, completed: true },
-          { setNumber: 4, weight: 85, reps: 5, completed: true },
-          { setNumber: 5, weight: 85, reps: 5, completed: true },
+          { weight: 90, reps: 5 },
+          { weight: 90, reps: 5 },
+          { weight: 90, reps: 5 },
+          { weight: 85, reps: 5 },
+          { weight: 85, reps: 5 },
         ],
       },
       {
-        exerciseName: "레그 프레스", category: "strength", muscleGroup: "legs",
+        id: "s3-e2", name: "레그 프레스", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 140, reps: 10, completed: true },
-          { setNumber: 2, weight: 140, reps: 10, completed: true },
-          { setNumber: 3, weight: 140, reps: 9, completed: true },
-          { setNumber: 4, weight: 130, reps: 10, completed: true },
+          { weight: 140, reps: 10 },
+          { weight: 140, reps: 10 },
+          { weight: 140, reps: 9 },
+          { weight: 130, reps: 10 },
         ],
       },
       {
-        exerciseName: "루마니안 데드리프트", category: "strength", muscleGroup: "legs",
+        id: "s3-e3", name: "루마니안 데드리프트", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 70, reps: 10, completed: true },
-          { setNumber: 2, weight: 70, reps: 10, completed: true },
-          { setNumber: 3, weight: 70, reps: 9, completed: true },
+          { weight: 70, reps: 10 },
+          { weight: 70, reps: 10 },
+          { weight: 70, reps: 9 },
         ],
       },
       {
-        exerciseName: "카프 레이즈", category: "strength", muscleGroup: "legs",
+        id: "s3-e4", name: "카프 레이즈", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 60, reps: 15, completed: true },
-          { setNumber: 2, weight: 60, reps: 15, completed: true },
-          { setNumber: 3, weight: 60, reps: 15, completed: true },
-          { setNumber: 4, weight: 60, reps: 12, completed: true },
+          { weight: 60, reps: 15 },
+          { weight: 60, reps: 15 },
+          { weight: 60, reps: 15 },
+          { weight: 60, reps: 12 },
         ],
       },
     ],
@@ -209,39 +136,39 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s4",
     date: "2026-04-11",
-    durationSeconds: 2400,
+    durationMinutes: 40,
     exercises: [
       {
-        exerciseName: "플랭크", category: "strength", muscleGroup: "core",
+        id: "s4-e1", name: "플랭크", category: "strength", muscleGroup: "core",
         sets: [
-          { setNumber: 1, weight: 0, reps: 60, completed: true },
-          { setNumber: 2, weight: 0, reps: 60, completed: true },
-          { setNumber: 3, weight: 0, reps: 55, completed: true },
+          { weight: 0, reps: 60 },
+          { weight: 0, reps: 60 },
+          { weight: 0, reps: 55 },
         ],
       },
       {
-        exerciseName: "크런치", category: "strength", muscleGroup: "core",
+        id: "s4-e2", name: "크런치", category: "strength", muscleGroup: "core",
         sets: [
-          { setNumber: 1, weight: 0, reps: 20, completed: true },
-          { setNumber: 2, weight: 0, reps: 20, completed: true },
-          { setNumber: 3, weight: 0, reps: 18, completed: true },
+          { weight: 0, reps: 20 },
+          { weight: 0, reps: 20 },
+          { weight: 0, reps: 18 },
         ],
       },
       {
-        exerciseName: "버피", category: "cardio", muscleGroup: "cardio",
+        id: "s4-e3", name: "버피", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 10, completed: true },
-          { setNumber: 2, weight: 0, reps: 10, completed: true },
-          { setNumber: 3, weight: 0, reps: 10, completed: true },
-          { setNumber: 4, weight: 0, reps: 9, completed: true },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 9 },
         ],
       },
       {
-        exerciseName: "마운틴 클라이머", category: "cardio", muscleGroup: "cardio",
+        id: "s4-e4", name: "마운틴 클라이머", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 30, completed: true },
-          { setNumber: 2, weight: 0, reps: 30, completed: true },
-          { setNumber: 3, weight: 0, reps: 28, completed: true },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 28 },
         ],
       },
     ],
@@ -249,15 +176,15 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s5",
     date: "2026-04-08",
-    durationSeconds: 3200,
+    durationMinutes: 53,
     exercises: [
       {
-        exerciseName: "벤치 프레스", category: "strength", muscleGroup: "chest",
+        id: "s5-e1", name: "벤치 프레스", category: "strength", muscleGroup: "chest",
         sets: [
-          { setNumber: 1, weight: 70, reps: 8, completed: true },
-          { setNumber: 2, weight: 70, reps: 8, completed: true },
-          { setNumber: 3, weight: 70, reps: 8, completed: true },
-          { setNumber: 4, weight: 70, reps: 7, completed: true },
+          { weight: 70, reps: 8 },
+          { weight: 70, reps: 8 },
+          { weight: 70, reps: 8 },
+          { weight: 70, reps: 7 },
         ],
       },
     ],
@@ -265,15 +192,15 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s6",
     date: "2026-04-06",
-    durationSeconds: 3400,
+    durationMinutes: 57,
     exercises: [
       {
-        exerciseName: "바벨 로우", category: "strength", muscleGroup: "back",
+        id: "s6-e1", name: "바벨 로우", category: "strength", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 60, reps: 8, completed: true },
-          { setNumber: 2, weight: 60, reps: 8, completed: true },
-          { setNumber: 3, weight: 60, reps: 8, completed: true },
-          { setNumber: 4, weight: 60, reps: 7, completed: true },
+          { weight: 60, reps: 8 },
+          { weight: 60, reps: 8 },
+          { weight: 60, reps: 8 },
+          { weight: 60, reps: 7 },
         ],
       },
     ],
@@ -281,16 +208,16 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s7",
     date: "2026-04-04",
-    durationSeconds: 4000,
+    durationMinutes: 67,
     exercises: [
       {
-        exerciseName: "스쿼트", category: "strength", muscleGroup: "legs",
+        id: "s7-e1", name: "스쿼트", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 85, reps: 5, completed: true },
-          { setNumber: 2, weight: 85, reps: 5, completed: true },
-          { setNumber: 3, weight: 85, reps: 5, completed: true },
-          { setNumber: 4, weight: 85, reps: 5, completed: true },
-          { setNumber: 5, weight: 80, reps: 5, completed: true },
+          { weight: 85, reps: 5 },
+          { weight: 85, reps: 5 },
+          { weight: 85, reps: 5 },
+          { weight: 85, reps: 5 },
+          { weight: 80, reps: 5 },
         ],
       },
     ],
@@ -298,15 +225,15 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s8",
     date: "2026-04-02",
-    durationSeconds: 2300,
+    durationMinutes: 38,
     exercises: [
       {
-        exerciseName: "버피", category: "cardio", muscleGroup: "cardio",
+        id: "s8-e1", name: "버피", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 10, completed: true },
-          { setNumber: 2, weight: 0, reps: 10, completed: true },
-          { setNumber: 3, weight: 0, reps: 10, completed: true },
-          { setNumber: 4, weight: 0, reps: 9, completed: true },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 9 },
         ],
       },
     ],
@@ -315,15 +242,15 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s9",
     date: "2026-05-01",
-    durationSeconds: 3300,
+    durationMinutes: 55,
     exercises: [
       {
-        exerciseName: "벤치 프레스", category: "strength", muscleGroup: "chest",
+        id: "s9-e1", name: "벤치 프레스", category: "strength", muscleGroup: "chest",
         sets: [
-          { setNumber: 1, weight: 72, reps: 8, completed: true },
-          { setNumber: 2, weight: 72, reps: 8, completed: true },
-          { setNumber: 3, weight: 72, reps: 7, completed: true },
-          { setNumber: 4, weight: 67, reps: 8, completed: true },
+          { weight: 72, reps: 8 },
+          { weight: 72, reps: 8 },
+          { weight: 72, reps: 7 },
+          { weight: 67, reps: 8 },
         ],
       },
     ],
@@ -331,15 +258,15 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s10",
     date: "2026-05-03",
-    durationSeconds: 3600,
+    durationMinutes: 60,
     exercises: [
       {
-        exerciseName: "데드리프트", category: "strength", muscleGroup: "back",
+        id: "s10-e1", name: "데드리프트", category: "strength", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 102, reps: 5, completed: true },
-          { setNumber: 2, weight: 102, reps: 5, completed: true },
-          { setNumber: 3, weight: 102, reps: 4, completed: true },
-          { setNumber: 4, weight: 97, reps: 5, completed: true },
+          { weight: 102, reps: 5 },
+          { weight: 102, reps: 5 },
+          { weight: 102, reps: 4 },
+          { weight: 97, reps: 5 },
         ],
       },
     ],
@@ -347,16 +274,16 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s11",
     date: "2026-05-05",
-    durationSeconds: 4100,
+    durationMinutes: 68,
     exercises: [
       {
-        exerciseName: "스쿼트", category: "strength", muscleGroup: "legs",
+        id: "s11-e1", name: "스쿼트", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 92, reps: 5, completed: true },
-          { setNumber: 2, weight: 92, reps: 5, completed: true },
-          { setNumber: 3, weight: 92, reps: 5, completed: true },
-          { setNumber: 4, weight: 87, reps: 5, completed: true },
-          { setNumber: 5, weight: 87, reps: 5, completed: true },
+          { weight: 92, reps: 5 },
+          { weight: 92, reps: 5 },
+          { weight: 92, reps: 5 },
+          { weight: 87, reps: 5 },
+          { weight: 87, reps: 5 },
         ],
       },
     ],
@@ -364,33 +291,31 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s12",
     date: "2026-05-07",
-    durationSeconds: 1500,
+    durationMinutes: 25,
     exercises: [
       {
-        exerciseName: "폼롤러 등·허벅지", category: "flexibility", muscleGroup: "full-body",
+        id: "s12-e1", name: "폼롤러 등·허벅지", category: "flexibility", muscleGroup: "full-body",
+        sets: [{ weight: 0, reps: 60 }],
+      },
+      {
+        id: "s12-e2", name: "고관절 굴곡근 스트레칭", category: "flexibility", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 0, reps: 60, completed: true },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
         ],
       },
       {
-        exerciseName: "고관절 굴곡근 스트레칭", category: "flexibility", muscleGroup: "legs",
+        id: "s12-e3", name: "흉추 회전 스트레칭", category: "flexibility", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 0, reps: 30, completed: true },
-          { setNumber: 2, weight: 0, reps: 30, completed: true },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
         ],
       },
       {
-        exerciseName: "흉추 회전 스트레칭", category: "flexibility", muscleGroup: "back",
+        id: "s12-e4", name: "햄스트링 스트레칭", category: "flexibility", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 0, reps: 10, completed: true },
-          { setNumber: 2, weight: 0, reps: 10, completed: true },
-        ],
-      },
-      {
-        exerciseName: "햄스트링 스트레칭", category: "flexibility", muscleGroup: "legs",
-        sets: [
-          { setNumber: 1, weight: 0, reps: 30, completed: true },
-          { setNumber: 2, weight: 0, reps: 30, completed: true },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
         ],
       },
     ],
@@ -398,14 +323,14 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s13",
     date: "2026-05-10",
-    durationSeconds: 3250,
+    durationMinutes: 54,
     exercises: [
       {
-        exerciseName: "숄더 프레스", category: "strength", muscleGroup: "shoulders",
+        id: "s13-e1", name: "숄더 프레스", category: "strength", muscleGroup: "shoulders",
         sets: [
-          { setNumber: 1, weight: 32, reps: 12, completed: true },
-          { setNumber: 2, weight: 32, reps: 11, completed: true },
-          { setNumber: 3, weight: 32, reps: 10, completed: true },
+          { weight: 32, reps: 12 },
+          { weight: 32, reps: 11 },
+          { weight: 32, reps: 10 },
         ],
       },
     ],
@@ -413,15 +338,15 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s14",
     date: "2026-05-13",
-    durationSeconds: 3500,
+    durationMinutes: 58,
     exercises: [
       {
-        exerciseName: "바벨 로우", category: "strength", muscleGroup: "back",
+        id: "s14-e1", name: "바벨 로우", category: "strength", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 62, reps: 8, completed: true },
-          { setNumber: 2, weight: 62, reps: 8, completed: true },
-          { setNumber: 3, weight: 62, reps: 7, completed: true },
-          { setNumber: 4, weight: 62, reps: 7, completed: true },
+          { weight: 62, reps: 8 },
+          { weight: 62, reps: 8 },
+          { weight: 62, reps: 7 },
+          { weight: 62, reps: 7 },
         ],
       },
     ],
@@ -429,14 +354,14 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s15",
     date: "2026-05-15",
-    durationSeconds: 2500,
+    durationMinutes: 42,
     exercises: [
       {
-        exerciseName: "플랭크", category: "strength", muscleGroup: "core",
+        id: "s15-e1", name: "플랭크", category: "strength", muscleGroup: "core",
         sets: [
-          { setNumber: 1, weight: 0, reps: 60, completed: true },
-          { setNumber: 2, weight: 0, reps: 60, completed: true },
-          { setNumber: 3, weight: 0, reps: 60, completed: true },
+          { weight: 0, reps: 60 },
+          { weight: 0, reps: 60 },
+          { weight: 0, reps: 60 },
         ],
       },
     ],
@@ -444,15 +369,15 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s16",
     date: "2026-05-17",
-    durationSeconds: 3950,
+    durationMinutes: 66,
     exercises: [
       {
-        exerciseName: "레그 프레스", category: "strength", muscleGroup: "legs",
+        id: "s16-e1", name: "레그 프레스", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 145, reps: 10, completed: true },
-          { setNumber: 2, weight: 145, reps: 10, completed: true },
-          { setNumber: 3, weight: 145, reps: 9, completed: true },
-          { setNumber: 4, weight: 140, reps: 10, completed: true },
+          { weight: 145, reps: 10 },
+          { weight: 145, reps: 10 },
+          { weight: 145, reps: 9 },
+          { weight: 140, reps: 10 },
         ],
       },
     ],
@@ -460,15 +385,15 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s17",
     date: "2026-05-20",
-    durationSeconds: 3350,
+    durationMinutes: 56,
     exercises: [
       {
-        exerciseName: "벤치 프레스", category: "strength", muscleGroup: "chest",
+        id: "s17-e1", name: "벤치 프레스", category: "strength", muscleGroup: "chest",
         sets: [
-          { setNumber: 1, weight: 72, reps: 8, completed: true },
-          { setNumber: 2, weight: 72, reps: 8, completed: true },
-          { setNumber: 3, weight: 72, reps: 8, completed: true },
-          { setNumber: 4, weight: 72, reps: 7, completed: true },
+          { weight: 72, reps: 8 },
+          { weight: 72, reps: 8 },
+          { weight: 72, reps: 8 },
+          { weight: 72, reps: 7 },
         ],
       },
     ],
@@ -476,14 +401,14 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s18",
     date: "2026-05-22",
-    durationSeconds: 3600,
+    durationMinutes: 60,
     exercises: [
       {
-        exerciseName: "바이셉 컬", category: "strength", muscleGroup: "arms",
+        id: "s18-e1", name: "바이셉 컬", category: "strength", muscleGroup: "arms",
         sets: [
-          { setNumber: 1, weight: 16, reps: 12, completed: true },
-          { setNumber: 2, weight: 16, reps: 12, completed: true },
-          { setNumber: 3, weight: 16, reps: 11, completed: true },
+          { weight: 16, reps: 12 },
+          { weight: 16, reps: 12 },
+          { weight: 16, reps: 11 },
         ],
       },
     ],
@@ -491,13 +416,13 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s19",
     date: "2026-05-24",
-    durationSeconds: 1600,
+    durationMinutes: 27,
     exercises: [
       {
-        exerciseName: "햄스트링 스트레칭", category: "flexibility", muscleGroup: "legs",
+        id: "s19-e1", name: "햄스트링 스트레칭", category: "flexibility", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 0, reps: 30, completed: true },
-          { setNumber: 2, weight: 0, reps: 30, completed: true },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
         ],
       },
     ],
@@ -505,16 +430,16 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s20",
     date: "2026-05-27",
-    durationSeconds: 4050,
+    durationMinutes: 68,
     exercises: [
       {
-        exerciseName: "스쿼트", category: "strength", muscleGroup: "legs",
+        id: "s20-e1", name: "스쿼트", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 95, reps: 5, completed: true },
-          { setNumber: 2, weight: 95, reps: 5, completed: true },
-          { setNumber: 3, weight: 95, reps: 5, completed: true },
-          { setNumber: 4, weight: 90, reps: 5, completed: true },
-          { setNumber: 5, weight: 90, reps: 4, completed: true },
+          { weight: 95, reps: 5 },
+          { weight: 95, reps: 5 },
+          { weight: 95, reps: 5 },
+          { weight: 90, reps: 5 },
+          { weight: 90, reps: 4 },
         ],
       },
     ],
@@ -522,47 +447,46 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s21",
     date: "2026-05-29",
-    durationSeconds: 2400,
+    durationMinutes: 40,
     exercises: [
       {
-        exerciseName: "버피", category: "cardio", muscleGroup: "cardio",
+        id: "s21-e1", name: "버피", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 10, completed: true },
-          { setNumber: 2, weight: 0, reps: 10, completed: true },
-          { setNumber: 3, weight: 0, reps: 10, completed: true },
-          { setNumber: 4, weight: 0, reps: 10, completed: true },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
         ],
       },
     ],
   },
-  // 5월 추가 (다양한 조합)
   {
     id: "s33",
     date: "2026-05-02",
-    durationSeconds: 2700,
+    durationMinutes: 45,
     exercises: [
       {
-        exerciseName: "트레드밀 인터벌", category: "cardio", muscleGroup: "cardio",
+        id: "s33-e1", name: "트레드밀 인터벌", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 10, completed: true },
-          { setNumber: 2, weight: 0, reps: 10, completed: true },
-          { setNumber: 3, weight: 0, reps: 10, completed: true },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
         ],
       },
       {
-        exerciseName: "사이클 스프린트", category: "cardio", muscleGroup: "cardio",
+        id: "s33-e2", name: "사이클 스프린트", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 8, completed: true },
-          { setNumber: 2, weight: 0, reps: 8, completed: true },
-          { setNumber: 3, weight: 0, reps: 8, completed: true },
+          { weight: 0, reps: 8 },
+          { weight: 0, reps: 8 },
+          { weight: 0, reps: 8 },
         ],
       },
       {
-        exerciseName: "점프 로프", category: "cardio", muscleGroup: "cardio",
+        id: "s33-e3", name: "점프 로프", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 100, completed: true },
-          { setNumber: 2, weight: 0, reps: 100, completed: true },
-          { setNumber: 3, weight: 0, reps: 80, completed: true },
+          { weight: 0, reps: 100 },
+          { weight: 0, reps: 100 },
+          { weight: 0, reps: 80 },
         ],
       },
     ],
@@ -570,37 +494,37 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s34",
     date: "2026-05-09",
-    durationSeconds: 3600,
+    durationMinutes: 60,
     exercises: [
       {
-        exerciseName: "벤치 프레스", category: "strength", muscleGroup: "chest",
+        id: "s34-e1", name: "벤치 프레스", category: "strength", muscleGroup: "chest",
         sets: [
-          { setNumber: 1, weight: 72, reps: 8, completed: true },
-          { setNumber: 2, weight: 72, reps: 8, completed: true },
-          { setNumber: 3, weight: 72, reps: 7, completed: true },
-          { setNumber: 4, weight: 67, reps: 8, completed: true },
+          { weight: 72, reps: 8 },
+          { weight: 72, reps: 8 },
+          { weight: 72, reps: 7 },
+          { weight: 67, reps: 8 },
         ],
       },
       {
-        exerciseName: "스쿼트", category: "strength", muscleGroup: "legs",
+        id: "s34-e2", name: "스쿼트", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 90, reps: 5, completed: true },
-          { setNumber: 2, weight: 90, reps: 5, completed: true },
-          { setNumber: 3, weight: 85, reps: 5, completed: true },
+          { weight: 90, reps: 5 },
+          { weight: 90, reps: 5 },
+          { weight: 85, reps: 5 },
         ],
       },
       {
-        exerciseName: "흉추 회전 스트레칭", category: "flexibility", muscleGroup: "back",
+        id: "s34-e3", name: "흉추 회전 스트레칭", category: "flexibility", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 0, reps: 10, completed: true },
-          { setNumber: 2, weight: 0, reps: 10, completed: true },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
         ],
       },
       {
-        exerciseName: "햄스트링 스트레칭", category: "flexibility", muscleGroup: "legs",
+        id: "s34-e4", name: "햄스트링 스트레칭", category: "flexibility", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 0, reps: 30, completed: true },
-          { setNumber: 2, weight: 0, reps: 30, completed: true },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
         ],
       },
     ],
@@ -608,70 +532,68 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s35",
     date: "2026-05-12",
-    durationSeconds: 2400,
+    durationMinutes: 40,
     exercises: [
       {
-        exerciseName: "버피", category: "cardio", muscleGroup: "cardio",
+        id: "s35-e1", name: "버피", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 10, completed: true },
-          { setNumber: 2, weight: 0, reps: 10, completed: true },
-          { setNumber: 3, weight: 0, reps: 10, completed: true },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
         ],
       },
       {
-        exerciseName: "마운틴 클라이머", category: "cardio", muscleGroup: "cardio",
+        id: "s35-e2", name: "마운틴 클라이머", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 30, completed: true },
-          { setNumber: 2, weight: 0, reps: 30, completed: true },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
         ],
       },
       {
-        exerciseName: "고관절 굴곡근 스트레칭", category: "flexibility", muscleGroup: "legs",
+        id: "s35-e3", name: "고관절 굴곡근 스트레칭", category: "flexibility", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 0, reps: 30, completed: true },
-          { setNumber: 2, weight: 0, reps: 30, completed: true },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
         ],
       },
       {
-        exerciseName: "폼롤러 등·허벅지", category: "flexibility", muscleGroup: "full-body",
-        sets: [
-          { setNumber: 1, weight: 0, reps: 60, completed: true },
-        ],
+        id: "s35-e4", name: "폼롤러 등·허벅지", category: "flexibility", muscleGroup: "full-body",
+        sets: [{ weight: 0, reps: 60 }],
       },
     ],
   },
   {
     id: "s36",
     date: "2026-05-16",
-    durationSeconds: 4200,
+    durationMinutes: 70,
     exercises: [
       {
-        exerciseName: "데드리프트", category: "strength", muscleGroup: "back",
+        id: "s36-e1", name: "데드리프트", category: "strength", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 100, reps: 5, completed: true },
-          { setNumber: 2, weight: 100, reps: 5, completed: true },
-          { setNumber: 3, weight: 95, reps: 5, completed: true },
+          { weight: 100, reps: 5 },
+          { weight: 100, reps: 5 },
+          { weight: 95, reps: 5 },
         ],
       },
       {
-        exerciseName: "트레드밀 인터벌", category: "cardio", muscleGroup: "cardio",
+        id: "s36-e2", name: "트레드밀 인터벌", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 10, completed: true },
-          { setNumber: 2, weight: 0, reps: 10, completed: true },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
         ],
       },
       {
-        exerciseName: "햄스트링 스트레칭", category: "flexibility", muscleGroup: "legs",
+        id: "s36-e3", name: "햄스트링 스트레칭", category: "flexibility", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 0, reps: 30, completed: true },
-          { setNumber: 2, weight: 0, reps: 30, completed: true },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
         ],
       },
       {
-        exerciseName: "흉추 회전 스트레칭", category: "flexibility", muscleGroup: "back",
+        id: "s36-e4", name: "흉추 회전 스트레칭", category: "flexibility", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 0, reps: 10, completed: true },
-          { setNumber: 2, weight: 0, reps: 10, completed: true },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
         ],
       },
     ],
@@ -679,21 +601,21 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s37",
     date: "2026-05-19",
-    durationSeconds: 3000,
+    durationMinutes: 50,
     exercises: [
       {
-        exerciseName: "클라이밍 워밍업", category: "other", muscleGroup: "full-body",
+        id: "s37-e1", name: "클라이밍 워밍업", category: "other", muscleGroup: "full-body",
         sets: [
-          { setNumber: 1, weight: 0, reps: 5, completed: true },
-          { setNumber: 2, weight: 0, reps: 5, completed: true },
+          { weight: 0, reps: 5 },
+          { weight: 0, reps: 5 },
         ],
       },
       {
-        exerciseName: "볼더링", category: "other", muscleGroup: "full-body",
+        id: "s37-e2", name: "볼더링", category: "other", muscleGroup: "full-body",
         sets: [
-          { setNumber: 1, weight: 0, reps: 6, completed: true },
-          { setNumber: 2, weight: 0, reps: 6, completed: true },
-          { setNumber: 3, weight: 0, reps: 5, completed: true },
+          { weight: 0, reps: 6 },
+          { weight: 0, reps: 6 },
+          { weight: 0, reps: 5 },
         ],
       },
     ],
@@ -701,35 +623,35 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s38",
     date: "2026-05-23",
-    durationSeconds: 5400,
+    durationMinutes: 90,
     exercises: [
       {
-        exerciseName: "스쿼트", category: "strength", muscleGroup: "legs",
+        id: "s38-e1", name: "스쿼트", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 90, reps: 5, completed: true },
-          { setNumber: 2, weight: 90, reps: 5, completed: true },
-          { setNumber: 3, weight: 85, reps: 5, completed: true },
+          { weight: 90, reps: 5 },
+          { weight: 90, reps: 5 },
+          { weight: 85, reps: 5 },
         ],
       },
       {
-        exerciseName: "트레드밀 인터벌", category: "cardio", muscleGroup: "cardio",
+        id: "s38-e2", name: "트레드밀 인터벌", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 10, completed: true },
-          { setNumber: 2, weight: 0, reps: 10, completed: true },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
         ],
       },
       {
-        exerciseName: "햄스트링 스트레칭", category: "flexibility", muscleGroup: "legs",
+        id: "s38-e3", name: "햄스트링 스트레칭", category: "flexibility", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 0, reps: 30, completed: true },
-          { setNumber: 2, weight: 0, reps: 30, completed: true },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
         ],
       },
       {
-        exerciseName: "볼더링", category: "other", muscleGroup: "full-body",
+        id: "s38-e4", name: "볼더링", category: "other", muscleGroup: "full-body",
         sets: [
-          { setNumber: 1, weight: 0, reps: 5, completed: true },
-          { setNumber: 2, weight: 0, reps: 5, completed: true },
+          { weight: 0, reps: 5 },
+          { weight: 0, reps: 5 },
         ],
       },
     ],
@@ -738,15 +660,15 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s22",
     date: "2026-06-02",
-    durationSeconds: 3300,
+    durationMinutes: 55,
     exercises: [
       {
-        exerciseName: "벤치 프레스", category: "strength", muscleGroup: "chest",
+        id: "s22-e1", name: "벤치 프레스", category: "strength", muscleGroup: "chest",
         sets: [
-          { setNumber: 1, weight: 75, reps: 8, completed: true },
-          { setNumber: 2, weight: 75, reps: 8, completed: true },
-          { setNumber: 3, weight: 75, reps: 7, completed: true },
-          { setNumber: 4, weight: 70, reps: 8, completed: true },
+          { weight: 75, reps: 8 },
+          { weight: 75, reps: 8 },
+          { weight: 75, reps: 7 },
+          { weight: 70, reps: 8 },
         ],
       },
     ],
@@ -754,15 +676,15 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s23",
     date: "2026-06-04",
-    durationSeconds: 3700,
+    durationMinutes: 62,
     exercises: [
       {
-        exerciseName: "데드리프트", category: "strength", muscleGroup: "back",
+        id: "s23-e1", name: "데드리프트", category: "strength", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 105, reps: 5, completed: true },
-          { setNumber: 2, weight: 105, reps: 5, completed: true },
-          { setNumber: 3, weight: 105, reps: 5, completed: true },
-          { setNumber: 4, weight: 100, reps: 5, completed: true },
+          { weight: 105, reps: 5 },
+          { weight: 105, reps: 5 },
+          { weight: 105, reps: 5 },
+          { weight: 100, reps: 5 },
         ],
       },
     ],
@@ -770,16 +692,16 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s24",
     date: "2026-06-06",
-    durationSeconds: 4200,
+    durationMinutes: 70,
     exercises: [
       {
-        exerciseName: "스쿼트", category: "strength", muscleGroup: "legs",
+        id: "s24-e1", name: "스쿼트", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 95, reps: 5, completed: true },
-          { setNumber: 2, weight: 95, reps: 5, completed: true },
-          { setNumber: 3, weight: 95, reps: 5, completed: true },
-          { setNumber: 4, weight: 95, reps: 5, completed: true },
-          { setNumber: 5, weight: 90, reps: 5, completed: true },
+          { weight: 95, reps: 5 },
+          { weight: 95, reps: 5 },
+          { weight: 95, reps: 5 },
+          { weight: 95, reps: 5 },
+          { weight: 90, reps: 5 },
         ],
       },
     ],
@@ -787,13 +709,13 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s25",
     date: "2026-06-08",
-    durationSeconds: 1500,
+    durationMinutes: 25,
     exercises: [
       {
-        exerciseName: "고관절 굴곡근 스트레칭", category: "flexibility", muscleGroup: "legs",
+        id: "s25-e1", name: "고관절 굴곡근 스트레칭", category: "flexibility", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 0, reps: 30, completed: true },
-          { setNumber: 2, weight: 0, reps: 30, completed: true },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
         ],
       },
     ],
@@ -801,14 +723,14 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s26",
     date: "2026-06-11",
-    durationSeconds: 3400,
+    durationMinutes: 57,
     exercises: [
       {
-        exerciseName: "인클라인 덤벨 프레스", category: "strength", muscleGroup: "chest",
+        id: "s26-e1", name: "인클라인 덤벨 프레스", category: "strength", muscleGroup: "chest",
         sets: [
-          { setNumber: 1, weight: 26, reps: 10, completed: true },
-          { setNumber: 2, weight: 26, reps: 10, completed: true },
-          { setNumber: 3, weight: 26, reps: 9, completed: true },
+          { weight: 26, reps: 10 },
+          { weight: 26, reps: 10 },
+          { weight: 26, reps: 9 },
         ],
       },
     ],
@@ -816,14 +738,14 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s27",
     date: "2026-06-13",
-    durationSeconds: 2600,
+    durationMinutes: 43,
     exercises: [
       {
-        exerciseName: "마운틴 클라이머", category: "cardio", muscleGroup: "cardio",
+        id: "s27-e1", name: "마운틴 클라이머", category: "cardio",
         sets: [
-          { setNumber: 1, weight: 0, reps: 30, completed: true },
-          { setNumber: 2, weight: 0, reps: 30, completed: true },
-          { setNumber: 3, weight: 0, reps: 30, completed: true },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
+          { weight: 0, reps: 30 },
         ],
       },
     ],
@@ -831,14 +753,14 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s28",
     date: "2026-06-16",
-    durationSeconds: 3550,
+    durationMinutes: 59,
     exercises: [
       {
-        exerciseName: "랫 풀다운", category: "strength", muscleGroup: "back",
+        id: "s28-e1", name: "랫 풀다운", category: "strength", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 58, reps: 10, completed: true },
-          { setNumber: 2, weight: 58, reps: 10, completed: true },
-          { setNumber: 3, weight: 58, reps: 9, completed: true },
+          { weight: 58, reps: 10 },
+          { weight: 58, reps: 10 },
+          { weight: 58, reps: 9 },
         ],
       },
     ],
@@ -846,14 +768,14 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s29",
     date: "2026-06-19",
-    durationSeconds: 4000,
+    durationMinutes: 67,
     exercises: [
       {
-        exerciseName: "레그 컬", category: "strength", muscleGroup: "legs",
+        id: "s29-e1", name: "레그 컬", category: "strength", muscleGroup: "legs",
         sets: [
-          { setNumber: 1, weight: 42, reps: 12, completed: true },
-          { setNumber: 2, weight: 42, reps: 12, completed: true },
-          { setNumber: 3, weight: 42, reps: 11, completed: true },
+          { weight: 42, reps: 12 },
+          { weight: 42, reps: 12 },
+          { weight: 42, reps: 11 },
         ],
       },
     ],
@@ -861,15 +783,15 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s30",
     date: "2026-06-22",
-    durationSeconds: 3300,
+    durationMinutes: 55,
     exercises: [
       {
-        exerciseName: "벤치 프레스", category: "strength", muscleGroup: "chest",
+        id: "s30-e1", name: "벤치 프레스", category: "strength", muscleGroup: "chest",
         sets: [
-          { setNumber: 1, weight: 75, reps: 8, completed: true },
-          { setNumber: 2, weight: 75, reps: 8, completed: true },
-          { setNumber: 3, weight: 75, reps: 8, completed: true },
-          { setNumber: 4, weight: 75, reps: 7, completed: true },
+          { weight: 75, reps: 8 },
+          { weight: 75, reps: 8 },
+          { weight: 75, reps: 8 },
+          { weight: 75, reps: 7 },
         ],
       },
     ],
@@ -877,13 +799,13 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s31",
     date: "2026-06-25",
-    durationSeconds: 1550,
+    durationMinutes: 26,
     exercises: [
       {
-        exerciseName: "흉추 회전 스트레칭", category: "flexibility", muscleGroup: "back",
+        id: "s31-e1", name: "흉추 회전 스트레칭", category: "flexibility", muscleGroup: "back",
         sets: [
-          { setNumber: 1, weight: 0, reps: 10, completed: true },
-          { setNumber: 2, weight: 0, reps: 10, completed: true },
+          { weight: 0, reps: 10 },
+          { weight: 0, reps: 10 },
         ],
       },
     ],
@@ -891,35 +813,22 @@ export const MOCK_SESSIONS: WorkoutSession[] = [
   {
     id: "s32",
     date: "2026-06-28",
-    durationSeconds: 2500,
+    durationMinutes: 42,
     exercises: [
       {
-        exerciseName: "크런치", category: "strength", muscleGroup: "core",
+        id: "s32-e1", name: "크런치", category: "strength", muscleGroup: "core",
         sets: [
-          { setNumber: 1, weight: 0, reps: 20, completed: true },
-          { setNumber: 2, weight: 0, reps: 20, completed: true },
-          { setNumber: 3, weight: 0, reps: 18, completed: true },
+          { weight: 0, reps: 20 },
+          { weight: 0, reps: 20 },
+          { weight: 0, reps: 18 },
         ],
       },
     ],
   },
 ];
 
-export const getMockRoutineById = (id: string) =>
-  MOCK_ROUTINES.find((r) => r.id === id);
-
 export const getMockSessionsByMonth = (year: number, month: number) =>
   MOCK_SESSIONS.filter((s) => {
     const d = new Date(s.date);
     return d.getFullYear() === year && d.getMonth() + 1 === month;
   });
-
-export const getRoutines = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return MOCK_ROUTINES;
-};
-
-export const getRoutineById = async (id: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return getMockRoutineById(id);
-};

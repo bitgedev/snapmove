@@ -45,7 +45,7 @@ export default function ExerciseDrawer({
   const [category, setCategory] = useState<ExerciseCategory | "all">("all");
   const [muscleGroup, setMuscleGroup] = useState<MuscleGroup | null>(null);
   const [search, setSearch] = useState("");
-  const filtered = EXERCISES.filter((ex) => {
+  const filteredExercise = EXERCISES.filter((ex) => {
     const matchCategory = category === "all" || ex.category === category;
     const matchMuscle = !muscleGroup || ex.muscleGroup === muscleGroup;
     const matchSearch = ex.name.includes(search);
@@ -61,14 +61,11 @@ export default function ExerciseDrawer({
           <Input value={search} onChange={(e) => setSearch(e.target.value)} />
           <div className="flex gap-2 overflow-x-auto">
             {CATEGORY_TABS.map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => {
-                  setCategory(tab.value);
-                  setMuscleGroup(null);
-                }}
-                className={category === tab.value ? "font-bold" : ""}
-              >
+              <button key={tab.value} onClick={() => {
+                setCategory(tab.value);
+                setMuscleGroup(null);
+              }}
+                className={category === tab.value ? "font-bold" : ""}>
                 {tab.label}
               </button>
             ))}
@@ -76,33 +73,29 @@ export default function ExerciseDrawer({
           {category === "strength" && (
             <div className="flex gap-2 overflow-x-auto">
               {MUSCLE_GROUPS.map((chip) => (
-                <button
-                  key={chip.value}
-                  onClick={() => setMuscleGroup(chip.value)}
-                  className={muscleGroup === chip.value ? "font-bold" : ""}
-                >
+                <button key={chip.value} onClick={() => setMuscleGroup(chip.value)}
+                  className={muscleGroup === chip.value ? "font-bold" : ""}>
                   {chip.label}
                 </button>
               ))}
             </div>
           )}
-          {filtered.length === 0 ? (
-            <p>운동이 없어요</p>
-          ) : (
-            <ul>
-              {filtered.map((ex) => (
-                <li
-                  key={ex.name}
-                  onClick={() => {
-                    onSelect(ex);
-                    onOpenChange(false);
-                  }}
-                >
+          <div>
+            {filteredExercise.length === 0 ? (
+              <p>운동이 없어요</p>
+            ) : (
+              filteredExercise.map((ex) => (
+                <button key={ex.name} onClick={() => { onSelect(ex); onOpenChange(false); }}>
                   {ex.name}
-                </li>
-              ))}
-            </ul>
-          )}
+                </button>
+              ))
+            )}
+            {search !== "" && category !== "all" && muscleGroup !== null && (
+              <button onClick={() => onSelect({ name: search, category, muscleGroup })}>
+                + {search} 직접 추가
+              </button>
+            )}
+          </div>
         </div>
       </DrawerContent>
     </Drawer>

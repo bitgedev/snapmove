@@ -38,11 +38,11 @@ export default function DayDetailCard({ selectedDate, sessions }: Props) {
     );
   }
 
-  const totalVolume = session.exercises.reduce((total, ex) => {
-    return total + ex.sets.reduce((s, set) => s + set.weight * set.reps, 0);
-  }, 0);
-
-  const durationMin = Math.round(session.durationSeconds / 60);
+  const totalVolume = session.exercises
+    .filter((ex) => ex.category === "strength" && ex.sets)
+    .reduce((total, ex) =>
+      total + ex.sets!.reduce((s, set) => s + set.weight * set.reps, 0), 0
+    );
 
   return (
     <div className="px-4 py-4">
@@ -61,38 +61,29 @@ export default function DayDetailCard({ selectedDate, sessions }: Props) {
             </span>
           )}
           <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700">
-            ⏱️ {durationMin}분
+            ⏱️ {session.durationMinutes}분
           </span>
         </div>
       </div>
 
       {/* 운동 목록 */}
       <div className="space-y-2">
-        {session.exercises.map((ex) => {
-          const maxWeight = Math.max(...ex.sets.map((s) => s.weight));
-          return (
-            <div
-              key={ex.exerciseName}
-              className="flex items-center justify-between rounded-xl bg-teal-50 px-4 py-3"
-            >
-              <div className="flex items-center gap-2">
-                <span className="font-medium text-gray-800">
-                  {ex.exerciseName}
-                </span>
-                <MuscleGroupBadge muscleGroup={ex.muscleGroup} />
-              </div>
-              <div className="text-right text-sm text-gray-500">
-                <span>{ex.sets.length}세트</span>
-                <span className="mx-1">·</span>
-                {ex.category === "strength" ? (
-                  <span>최대 {maxWeight}kg</span>
-                ) : (
-                  <span>{ex.sets[0].reps}회</span>
-                )}
-              </div>
-            </div>
-          );
-        })}
+        {session.exercises.map((ex) => (
+          <div key={ex.name}>
+            <span>{ex.name}</span>
+            {ex.muscleGroup && <MuscleGroupBadge muscleGroup={ex.muscleGroup} />}
+
+            {ex.category === "strength" && ex.sets && (
+              <span>
+                {ex.sets.length}세트 · 최대 {Math.max(...ex.sets.map(s => s.weight))}kg
+              </span>
+            )}
+
+            {ex.category === "cardio" && ex.durationMinutes && (
+              <span>{ex.durationMinutes}분</span>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
