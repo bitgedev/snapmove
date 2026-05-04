@@ -45,6 +45,12 @@ export default function ExerciseDrawer({
   const [category, setCategory] = useState<ExerciseCategory | "all">("all");
   const [muscleGroup, setMuscleGroup] = useState<MuscleGroup | null>(null);
   const [search, setSearch] = useState("");
+  const filtered = EXERCISES.filter((ex) => {
+    const matchCategory = category === "all" || ex.category === category;
+    const matchMuscle = !muscleGroup || ex.muscleGroup === muscleGroup;
+    const matchSearch = ex.name.includes(search);
+    return matchCategory && matchMuscle && matchSearch;
+  });
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
@@ -55,7 +61,14 @@ export default function ExerciseDrawer({
           <Input value={search} onChange={(e) => setSearch(e.target.value)} />
           <div className="flex gap-2 overflow-x-auto">
             {CATEGORY_TABS.map((tab) => (
-              <button key={tab.value}>
+              <button
+                key={tab.value}
+                onClick={() => {
+                  setCategory(tab.value);
+                  setMuscleGroup(null);
+                }}
+                className={category === tab.value ? "font-bold" : ""}
+              >
                 {tab.label}
               </button>
             ))}
@@ -63,9 +76,32 @@ export default function ExerciseDrawer({
           {category === "strength" && (
             <div className="flex gap-2 overflow-x-auto">
               {MUSCLE_GROUPS.map((chip) => (
-                <button key={chip.value}>{chip.label}</button>
+                <button
+                  key={chip.value}
+                  onClick={() => setMuscleGroup(chip.value)}
+                  className={muscleGroup === chip.value ? "font-bold" : ""}
+                >
+                  {chip.label}
+                </button>
               ))}
             </div>
+          )}
+          {filtered.length === 0 ? (
+            <p>운동이 없어요</p>
+          ) : (
+            <ul>
+              {filtered.map((ex) => (
+                <li
+                  key={ex.name}
+                  onClick={() => {
+                    onSelect(ex);
+                    onOpenChange(false);
+                  }}
+                >
+                  {ex.name}
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       </DrawerContent>
