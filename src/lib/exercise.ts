@@ -1,5 +1,23 @@
 import { ExerciseCategory, MuscleGroup } from "@/types";
 
+export const CATEGORY_TABS = [
+  { value: "all", label: "전체" },
+  { value: "strength", label: "근력" },
+  { value: "cardio", label: "유산소" },
+  { value: "flexibility", label: "유연성" },
+  { value: "other", label: "기타" },
+] as const;
+
+export const MUSCLE_GROUPS = [                            
+    { value: "chest",     label: "가슴", color: "bg-red-100 text-red-700" },                                
+    { value: "back",      label: "등",   color: "bg-blue-100 text-blue-700" },                              
+    { value: "shoulders", label: "어깨", color: "bg-violet-100 text-violet-700" },                          
+    { value: "arms",      label: "팔",   color: "bg-rose-100 text-rose-700" },                              
+    { value: "legs",      label: "하체", color: "bg-amber-100 text-amber-700" },                            
+    { value: "core",      label: "코어", color: "bg-green-100 text-green-700" },                            
+    { value: "full-body", label: "전신", color: "bg-slate-100 text-slate-600" },                            
+] as const;
+
 export interface ExerciseItem {
     name: string;
     category: ExerciseCategory;

@@ -8,31 +8,22 @@ import {
 } from "@/components/ui/drawer";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { ExerciseItem, EXERCISES } from "@/lib/exercise";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  CATEGORY_TABS,
+  ExerciseItem,
+  EXERCISES,
+  MUSCLE_GROUPS,
+} from "@/lib/exercise";
+import MuscleGroupBadge from "../shared/MuscleGroupBadge";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelect: (exercise: ExerciseItem) => void;
 }
-
-const CATEGORY_TABS = [
-  { value: "all", label: "전체" },
-  { value: "strength", label: "근력" },
-  { value: "cardio", label: "유산소" },
-  { value: "flexibility", label: "유연성" },
-  { value: "other", label: "기타" },
-] as const;
-
-const MUSCLE_GROUPS = [
-  { value: "chest", label: "가슴" },
-  { value: "back", label: "등" },
-  { value: "shoulders", label: "어깨" },
-  { value: "arms", label: "팔" },
-  { value: "legs", label: "하체" },
-  { value: "core", label: "코어" },
-  { value: "full-body", label: "전신" },
-] as const;
 
 export default function ExerciseDrawer({
   open,
@@ -56,65 +47,90 @@ export default function ExerciseDrawer({
           <DrawerTitle>운동 추가</DrawerTitle>
         </DrawerHeader>
         <div className="flex flex-col gap-3 px-4 pb-6">
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} />
-          <div className="flex gap-2 overflow-x-auto">
-            {CATEGORY_TABS.map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => {
-                  setCategory(tab.value);
-                  setMuscleGroup(null);
-                }}
-                className={category === tab.value ? "font-bold" : ""}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <Input
+            placeholder="운동 검색..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Tabs
+            value={category}
+            onValueChange={(val) => {
+              setCategory(val as ExerciseCategory | "all");
+              setMuscleGroup(null);
+            }}
+          >
+            <TabsList className="w-full">
+              {CATEGORY_TABS.map((tab) => (
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="flex-1 text-xs"
+                >
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
           {category === "strength" && (
-            <div className="flex gap-2 overflow-x-auto">
+            <div className="flex gap-1.5 overflow-x-auto pb-1">
               {MUSCLE_GROUPS.map((chip) => (
-                <button
+                <Button
                   key={chip.value}
-                  onClick={() => setMuscleGroup(chip.value)}
-                  className={muscleGroup === chip.value ? "font-bold" : ""}
+                  size="xs"
+                  variant={muscleGroup === chip.value ? "default" : "outline"}
+                  onClick={() =>
+                    setMuscleGroup(
+                      muscleGroup === chip.value ? null : chip.value,
+                    )
+                  }
                 >
                   {chip.label}
-                </button>
+                </Button>
               ))}
             </div>
           )}
-          <div>
+          <div className="flex max-h-64 flex-col overflow-y-auto rounded-lg border">
             {filteredExercise.length === 0 ? (
-              <p>운동이 없어요</p>
+              <p className="py-10 text-center text-sm text-muted-foreground">
+                운동이 없어요
+              </p>
             ) : (
-              filteredExercise.map((ex) => (
-                <button
-                  key={ex.name}
-                  onClick={() => {
-                    onSelect(ex);
-                    onOpenChange(false);
-                  }}
-                >
-                  {ex.name}
-                </button>
+              filteredExercise.map((ex, i) => (
+                <div key={ex.name}>
+                  {i > 0 && <Separator />}
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-between rounded-none px-3"
+                    onClick={() => {
+                      onSelect(ex);
+                      onOpenChange(false);
+                    }}
+                  >
+                    <span>{ex.name}</span>
+                    {ex.muscleGroup && (
+                      <MuscleGroupBadge muscleGroup={ex.muscleGroup} />
+                    )}
+                  </Button>
+                </div>
               ))
             )}
-
-            {search !== "" && category !== "all" && !hasExactMatch && (
-              <button
-                onClick={() =>
-                  onSelect({
-                    name: search,
-                    category,
-                    ...(muscleGroup ? { muscleGroup } : {}),
-                  })
-                }
-              >
-                + {search} 직접 추가
-              </button>
-            )}
           </div>
+          {search !== "" && category !== "all" && !hasExactMatch && (
+            <Button
+              variant="outline"
+              className="w-full border-dashed"
+              onClick={() => {
+                onSelect({
+                  name: search,
+                  category,
+                  ...(muscleGroup ? { muscleGroup } : {}),
+                });
+                onOpenChange(false);
+              }}
+            >
+              + &quot;{search}&quot; 직접 추가
+            </Button>
+          )}
         </div>
       </DrawerContent>
     </Drawer>
