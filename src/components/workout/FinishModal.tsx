@@ -1,7 +1,7 @@
 "use client";
 import { ExerciseRecord } from "@/types";
 import confetti from "canvas-confetti";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 
 interface Props {
@@ -20,22 +20,20 @@ export default function FinishModal({
 }: Props) {
   const [photoFile, setPhotoFile] = useState<File | undefined>();
   const [durationMinutes, setDurationMinutes] = useState<number>(0);
-  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const previewUrl = useMemo(() => {
+    if (!photoFile) return null;
+    return URL.createObjectURL(photoFile);
+  }, [photoFile]);
 
   useEffect(() => {
     if (open) confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
   }, [open]);
+
   useEffect(() => {
-    if (!photoFile) {
-      setPreviewUrl("");
-      return;
-    }
-    const objectUrl = URL.createObjectURL(photoFile);
-    setPreviewUrl(objectUrl);
     return () => {
-      URL.revokeObjectURL(objectUrl);
-    }
-  }, [photoFile]);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   return (
     <>
