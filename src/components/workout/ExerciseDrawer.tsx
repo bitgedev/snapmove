@@ -18,6 +18,7 @@ import {
   MUSCLE_GROUPS,
 } from "@/lib/exercise";
 import MuscleGroupBadge from "../shared/MuscleGroupBadge";
+import { cn } from "@/lib/utils";
 
 interface Props {
   open: boolean;
@@ -36,7 +37,8 @@ export default function ExerciseDrawer({
   const filteredExercise = EXERCISES.filter((ex) => {
     const matchCategory = category === "all" || ex.category === category;
     const matchMuscle = !muscleGroup || ex.muscleGroup === muscleGroup;
-    const matchSearch = ex.name.includes(search);
+    const normalize = (s: string) => s.normalize("NFC").trim();
+    const matchSearch = normalize(ex.name).includes(normalize(search));
     return matchCategory && matchMuscle && matchSearch;
   });
   const hasExactMatch = filteredExercise.some((ex) => ex.name === search);
@@ -72,20 +74,25 @@ export default function ExerciseDrawer({
             </TabsList>
           </Tabs>
           {category === "strength" && (
-            <div className="flex gap-1.5 overflow-x-auto pb-1">
+            <div className="flex gap-1.5 overflow-x-auto px-1 py-1">
               {MUSCLE_GROUPS.map((chip) => (
-                <Button
+                <button
                   key={chip.value}
-                  size="xs"
-                  variant={muscleGroup === chip.value ? "default" : "outline"}
                   onClick={() =>
                     setMuscleGroup(
                       muscleGroup === chip.value ? null : chip.value,
                     )
                   }
+                  className={cn(
+                    "shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-all",
+                    chip.color,
+                    muscleGroup === chip.value
+                      ? "ring-2 ring-offset-1 ring-current"
+                      : "opacity-50 hover:opacity-100",
+                  )}
                 >
                   {chip.label}
-                </Button>
+                </button>
               ))}
             </div>
           )}
@@ -128,7 +135,8 @@ export default function ExerciseDrawer({
                 onOpenChange(false);
               }}
             >
-              + &quot;{search}&quot; 직접 추가
+              + &quot;{search}&quot;{" "}
+              {CATEGORY_TABS.find((t) => t.value === category)?.label}에 추가
             </Button>
           )}
         </div>

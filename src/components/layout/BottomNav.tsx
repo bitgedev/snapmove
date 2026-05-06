@@ -7,8 +7,6 @@ import { CalendarDays, Dumbbell, Settings } from "lucide-react";
 export default function BottomNav() {
   const pathname = usePathname();
 
-  if (pathname.startsWith("/workout")) return null;
-
   const calendarActive = pathname.startsWith("/calendar");
   const workoutActive = pathname.startsWith("/workout");
   const settingsActive = pathname.startsWith("/settings");
