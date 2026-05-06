@@ -37,7 +37,7 @@ export default function CalendarPage() {
   return (
     <>
       <TopBar title="캘린더" />
-      <main>
+      <div>
         <MonthNav
           currentMonth={currentMonth}
           onPrev={handlePrev}
@@ -52,7 +52,7 @@ export default function CalendarPage() {
           onSelectDate={handleSelectDate}
         />
         <DayDetailCard selectedDate={selectedDate} sessions={sessions} />
-      </main>
+      </div>
     </>
   );
 }

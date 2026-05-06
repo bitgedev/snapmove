@@ -1,6 +1,6 @@
 import { WorkoutSession } from "@/types";
 import EmptyState from "../shared/EmptyState";
-import MuscleGroupBadge from "../shared/MuscleGroupBadge";
+import ExerciseBadge from "../shared/ExerciseBadge";
 import { getWorkoutLabel } from "@/lib/workout-label";
 
 interface Props {
@@ -69,19 +69,19 @@ export default function DayDetailCard({ selectedDate, sessions }: Props) {
       {/* 운동 목록 */}
       <div className="space-y-2">
         {session.exercises.map((ex) => (
-          <div key={ex.name}>
-            <span>{ex.name}</span>
-            {ex.muscleGroup && <MuscleGroupBadge muscleGroup={ex.muscleGroup} />}
-
-            {ex.category === "strength" && ex.sets && (
-              <span>
-                {ex.sets.length}세트 · 최대 {Math.max(...ex.sets.map(s => s.weight))}kg
-              </span>
-            )}
-
-            {ex.category === "cardio" && ex.durationMinutes && (
-              <span>{ex.durationMinutes}분</span>
-            )}
+          <div key={ex.name} className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-800">{ex.name}</span>
+              <ExerciseBadge category={ex.category} muscleGroup={ex.muscleGroup} />
+            </div>
+            <span className="text-xs text-gray-400">
+              {ex.category === "strength" && ex.sets && (
+                `${ex.sets.length}세트 · 최대 ${Math.max(...ex.sets.map(s => s.weight))}kg`
+              )}
+              {ex.category === "cardio" && ex.durationMinutes && (
+                `${ex.durationMinutes}분`
+              )}
+            </span>
           </div>
         ))}
       </div>
