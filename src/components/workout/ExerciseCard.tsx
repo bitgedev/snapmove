@@ -1,7 +1,6 @@
 "use client";
 import { ExerciseRecord } from "@/types";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import SetTable from "./SetTable";
 import DurationInput from "./DurationInput";
 import ExerciseBadge from "@/components/shared/ExerciseBadge";
@@ -37,9 +36,13 @@ export default function ExerciseCard({ record, onChange, onRemove }: Props) {
             sets={record.sets ?? []}
             onChange={(newSets) => onChange({ ...record, sets: newSets })}
           />
-          <Button variant="outline" size="sm" onClick={addSet}>
-            + 세트 추가
-          </Button>
+          <button
+            onClick={addSet}
+            className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-muted-foreground/25 py-2 text-xs text-muted-foreground transition-colors hover:border-brand-button/40 hover:text-brand-button"
+          >
+            <Plus className="size-3" />
+            세트 추가
+          </button>
         </>
       ) : (
         <DurationInput

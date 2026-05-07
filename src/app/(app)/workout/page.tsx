@@ -49,7 +49,7 @@ export default function WorkoutPage() {
       >
         {exercises.length === 0 ? (
           <p className="py-16 text-center text-sm text-muted-foreground">
-            운동을 추가해보세요
+            오늘 첫 운동을 추가해봐요 💪
           </p>
         ) : (
           exercises.map((ex) => (

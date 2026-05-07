@@ -3,13 +3,11 @@ import { ExerciseRecord } from "@/types";
 import confetti from "canvas-confetti";
 import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
 import ExerciseBadge from "@/components/shared/ExerciseBadge";
@@ -53,7 +51,7 @@ export default function FinishModal({
             오늘의 움직임, 스냅 완료! 🏆
           </DialogTitle>
           <DialogDescription className="text-center text-sm text-muted-foreground">
-            고생하셨습니다. 오늘의 노력을 데이터로 저장할게요.
+            고생하셨습니다. 오늘의 노력을 기록으로 남겨볼게요.
           </DialogDescription>
         </DialogHeader>
 

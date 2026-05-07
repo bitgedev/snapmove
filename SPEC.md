@@ -4,7 +4,7 @@
 
 | 항목              | 내용                                                                                              |
 | ----------------- | ------------------------------------------------------------------------------------------------- |
-| **기술 스택**     | Next.js 16.2.2 App Router, TypeScript, Tailwind CSS, Shadcn UI                                    |
+| **기술 스택**     | Next.js 16.2.2 App Router, TypeScript, Tailwind CSS, Shadcn UI, html-to-image                     |
 | **Supabase**      | @supabase/supabase-js 2.103.3, @supabase/ssr 0.10.2                                               |
 | **환경변수**      | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (`ANON_KEY` 아님)              |
 | **제약 조건**     | Supabase Auth + 운동 기록 저장은 실제 구현, 캘린더/운동은 mock 데이터                             |
@@ -399,8 +399,9 @@ src/
 - [x] `DayDetailCard.tsx` (SERVER)
   - [x] `selectedDate`가 없으면: "날짜를 선택하면 기록을 볼 수 있어요" 안내
   - [x] 선택한 날에 세션 있으면: 날짜 헤더 + 운동 목록 (이름·세트·최대무게)
-  - [x] 선택한 날에 세션 없으면: `<EmptyState>` ("이 날은 기록된 운동이 없어요")
+  - [x] 선택한 날에 세션 없으면: `<EmptyState>` ("이 날은 운동 기록이 없어요 🏃")
   - [x] 총 볼륨, 운동 시간 표시
+  - [x] **컬러 토큰 통일** — `text-gray-*` / `bg-gray-50` → `text-foreground` / `text-muted-foreground` / `bg-muted/40`
   - [ ] "인증 카드 보기" 버튼 → `WorkoutShareCard` Dialog
 
 **설정 페이지 (`/settings`)**
@@ -413,6 +414,7 @@ src/
   - [x] 목표 체중 (정적 표시, 후속 연동)
 - [x] **서비스 섹션**
   - [x] 로그아웃 버튼 (CLIENT) — `supabase.auth.signOut()` → `/login` redirect
+- [x] **컬러 토큰 통일** — `gray-*` 하드코딩 제거, `text-foreground` / `text-muted-foreground` / `divide-y` 디자인 토큰으로 교체. 로그아웃 버튼: `border-destructive/30 text-destructive hover:bg-destructive/5`
 
 ### 검증 체크리스트
 
@@ -458,7 +460,7 @@ src/
 ### 설치 명령어
 
 ```bash
-npm install canvas-confetti
+npm install canvas-confetti html-to-image
 npm install -D @types/canvas-confetti
 ```
 
@@ -489,6 +491,7 @@ src/
 - [x] `workout/page.tsx` (CLIENT)
   - [x] 상태: `exercises: ExerciseRecord[]`
   - [x] TopBar: "오늘의 운동"
+  - [x] **빈 상태** — "오늘 첫 운동을 추가해봐요 💪"
   - [x] `[+ 운동 추가]` 버튼 — dashed border + `Plus` 아이콘. hover 시 `brand-button` 색으로 강조. ExerciseDrawer 트리거
   - [x] ExerciseCard 목록 렌더링
   - [x] **"운동 완료" 버튼** — `fixed bottom-16` (BottomNav 바로 위), 중앙 정렬 pill (`rounded-2xl bg-mint-gradient`), `CheckCircle2` 아이콘. exercises 1개 이상일 때만 표시. 콘텐츠 영역 `pb-40`으로 가림 방지
@@ -509,9 +512,9 @@ src/
   - [x] 운동 이름 헤더 + `ExerciseBadge` (카테고리·근육군) + 우측 삭제 버튼
   - [x] **삭제 버튼** — 원형 `bg-muted` 배경 + `X` lucide 아이콘 (`h-7 w-7 rounded-full`). hover 시 `bg-destructive/10 text-destructive` — 플레인 텍스트에서 명확한 아이콘 버튼으로 개선
   - [x] category에 따라 분기:
-    - [x] `"strength"` → `<SetTable>` + `[+ 세트 추가]` 버튼
+    - [x] `"strength"` → `<SetTable>` + `[세트 추가]` 버튼
     - [x] `"cardio"` / `"flexibility"` / `"other"` → `<DurationInput>`
-  - [x] `[+ 세트 추가]` 버튼 (근력만) — 빈 세트(`{ weight: 0, reps: 0 }`) push
+  - [x] `[세트 추가]` 버튼 (근력만) — dashed border 커스텀 버튼 (`Plus` 아이콘), 빈 세트(`{ weight: 0, reps: 0 }`) push. workout 페이지 버튼 스타일과 통일
 
 - [x] `SetTable.tsx` (CLIENT) — 근력 전용
   - [x] 헤더 행: 세트 / 무게(kg) / 횟수
@@ -533,10 +536,12 @@ src/
     - [x] 값 바꾸면 "자동계산 복원 (N분)" 버튼 표시 (`text-brand-button`)
     - ~~퀵 버튼 (15/30/60/90분)~~ — 제거됨
   - [x] ~~사진 업로드~~ — `/workout/complete`로 분리됨
+  - [x] 설명 텍스트: "고생하셨습니다. 오늘의 노력을 기록으로 남겨볼게요."
   - [x] **버튼 레이아웃 — 세로 스택 (모바일 최적)**
     - [x] "다음 →" — 풀 너비 `rounded-2xl bg-mint-gradient`, `active:scale-95`. 클릭 시 `onComplete(durationMinutes)` → sessionStorage 저장 후 `/workout/complete` 이동
     - [x] "취소" — 아래 중앙 텍스트. `text-muted-foreground`, hover 시 `text-foreground`. 클릭 시 `onOpenChange(false)`
   - [x] `onComplete` 시그니처: `(durationMinutes: number) => Promise<void>` (photoFile 제거)
+  - [x] 데드 임포트 제거: `DialogFooter`, `Button` (커스텀 버튼으로 대체 후 미사용)
 
 **인증 카드 페이지 (`/workout/complete`)**
 
@@ -547,23 +552,26 @@ src/
     - [x] 사진 있을 때: `<img object-cover>` + 상하 그라디언트 오버레이 (항상 표시)
     - [x] 항상-on 그라디언트: 상단 `from-black/65`, 하단 `from-black/90 via-black/50` — 어떤 사진에서도 텍스트 가독성 보장
     - [x] 오른쪽 상단 X 버튼 → 사진 제거
+    - [x] `capture="environment"` 제거 — 카메라 강제 대신 카메라/갤러리 선택 시트 표시 (iOS 기준)
   - [x] **레이아웃 프리셋 3종** — 색상이 아닌 구성요소 배치·크기·폰트로 구분 (타임스탬프 앱 스타일)
     - [x] **스탬프** — 날짜/시간이 하단 좌측에 모노스페이스(`font-mono`) 대형 텍스트. 로고는 상단 우측 워터마크. 스탯은 우측 하단. 필름 카메라 타임스탬프 느낌
     - [x] **에디토리얼** — 로고+날짜+시간 상단 좌측 세로 스택 (날짜 `text-4xl` 빅타이포). 볼륨 `text-5xl` 히어로 숫자. 구분선으로 나뉜 하단 스탯
-    - [x] **패널** — 하단 frosted panel (`bg-black/45 backdrop-blur-md`). 패널 내 로고·날짜·시간 한 줄 → 태그 → 볼륨/시간. 정보 카드 스타일
+    - [x] **패널** — 하단 다크 패널 (`bg-black/60`). 패널 내 로고·날짜·시간 한 줄 → 태그 → 볼륨/시간. 정보 카드 스타일 *(backdrop-blur 제거 — html-to-image 캡처 품질 일관성)*
     - [x] 프리셋 셀렉터: 레이아웃 구조를 나타내는 미니어처 썸네일 (CSS 아트)
+  - [x] **설정 패널 섹션 레이블** — "레이아웃" / "카드에 표시할 항목" 소제목
   - [x] **항상 표시** — 로고(Snapmove), 날짜, 시간: 토글 불가, 모든 프리셋에서 필수 표시
   - [x] **토글 가능 항목** (3개): 운동 부위 태그 / 총 볼륨 / 소요 시간
     - [x] 운동 부위: `muscleGroup` + 비근력 카테고리를 태그 pill로 중복 제거 (`Array.from(new Set(...))`)
     - [x] 날짜 형식: `${yy}. ${mm}. ${dd}` (예: "26. 05. 07"), `Date.now()` 기반 현지 시간
     - [x] 시간: `toLocaleTimeString("ko-KR", { hour12: true })` (예: "오후 8:35")
   - [x] **설정 localStorage 저장** — `"snapmove_card_settings"` 키로 프리셋·토글 상태 유지. 로드 시 구 프리셋 키(`"night"` 등) 자동 sanitize → `"stamp"` 폴백
-  - [x] **사진 규격 안내** — 사진 없을 때 카드 아래에 `text-xs` 표시: "4:5 비율 사진을 권장해요 · JPG / PNG · 최대 10MB"
+  - [x] **사진 규격 안내** — 사진 없을 때 카드 아래에 `text-xs` 표시: "4:5 비율 사진을 권장해요 · JPG · PNG · 최대 10MB"
+  - [x] 빈 카드 안내 텍스트: "오늘 운동 사진 추가하기 📸"
   - [x] **버튼 2단 구성** (마케터·프로덕트 기준 역할 분리)
-    - [x] "인증 카드 저장 · 공유" — `Share2` 아이콘, dashed outline secondary 버튼. 설명: "오늘의 기록을 SNS에 공유하거나 갤러리에 저장해요". UI만 구현, 기능 미연결
-    - [x] "기록 저장" — `bg-mint-gradient` primary CTA. 설명: "캘린더에 오늘의 운동이 기록돼요". 클릭 시 `sessionStorage` 클리어 + `router.replace("/calendar")`
-  - [ ] "기록 저장" — Supabase INSERT 연결 (Phase 5에서 처리)
-  - [ ] "인증 카드 저장 · 공유" — html2canvas PNG 저장 + Web Share API 연결
+    - [x] **"자랑하기 💪"** — `Share2` 아이콘, dashed outline secondary 버튼. 설명: "인증샷 공유 또는 갤러리 저장". `html-to-image` `toPng()` → `navigator.share()` (모바일) / 다운로드 fallback (데스크탑). 파일명: `snapmove-YYMMDD.png`, `pixelRatio: 2`
+    - [x] **"캘린더에 기록하기 ✅"** — `bg-mint-gradient` primary CTA. 설명: "오늘의 운동을 캘린더에 남겨요". 클릭 시 `sessionStorage` 클리어 + `router.replace("/calendar")`
+  - [ ] "캘린더에 기록하기" — Supabase INSERT 연결 (Phase 5에서 처리)
+  - [ ] "자랑하기" — html2canvas → html-to-image 교체 완료. Web Share API 공유 시트 제목: "오늘의 운동 인증 💪"
 
 ### 검증 체크리스트
 
@@ -584,10 +592,9 @@ src/
 - [x] `/workout/complete` — 프리셋 3종(스탬프/에디토리얼/패널) 전환 시 레이아웃 즉시 변경
 - [x] `/workout/complete` — 토글 3종(부위/볼륨/시간) 실시간 반영
 - [x] `/workout/complete` — "기록 저장" 클릭 시 sessionStorage 클리어 + `/calendar` 이동
-- [x] `/workout/complete` — "인증 카드 저장 · 공유" 버튼 UI 표시 (기능 미연결)
+- [x] `/workout/complete` — "자랑하기 💪" 버튼 클릭 시 카드 PNG 캡처 + 공유/다운로드
 - [x] `/workout/complete` — 사진 없을 때 규격 안내 텍스트 표시
-- [ ] Supabase INSERT 연동 ("기록 저장" 버튼)
-- [ ] html2canvas + Web Share API 연결 ("인증 카드 저장 · 공유" 버튼)
+- [ ] Supabase INSERT 연동 ("캘린더에 기록하기" 버튼)
 - [ ] 모바일(375px) — 세트 입력 행 가로 스크롤 없음
 
 ---
