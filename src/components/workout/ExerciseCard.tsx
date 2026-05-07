@@ -1,6 +1,7 @@
 "use client";
 import { ExerciseRecord } from "@/types";
 import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 import SetTable from "./SetTable";
 import DurationInput from "./DurationInput";
 import ExerciseBadge from "@/components/shared/ExerciseBadge";
@@ -23,9 +24,12 @@ export default function ExerciseCard({ record, onChange, onRemove }: Props) {
           <span className="font-medium">{record.name}</span>
           <ExerciseBadge category={record.category} muscleGroup={record.muscleGroup} />
         </div>
-        <Button variant="ghost" size="icon-sm" onClick={onRemove}>
-          X
-        </Button>
+        <button
+          onClick={onRemove}
+          className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
       </div>
       {record.category === "strength" ? (
         <>

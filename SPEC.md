@@ -488,9 +488,9 @@ src/
 - [x] `workout/page.tsx` (CLIENT)
   - [x] 상태: `exercises: ExerciseRecord[]`
   - [x] TopBar: "오늘의 운동"
-  - [x] `[+ 운동 추가]` 버튼 — ExerciseDrawer 트리거
+  - [x] `[+ 운동 추가]` 버튼 — dashed border + `Plus` 아이콘. hover 시 `brand-button` 색으로 강조. ExerciseDrawer 트리거
   - [x] ExerciseCard 목록 렌더링
-  - [x] 하단 "운동 완료" 버튼 (exercises 1개 이상일 때만) → FinishModal 열림
+  - [x] **"운동 완료" 버튼** — `fixed bottom-16` (BottomNav 바로 위), 중앙 정렬 pill (`rounded-2xl bg-mint-gradient`), `CheckCircle2` 아이콘. exercises 1개 이상일 때만 표시. 콘텐츠 영역 `pb-40`으로 가림 방지
   - [x] FinishModal 항상 렌더링 (`{finishOpen && ...}` 제거) — Dialog가 open/close 제어해야 애니메이션 정상 작동
   - [ ] 우측 "×" 닫기 → 확인 Dialog → `/calendar`
 
@@ -506,6 +506,7 @@ src/
 
 - [x] `ExerciseCard.tsx` (CLIENT)
   - [x] 운동 이름 헤더 + `ExerciseBadge` (카테고리·근육군) + 우측 삭제 버튼
+  - [x] **삭제 버튼** — 원형 `bg-muted` 배경 + `X` lucide 아이콘 (`h-7 w-7 rounded-full`). hover 시 `bg-destructive/10 text-destructive`로 변해 삭제 의미 직관적 전달
   - [x] category에 따라 분기:
     - [x] `"strength"` → `<SetTable>` + `[+ 세트 추가]` 버튼
     - [x] `"cardio"` / `"flexibility"` / `"other"` → `<DurationInput>`
@@ -531,8 +532,9 @@ src/
     - [x] 값 바꾸면 "자동계산 복원 (N분)" 버튼 표시 (`text-brand-button`)
     - ~~퀵 버튼 (15/30/60/90분)~~ — 제거됨
   - [x] ~~사진 업로드~~ — `/workout/complete`로 분리됨
-  - [x] 취소 버튼 → `onOpenChange(false)`
-  - [x] "다음 →" 버튼 → `sessionStorage.setItem("snapmove_pending_session", JSON.stringify({ exercises, totalVolume, durationMinutes, date }))` 후 `router.push("/workout/complete")`
+  - [x] **버튼 레이아웃 — 세로 스택 (모바일 최적)**
+    - [x] "다음 →" — 풀 너비 `rounded-2xl bg-mint-gradient`, `active:scale-95`. 클릭 시 `onComplete(durationMinutes)` → sessionStorage 저장 후 `/workout/complete` 이동
+    - [x] "취소" — 아래 중앙 텍스트. `text-muted-foreground`, hover 시 `text-foreground`. 클릭 시 `onOpenChange(false)`
   - [x] `onComplete` 시그니처: `(durationMinutes: number) => Promise<void>` (photoFile 제거)
 
 **인증 카드 페이지 (`/workout/complete`)**
