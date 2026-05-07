@@ -9,19 +9,20 @@
 | **환경변수**      | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (`ANON_KEY` 아님)              |
 | **제약 조건**     | Supabase Auth + 운동 기록 저장은 실제 구현, 캘린더/운동은 mock 데이터                             |
 | **디자인 방향**   | 라이트 모드, 연한 민트(teal) 단일 계열, 흰색 + teal-50 교차 배경, 보조 강조색 없음, 모바일 퍼스트 |
+| **인증 사진 비율** | **4:5 고정** — 인스타그램 피드 최적 비율, SNS 공유 시 별도 크롭 불필요. 미리보기·인증 카드 모두 `aspect-[4/5]` |
 | **컴포넌트 원칙** | Server Component 우선, Client Component는 상태·인터랙션 필요 시만                                 |
 
 ## 타입 & 파일 역할 정의
 
 ### `src/types/index.ts` — 앱 전역 TypeScript 타입
 
-| 타입/인터페이스 | 역할 |
-|---|---|
-| `ExerciseCategory` | 운동 카테고리 유니온 타입: `"strength" \| "cardio" \| "flexibility" \| "other"` |
-| `MuscleGroup` | 근육 그룹 유니온 타입: chest / back / shoulders / arms / legs / core / full-body |
-| `SetRecord` | **근력·기타 운동 전용** 세트 1개의 기록. `{ weight: number, reps: number }` — 유산소·유연성은 세트 개념 없이 `durationMinutes`로 대체 |
-| `ExerciseRecord` | 완료된 운동 1종목의 기록. id·name·category 필수, muscleGroup?·durationMinutes?·sets? 선택. category에 따라 사용 필드가 다름: 근력/기타 → `sets`, 유산소/유연성 → `durationMinutes` |
-| `WorkoutSession` | 완료된 운동 세션 전체. id·date·durationMinutes·exercises(ExerciseRecord[]) |
+| 타입/인터페이스    | 역할                                                                                                                                                                               |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ExerciseCategory` | 운동 카테고리 유니온 타입: `"strength" \| "cardio" \| "flexibility" \| "other"`                                                                                                    |
+| `MuscleGroup`      | 근육 그룹 유니온 타입: chest / back / shoulders / arms / legs / core / full-body                                                                                                   |
+| `SetRecord`        | **근력·기타 운동 전용** 세트 1개의 기록. `{ weight: number, reps: number }` — 유산소·유연성은 세트 개념 없이 `durationMinutes`로 대체                                              |
+| `ExerciseRecord`   | 완료된 운동 1종목의 기록. id·name·category 필수, muscleGroup?·durationMinutes?·sets? 선택. category에 따라 사용 필드가 다름: 근력/기타 → `sets`, 유산소/유연성 → `durationMinutes` |
+| `WorkoutSession`   | 완료된 운동 세션 전체. id·date·durationMinutes·exercises(ExerciseRecord[])                                                                                                         |
 
 > `SetEntry`, `ExerciseEntry`, `Exercise`, `Routine` — 초기 설계 단계 잔재, 전부 삭제됨.  
 > "진행 중 운동 추적" 개념 없음 — 이 앱은 **완료된 운동을 사후 기록**하는 앱.
@@ -123,7 +124,7 @@ category에 따라 set 내부 필드가 달라짐:
 | 로그인        | `/login`            | ✅ Supabase Auth 연결 |
 | 회원가입      | `/signup`           | ✅ Supabase Auth 연결 |
 | 캘린더 (메인) | `/calendar`         | ✅ 구현 완료          |
-| 운동 기록     | `/workout`          | ❌ 미생성             |
+| 운동 기록     | `/workout`          | ✅ 구현 완료          |
 | 인증 카드     | `/workout/complete` | ❌ 미생성             |
 | 설정          | `/settings`         | ✅ 구현 완료          |
 
@@ -248,10 +249,10 @@ src/
   - [x] `<main className="flex-1 pb-24">{children}</main>` ← pb-20 → pb-24 변경 완료
   - [x] `<BottomNav />` 포함
 - [x] `src/lib/exercise.ts` 작성
-    - [x] `ExerciseItem` 인터페이스: `{ name, category, muscleGroup? }`
-    - [x] `EXERCISES` — 92개 운동 카탈로그 (근력 56 / 유산소 14 / 유연성 12 / 기타 10)
-    - [x] `EXERCISE_MAP` — `Map<name, ExerciseItem>` (O(1) 조회용)
-    
+  - [x] `ExerciseItem` 인터페이스: `{ name, category, muscleGroup? }`
+  - [x] `EXERCISES` — 92개 운동 카탈로그 (근력 56 / 유산소 14 / 유연성 12 / 기타 10)
+  - [x] `EXERCISE_MAP` — `Map<name, ExerciseItem>` (O(1) 조회용)
+
 ### 검증 체크리스트
 
 - [x] `npm run dev` 오류 없이 실행
@@ -483,54 +484,57 @@ src/
 
 **운동 기록 페이지 (`/workout`)**
 
-- [ ] `workout/page.tsx` (CLIENT)
-  - [ ] 상태: `exercises: ExerciseRecord[]`
-  - [ ] **헤더 바** — TopBar: "오늘의 운동 · 날짜", 우측 "×" 닫기 → 확인 Dialog → `/calendar`
-  - [ ] `[+ 운동 추가]` 버튼 — ExerciseDrawer 트리거
-  - [ ] ExerciseCard 목록 렌더링
-  - [ ] 하단 고정 "운동 완료 (Finish)" 버튼 → FinishModal 열림
+- [x] `workout/page.tsx` (CLIENT)
+  - [x] 상태: `exercises: ExerciseRecord[]`
+  - [x] TopBar: "오늘의 운동"
+  - [x] `[+ 운동 추가]` 버튼 — ExerciseDrawer 트리거
+  - [x] ExerciseCard 목록 렌더링
+  - [x] 하단 "운동 완료" 버튼 (exercises 1개 이상일 때만) → FinishModal 열림
+  - [x] FinishModal 항상 렌더링 (`{finishOpen && ...}` 제거) — Dialog가 open/close 제어해야 애니메이션 정상 작동
+  - [ ] 우측 "×" 닫기 → 확인 Dialog → `/calendar`
 
-- [ ] `ExerciseDrawer.tsx` (CLIENT)
-  - [ ] Shadcn `<Drawer>` (바텀 시트)
-  - [ ] `EXERCISES` (exercises.ts) 기반 목록 — mock-data 미사용
-  - [ ] 카테고리 탭: 전체 / 근력 / 유산소 / 유연성 / 기타
-  - [ ] 근력 선택 시 세부 근육군 칩: 가슴 / 등 / 어깨 / 팔 / 하체 / 코어
-  - [ ] 운동명 검색 `<Input>` (이름 필터링)
-  - [ ] 검색어 있을 때 목록 하단에 `+ "{검색어}" 직접 추가` 항목 노출
-  - [ ] 직접 추가 시 현재 선택된 카테고리·근육군 자동 적용
-  - [ ] 항목 선택 → Drawer 닫힘 + `exercises`에 새 항목 push
+- [x] `ExerciseDrawer.tsx` (CLIENT)
+  - [x] `<Drawer>` (바텀 시트)
+  - [x] `EXERCISES` (exercise.ts) 기반 목록 — mock-data 미사용
+  - [x] 카테고리 탭: 전체 / 근력 / 유산소 / 유연성 / 기타
+  - [x] 근력 선택 시 세부 근육군 칩: 가슴 / 등 / 어깨 / 팔 / 하체 / 코어
+  - [x] 운동명 검색 `<Input>` (이름 필터링)
+  - [x] 검색어 있을 때 목록 하단에 `+ "{검색어}" 직접 추가` 항목 노출
+  - [x] 직접 추가 시 현재 선택된 카테고리·근육군 자동 적용
+  - [x] 항목 선택 → Drawer 닫힘 + `exercises`에 새 항목 push
 
-- [ ] `ExerciseCard.tsx` (CLIENT)
-  - [ ] 운동 이름 헤더 + 우측 삭제 `[✕]` 버튼
-  - [ ] category에 따라 분기:
-    - [ ] `"strength"` / `"other"` → `<SetTable>` + `[+ 세트 추가]` 버튼
-    - [ ] `"cardio"` / `"flexibility"` → `<DurationInput>` (시간 단일 입력, 세트 없음)
-  - [ ] `[+ 세트 추가]` 버튼 (근력/기타만) — 이전 세트 값 복사하여 새 행 push
+- [x] `ExerciseCard.tsx` (CLIENT)
+  - [x] 운동 이름 헤더 + `ExerciseBadge` (카테고리·근육군) + 우측 삭제 버튼
+  - [x] category에 따라 분기:
+    - [x] `"strength"` → `<SetTable>` + `[+ 세트 추가]` 버튼
+    - [x] `"cardio"` / `"flexibility"` / `"other"` → `<DurationInput>`
+  - [x] `[+ 세트 추가]` 버튼 (근력만) — 빈 세트(`{ weight: 0, reps: 0 }`) push
 
-- [ ] `SetTable.tsx` (CLIENT) — 근력·기타 전용
-  - [ ] `category === "strength"` 헤더 행: 세트 / 무게(kg) / 횟수
-  - [ ] `category === "other"` 헤더 행: 세트 / 횟수
-  - [ ] 각 세트 행:
-    - [ ] 세트 번호 레이블
-    - [ ] 무게 `<input type="number" inputMode="decimal">` — strength만, 비워도 됨 (placeholder="0")
-    - [ ] 횟수 `<input type="number" inputMode="numeric">`
-  - [ ] props: `sets: SetRecord[]`, `onChange`, `category`
+- [x] `SetTable.tsx` (CLIENT) — 근력 전용
+  - [x] 헤더 행: 세트 / 무게(kg) / 횟수
+  - [x] 각 세트 행: 번호 + 무게 input + 횟수 input
+  - [x] props: `sets: SetRecord[]`, `onChange`
 
-- [ ] `DurationInput.tsx` (CLIENT) — 유산소·유연성 전용
-  - [ ] `<input type="number" inputMode="numeric" placeholder="시간 (분)">` 단일 입력
-  - [ ] props: `duration`, `onChange`
+- [x] `DurationInput.tsx` (CLIENT) — 유산소·유연성·기타 전용
+  - [x] `<Input type="text" inputMode="numeric" placeholder="시간 (분)">` 단일 입력
+  - [x] props: `duration`, `onChange`
 
-- [ ] `FinishModal.tsx` (CLIENT)
-  - [ ] `canvas-confetti` 폭죽 실행 (`confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } })`)
-  - [ ] 운동 요약 (총 볼륨 / 운동 종목 수)
-  - [ ] **운동 시간 수동 입력**
-    - [ ] 퀵 버튼: "15분" / "30분" / "60분" / "90분" — 선택 버튼 `bg-teal-600 text-white`
-    - [ ] `<Input type="number" placeholder="직접 입력 (분)">` — 퀵 버튼과 양방향 동기화
-  - [ ] **사진 업로드** (선택)
-    - [ ] `<input type="file" accept="image/*" capture="environment">` — 카메라/갤러리
-    - [ ] 선택 시 `URL.createObjectURL(file)`로 미리보기 썸네일
-    - [ ] 취소 `[×]` 버튼으로 사진 제거
-  - [ ] "완료" 버튼 → Supabase INSERT → `/workout/complete` 이동
+- [x] `FinishModal.tsx` (CLIENT) ← **2026-05-07 대폭 개선**
+  - [x] `<Dialog open={open} onOpenChange={onOpenChange}>` — 실제 모달 오버레이 적용 (overlay·Esc·외부클릭 닫기 모두 작동)
+  - [x] `canvas-confetti` 폭죽 — 모달 open 시점에만 발동 (useEffect deps: `[open]`)
+  - [x] **통계 3분할 카드**: 운동 종류 / 총 세트 / 총 볼륨(kg)
+  - [x] **운동 목록** — 종목명 + `ExerciseBadge` + 세트 수 or 시간
+  - [x] **운동 시간 자동계산 + 자유편집**
+    - [x] 모달 열릴 때 각 운동의 `durationMinutes` 합산값 자동 세팅
+    - [x] `<Input>` 직접 편집 가능
+    - [x] 값 바꾸면 "자동계산 복원 (N분)" 버튼 표시
+    - ~~퀵 버튼 (15/30/60/90분)~~ — 제거됨
+  - [x] **사진 업로드** (선택)
+    - [x] 비어있을 때: 점선 `aspect-[4/5]` 박스 (클릭 시 파일 선택)
+    - [x] 선택 후: `aspect-[4/5]` 미리보기 + 우측상단 `[×]` 제거 버튼
+    - [x] **사진 비율 4:5 고정** — 인증 카드 최종 비율과 동일, SNS 공유 최적
+  - [x] 취소 버튼 → `onOpenChange(false)` 명시 연결
+  - [ ] 저장하기 버튼 → Supabase INSERT → `/workout/complete` 이동 (현재 `console.log`)
 
 **인증 카드 페이지 (`/workout/complete`)**
 
@@ -538,7 +542,7 @@ src/
   - [ ] `photoUrl?: string` prop 수신
   - [ ] **사진 있을 때**: 카드 상단 1/3 `<img>` `object-cover`, 하단 2/3 운동 데이터
   - [ ] **사진 없을 때**: `card-gradient` 전체 배경 유지
-  - [ ] 비율 토글 — "1:1" / "4:5" 버튼, `aspect-square` ↔ `aspect-[4/5]` 전환
+  - [ ] **비율: 4:5 고정** (`aspect-[4/5]`) — 1:1 토글 제거. 4:5가 모바일 SNS 최적 (인스타그램 피드 화면 점유율 최대, 공유 시 크롭 불필요)
   - [ ] 좌상단 Snapmove 로고 (`text-white`)
   - [ ] 날짜 표시 (크게, `text-white font-bold`)
   - [ ] 운동 목록 + 볼륨 (`text-white`)
@@ -549,20 +553,20 @@ src/
 ### 검증 체크리스트
 
 - [ ] `/workout` 접속 시 BottomNav 숨김 확인
-- [ ] `[+ 운동 추가]` 클릭 → Drawer(바텀 시트) 열림/닫힘
-- [ ] 운동 선택 시 ExerciseCard 추가 확인
-- [ ] 근력 카테고리 선택 시 근육군 셀렉터 표시
-- [ ] 근력 운동 선택 시 SetTable (세트/무게/횟수) 렌더링 확인
-- [ ] 풀업 등 맨몸 근력 — 무게 비운 채로 횟수만 입력 가능 확인
-- [ ] 유산소·유연성 운동 선택 시 DurationInput (시간 단일 입력) 렌더링 확인
-- [ ] 기타 운동 선택 시 SetTable (세트/횟수, 무게 없음) 렌더링 확인
-- [ ] 완료 체크 시 행 opacity 변화
-- [ ] `[+ 세트 추가]` 클릭 시 이전 값 복사 새 행 추가 (근력/기타만)
-- [ ] "Finish" 클릭 → FinishModal 열림 + confetti 폭죽 실행
-- [ ] 퀵 버튼 클릭 시 입력 필드 값 동기화 + 선택 버튼 강조
-- [ ] 사진 선택 시 썸네일 미리보기 표시
-- [ ] "완료" 클릭 시 `/workout/complete` 이동
-- [ ] WorkoutShareCard "1:1" / "4:5" 비율 전환 동작
+- [x] `[+ 운동 추가]` 클릭 → Drawer(바텀 시트) 열림/닫힘
+- [x] 운동 선택 시 ExerciseCard 추가 확인
+- [x] 근력 카테고리 선택 시 근육군 셀렉터 표시
+- [x] 근력 운동 선택 시 SetTable (세트/무게/횟수) 렌더링 확인
+- [x] 유산소·유연성 운동 선택 시 DurationInput (시간 단일 입력) 렌더링 확인
+- [x] `[+ 세트 추가]` 클릭 시 새 빈 행 추가 (근력만)
+- [x] "운동 완료" 클릭 → FinishModal 열림 + confetti 폭죽 실행
+- [x] FinishModal 취소 → 모달 닫힘 (`onOpenChange` 정상 작동 확인)
+- [x] 유산소·유연성 운동 시간 합산값 FinishModal 소요시간에 자동 반영
+- [x] 소요시간 직접 수정 시 "자동계산 복원" 버튼 표시
+- [x] 사진 선택 시 4:5 비율 미리보기 표시
+- [x] 사진 미리보기 `[×]` 버튼으로 제거
+- [ ] "저장하기" 클릭 시 Supabase INSERT → `/workout/complete` 이동
+- [ ] WorkoutShareCard 4:5 비율 카드 렌더링
 - [ ] Download 버튼 클릭 시 PNG 저장
 - [ ] 모바일(375px) — 세트 입력 행 가로 스크롤 없음
 

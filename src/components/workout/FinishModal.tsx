@@ -1,8 +1,19 @@
 "use client";
 import { ExerciseRecord } from "@/types";
 import confetti from "canvas-confetti";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import ExerciseBadge from "@/components/shared/ExerciseBadge";
+import { ImageIcon, X } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -11,6 +22,7 @@ interface Props {
   totalVolume: number;
   onComplete: (durationMinutes: number, photoFile?: File) => Promise<void>;
 }
+
 export default function FinishModal({
   open,
   onOpenChange,
@@ -19,15 +31,25 @@ export default function FinishModal({
   onComplete,
 }: Props) {
   const [photoFile, setPhotoFile] = useState<File | undefined>();
-  const [durationMinutes, setDurationMinutes] = useState<number>(0);
+  const [durationMinutes, setDurationMinutes] = useState(0);
+
+  const calculatedDuration = useMemo(
+    () => exercises.reduce((sum, ex) => sum + (ex.durationMinutes ?? 0), 0),
+    [exercises],
+  );
+
+  useEffect(() => {
+    if (open) {
+      setDurationMinutes(calculatedDuration);
+      setPhotoFile(undefined);
+      confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+    }
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const previewUrl = useMemo(() => {
     if (!photoFile) return null;
     return URL.createObjectURL(photoFile);
   }, [photoFile]);
-
-  useEffect(() => {
-    if (open) confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
-  }, [open]);
 
   useEffect(() => {
     return () => {
@@ -35,72 +57,146 @@ export default function FinishModal({
     };
   }, [previewUrl]);
 
-  return (
-    <>
-      <h2>🎉 운동 완료</h2>
-      <div>
-        <h3>총 볼륨</h3>
-        <span>{totalVolume}</span>
-      </div>
-      <h3>운동 목록</h3>
-      <ul>
-        {exercises.map((ex) => (
-          <Fragment key={ex.id}>
-            <li>{ex.name}</li>
-            {ex.sets?.length && <li>{ex.sets.length}세트</li>}
-          </Fragment>
-        ))}
-      </ul>
-      <>
-        <h3>
-          <label>소요 시간 (분)</label>
-        </h3>
-      </>
-      <h3>
-        <label>사진 (선택)</label>
-      </h3>
-      {/* 퀵 버튼 */}
-      <div>
-        {[15, 30, 60, 90].map((min) => (
-          <button
-            key={min}
-            onClick={() => setDurationMinutes(min)}
-            className={
-              durationMinutes === min
-                ? "bg-teal-600 text-white"
-                : "border"
-            }
-          >
-            {min}분
-          </button>
-        ))}
-      </div>
+  const totalSets = exercises.flatMap((ex) => ex.sets ?? []).length;
 
-      {/* 직접 입력 */}
-      <Input
-        type="number"
-        min={1}
-        value={durationMinutes ?? ""}
-        onChange={(e) => {
-          const val = e.target.valueAsNumber;
-          setDurationMinutes(isNaN(val) ? 0 : val);
-        }}
-        placeholder="직접 입력"
-      />
-      <div>
-        <Input type="file" accept="image/*" capture="environment" onChange={(e) => {
-          if (e.target.files && e.target.files?.[0]) {
-            setPhotoFile(e.target.files[0]);
-          }
-        }} />
-        {previewUrl && (
-          <img src={previewUrl} alt="Preview" />
-        )}
-      </div>
-      <div>
-        <button>취소</button>
-        <button onClick={() => onComplete(durationMinutes, photoFile)}>저장하기</button>
-      </div >
-    </>
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent showCloseButton={false} className="max-w-sm gap-5">
+        <DialogHeader>
+          <DialogTitle className="text-center text-base">
+            오늘의 움직임, 스냅 완료! 🏆
+          </DialogTitle>
+          <DialogDescription className="text-center text-sm text-muted-foreground">
+            고생하셨습니다. 오늘의 노력을 데이터로 저장할게요.
+          </DialogDescription>
+        </DialogHeader>
+
+        {/* 통계 */}
+        <div className="grid grid-cols-3 divide-x rounded-xl bg-muted/60 py-3">
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[11px] text-muted-foreground">운동 종류</span>
+            <span className="text-xl font-semibold">{exercises.length}</span>
+          </div>
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[11px] text-muted-foreground">총 세트</span>
+            <span className="text-xl font-semibold">{totalSets}</span>
+          </div>
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[11px] text-muted-foreground">총 볼륨</span>
+            <span className="text-xl font-semibold">
+              {totalVolume.toLocaleString()}
+              <span className="ml-0.5 text-xs font-normal">kg</span>
+            </span>
+          </div>
+        </div>
+
+        {/* 운동 목록 */}
+        <div className="flex max-h-40 flex-col gap-1.5 overflow-y-auto">
+          {exercises.map((ex) => (
+            <div
+              key={ex.id}
+              className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-2"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">{ex.name}</span>
+                <ExerciseBadge
+                  category={ex.category}
+                  muscleGroup={ex.muscleGroup}
+                />
+              </div>
+              <span className="text-xs text-muted-foreground">
+                {ex.sets
+                  ? `${ex.sets.length}세트`
+                  : ex.durationMinutes
+                    ? `${ex.durationMinutes}분`
+                    : ""}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* 소요 시간 */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-baseline justify-between">
+            <label className="text-sm font-medium">소요 시간</label>
+            {calculatedDuration > 0 &&
+              durationMinutes !== calculatedDuration && (
+                <button
+                  className="text-[11px] text-teal-600 hover:underline"
+                  onClick={() => setDurationMinutes(calculatedDuration)}
+                >
+                  자동계산 복원 ({calculatedDuration}분)
+                </button>
+              )}
+          </div>
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              inputMode="numeric"
+              value={durationMinutes === 0 ? "" : String(durationMinutes)}
+              onChange={(e) => {
+                const filtered = e.target.value.replace(/[^0-9]/g, "");
+                setDurationMinutes(
+                  filtered === "" ? 0 : parseInt(filtered, 10),
+                );
+              }}
+              placeholder={
+                calculatedDuration > 0
+                  ? `${calculatedDuration}분 (자동계산)`
+                  : "시간 직접 입력"
+              }
+              className="flex-1"
+            />
+            <span className="text-sm text-muted-foreground">분</span>
+          </div>
+        </div>
+
+        {/* 사진 */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium">
+            오늘의 사진{" "}
+            <span className="font-normal text-muted-foreground">(선택)</span>
+          </label>
+          {previewUrl ? (
+            <div className="relative">
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="h-32 w-full rounded-xl object-cover"
+              />
+              <button
+                className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white"
+                onClick={() => setPhotoFile(undefined)}
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ) : (
+            <label className="flex h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-muted-foreground/25 transition-colors hover:border-muted-foreground/50">
+              <ImageIcon className="h-5 w-5 text-muted-foreground/50" />
+              <span className="text-xs text-muted-foreground">사진 추가</span>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) setPhotoFile(e.target.files[0]);
+                }}
+              />
+            </label>
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            취소
+          </Button>
+          <Button onClick={() => onComplete(durationMinutes, photoFile)}>
+            저장하기
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

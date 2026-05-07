@@ -15,7 +15,7 @@ export const MUSCLE_GROUPS = [
     { value: "arms",      label: "팔",   color: "bg-rose-100 text-rose-700" },                              
     { value: "legs",      label: "하체", color: "bg-amber-100 text-amber-700" },                            
     { value: "core",      label: "코어", color: "bg-green-100 text-green-700" },                            
-    { value: "full-body", label: "전신", color: "bg-slate-100 text-slate-600" },                            
+    { value: "full-body", label: "전신", color: "bg-sky-100 text-sky-700" },                            
 ] as const;
 
 export interface ExerciseItem {

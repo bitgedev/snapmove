@@ -73,15 +73,13 @@ export default function WorkoutPage() {
           ]);
         }}
       />
-      {finishOpen && (
-        <FinishModal
-          open={finishOpen}
-          onOpenChange={setFinishOpen}
-          exercises={exercises}
-          totalVolume={totalVolume}
-          onComplete={handleComplete}
-        />
-      )}
+      <FinishModal
+        open={finishOpen}
+        onOpenChange={setFinishOpen}
+        exercises={exercises}
+        totalVolume={totalVolume}
+        onComplete={handleComplete}
+      />
     </>
   );
 }

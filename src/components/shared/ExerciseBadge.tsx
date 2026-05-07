@@ -3,10 +3,10 @@ import { Badge } from "@/components/ui/badge";
 import type { ExerciseCategory, MuscleGroup } from "@/types";
 
 const CATEGORY_STYLE: Record<ExerciseCategory, string> = {
-  strength: "bg-gray-100 text-gray-600",
+  strength: "bg-indigo-100 text-indigo-700",
   cardio: "bg-orange-100 text-orange-700",
   flexibility: "bg-purple-100 text-purple-700",
-  other: "bg-slate-100 text-slate-600",
+  other: "bg-yellow-100 text-yellow-700",
 };
 
 const CATEGORY_LABEL: Record<ExerciseCategory, string> = {
@@ -22,10 +22,12 @@ interface Props {
 }
 
 export default function ExerciseBadge({ category, muscleGroup }: Props) {
-  if (muscleGroup) return <MuscleGroupBadge muscleGroup={muscleGroup} />;
   return (
-    <Badge className={CATEGORY_STYLE[category]}>
-      {CATEGORY_LABEL[category]}
-    </Badge>
+    <>
+      <Badge className={CATEGORY_STYLE[category]}>
+        {CATEGORY_LABEL[category]}
+      </Badge>
+      {muscleGroup && <MuscleGroupBadge muscleGroup={muscleGroup} />}
+    </>
   );
 }
