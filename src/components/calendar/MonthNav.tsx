@@ -28,7 +28,7 @@ export default function MonthNav({
         </p>
         <p className="text-xs text-gray-400">
           이번 달{" "}
-          <span className="font-bold text-teal-600">{sessionCount}회</span>{" "}
+          <span className="font-bold text-brand-button">{sessionCount}회</span>{" "}
           운동했어요
         </p>
       </div>

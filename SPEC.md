@@ -10,6 +10,7 @@
 | **제약 조건**     | Supabase Auth + 운동 기록 저장은 실제 구현, 캘린더/운동은 mock 데이터                             |
 | **디자인 방향**   | 라이트 모드, 연한 민트(teal) 단일 계열, 흰색 + teal-50 교차 배경, 보조 강조색 없음, 모바일 퍼스트 |
 | **인증 사진 비율** | **4:5 고정** — 인스타그램 피드 최적 비율, SNS 공유 시 별도 크롭 불필요. 미리보기·인증 카드 모두 `aspect-[4/5]` |
+| **색상 규칙**     | **`teal-*` 직접 사용 금지** — `globals.css`의 `brand-*` 토큰만 사용. `bg-brand-button`, `text-brand-hover` 등. teal 값과의 대응: teal-50→`brand-bg`, teal-100→`brand-border`, teal-300→`brand-icon`, teal-400→`brand-accent`, teal-500→`brand`, teal-600→`brand-button`, teal-700→`brand-hover`, teal-900→`brand-dark` |
 | **컴포넌트 원칙** | Server Component 우선, Client Component는 상태·인터랙션 필요 시만                                 |
 
 ## 타입 & 파일 역할 정의
@@ -519,7 +520,7 @@ src/
   - [x] `<Input type="text" inputMode="numeric" placeholder="시간 (분)">` 단일 입력
   - [x] props: `duration`, `onChange`
 
-- [x] `FinishModal.tsx` (CLIENT) ← **2026-05-07 대폭 개선**
+- [x] `FinishModal.tsx` (CLIENT) ← **2026-05-07 대폭 개선 / 사진 분리**
   - [x] `<Dialog open={open} onOpenChange={onOpenChange}>` — 실제 모달 오버레이 적용 (overlay·Esc·외부클릭 닫기 모두 작동)
   - [x] `canvas-confetti` 폭죽 — 모달 open 시점에만 발동 (useEffect deps: `[open]`)
   - [x] **통계 3분할 카드**: 운동 종류 / 총 세트 / 총 볼륨(kg)
@@ -527,28 +528,27 @@ src/
   - [x] **운동 시간 자동계산 + 자유편집**
     - [x] 모달 열릴 때 각 운동의 `durationMinutes` 합산값 자동 세팅
     - [x] `<Input>` 직접 편집 가능
-    - [x] 값 바꾸면 "자동계산 복원 (N분)" 버튼 표시
+    - [x] 값 바꾸면 "자동계산 복원 (N분)" 버튼 표시 (`text-brand-button`)
     - ~~퀵 버튼 (15/30/60/90분)~~ — 제거됨
-  - [x] **사진 업로드** (선택)
-    - [x] 비어있을 때: 점선 `aspect-[4/5]` 박스 (클릭 시 파일 선택)
-    - [x] 선택 후: `aspect-[4/5]` 미리보기 + 우측상단 `[×]` 제거 버튼
-    - [x] **사진 비율 4:5 고정** — 인증 카드 최종 비율과 동일, SNS 공유 최적
-  - [x] 취소 버튼 → `onOpenChange(false)` 명시 연결
-  - [ ] 저장하기 버튼 → Supabase INSERT → `/workout/complete` 이동 (현재 `console.log`)
+  - [x] ~~사진 업로드~~ — `/workout/complete`로 분리됨
+  - [x] 취소 버튼 → `onOpenChange(false)`
+  - [x] "다음 →" 버튼 → `sessionStorage.setItem("snapmove_pending_session", JSON.stringify({ exercises, totalVolume, durationMinutes, date }))` 후 `router.push("/workout/complete")`
+  - [x] `onComplete` 시그니처: `(durationMinutes: number) => Promise<void>` (photoFile 제거)
 
 **인증 카드 페이지 (`/workout/complete`)**
 
-- [ ] `WorkoutShareCard.tsx` (CLIENT, `components/shared/`)
-  - [ ] `photoUrl?: string` prop 수신
-  - [ ] **사진 있을 때**: 카드 상단 1/3 `<img>` `object-cover`, 하단 2/3 운동 데이터
-  - [ ] **사진 없을 때**: `card-gradient` 전체 배경 유지
-  - [ ] **비율: 4:5 고정** (`aspect-[4/5]`) — 1:1 토글 제거. 4:5가 모바일 SNS 최적 (인스타그램 피드 화면 점유율 최대, 공유 시 크롭 불필요)
-  - [ ] 좌상단 Snapmove 로고 (`text-white`)
-  - [ ] 날짜 표시 (크게, `text-white font-bold`)
-  - [ ] 운동 목록 + 볼륨 (`text-white`)
-  - [ ] 하단 총 볼륨 + 운동 시간 (`text-white font-bold`)
-  - [ ] Download 버튼 — html2canvas PNG 저장 (실제 구현)
-  - [ ] Share 버튼 (`border-white/50 text-white hover:bg-white/10`, 장식)
+- [x] `workout/complete/page.tsx` (CLIENT) ← **2026-05-07 구현**
+  - [x] `sessionStorage.getItem("snapmove_pending_session")` 으로 데이터 수신 — 없으면 `/workout` redirect
+  - [x] **4:5 인증 카드** (`aspect-[4/5]`, `bg-gradient-to-br from-brand-hover to-brand`)
+    - [x] 사진 없을 때: 그라디언트 배경 + 카드 내 "사진 추가" 버튼
+    - [x] 사진 있을 때: `<img object-cover>` + 하단 `bg-gradient-to-t from-black/70` 오버레이
+  - [x] **`WorkoutOverlay` 컴포넌트** (카드 내 텍스트 레이어)
+    - [x] 상단: "Snapmove" 브랜드 + 날짜
+    - [x] 하단: 운동 목록 (최대 3종 + "외 N종목") + 구분선 + 총 볼륨 / 세트 / 시간
+  - [x] "저장하고 캘린더로" 버튼 → `sessionStorage` 클리어 + `router.replace("/calendar")`
+  - [x] "사진 추가하기" 버튼 (사진 없을 때만 표시)
+  - [ ] Supabase INSERT (현재 미구현 — Phase 5에서 처리)
+  - [ ] Download 버튼 — html2canvas PNG 저장
 
 ### 검증 체크리스트
 
@@ -563,10 +563,11 @@ src/
 - [x] FinishModal 취소 → 모달 닫힘 (`onOpenChange` 정상 작동 확인)
 - [x] 유산소·유연성 운동 시간 합산값 FinishModal 소요시간에 자동 반영
 - [x] 소요시간 직접 수정 시 "자동계산 복원" 버튼 표시
-- [x] 사진 선택 시 4:5 비율 미리보기 표시
-- [x] 사진 미리보기 `[×]` 버튼으로 제거
-- [ ] "저장하기" 클릭 시 Supabase INSERT → `/workout/complete` 이동
-- [ ] WorkoutShareCard 4:5 비율 카드 렌더링
+- [x] "다음 →" 클릭 시 sessionStorage 저장 + `/workout/complete` 이동
+- [x] `/workout/complete` — 4:5 그라디언트 인증 카드 렌더링
+- [x] `/workout/complete` — 사진 추가 시 4:5 미리보기 + 오버레이 표시
+- [x] `/workout/complete` — "저장하고 캘린더로" 클릭 시 sessionStorage 클리어 + `/calendar` 이동
+- [ ] Supabase INSERT 연동
 - [ ] Download 버튼 클릭 시 PNG 저장
 - [ ] 모바일(375px) — 세트 입력 행 가로 스크롤 없음
 
@@ -605,13 +606,13 @@ mock 데이터를 Supabase 실제 데이터로 교체하고, 전체 UX를 점검
 
 - [ ] 모든 `loading.tsx` 파일 존재 확인 (calendar / workout / settings)
 - [ ] BottomNav Calendar / Workout FAB / Settings 탭 활성 강조 확인
-- [ ] 전체 페이지 라이트 모드 색상 일관성 점검 (흰색 배경, teal-50 교체 섹션)
+- [ ] 전체 페이지 라이트 모드 색상 일관성 점검 (흰색 배경, `brand-bg` 교체 섹션)
 - [ ] `MuscleGroupBadge` 색상이 모든 페이지에서 동일하게 표시되는지 확인
 - [ ] 모든 Shadcn 컴포넌트 라이트 테마 가독성 확인
 
 ### 검증 체크리스트
 
-- [ ] Calendar — 실제 운동한 날 teal dot 표시 확인 (DB 기반)
+- [ ] Calendar — 실제 운동한 날 `brand-button` dot 표시 확인 (DB 기반)
 - [ ] Calendar 날짜 클릭 시 실제 운동 데이터 표시
 - [ ] Workout 완료 후 Calendar에 해당 날 dot 생성 확인 (DB 반영)
 - [ ] 로그아웃 후 재로그인 시 데이터 유지 확인

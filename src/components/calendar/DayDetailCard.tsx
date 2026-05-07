@@ -56,11 +56,11 @@ export default function DayDetailCard({ selectedDate, sessions }: Props) {
         </h2>
         <div className="flex items-center gap-2">
           {totalVolume > 0 && (
-            <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700">
+            <span className="rounded-full bg-brand-bg px-3 py-1 text-xs font-medium text-brand-hover">
               🏋️ {totalVolume.toLocaleString()}kg
             </span>
           )}
-          <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700">
+          <span className="rounded-full bg-brand-bg px-3 py-1 text-xs font-medium text-brand-hover">
             ⏱️ {session.durationMinutes}분
           </span>
         </div>

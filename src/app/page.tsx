@@ -67,8 +67,8 @@ export default function LandingPage() {
           <div className="mx-auto max-w-5xl">
             <div className="mb-16 text-center">
               <h2 className="text-3xl font-black tracking-tight text-gray-900 md:text-5xl leading-tight">
-                움직임(<span className="text-teal-600">Move</span>)은 뜨겁게, <br className="md:hidden" />
-                기록(<span className="text-teal-600">Snap</span>)은 선명하게
+                움직임(<span className="text-brand-button">Move</span>)은 뜨겁게, <br className="md:hidden" />
+                기록(<span className="text-brand-button">Snap</span>)은 선명하게
               </h2>
             </div>
             

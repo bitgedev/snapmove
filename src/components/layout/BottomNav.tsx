@@ -18,7 +18,7 @@ export default function BottomNav() {
         <Link
           href="/calendar"
           className={`flex flex-1 flex-col items-center gap-1 text-xs font-medium ${
-            calendarActive ? "text-teal-600" : "text-gray-400"
+            calendarActive ? "text-brand-button" : "text-gray-400"
           }`}
         >
           <CalendarDays className="size-5" />
@@ -30,7 +30,7 @@ export default function BottomNav() {
           <Link
             href="/workout"
             className={`absolute -top-8 flex size-14 items-center justify-center rounded-full shadow-lg transition-colors ${
-              workoutActive ? "bg-teal-700" : "bg-teal-600"
+              workoutActive ? "bg-brand-hover" : "bg-brand-button"
             } text-white`}
           >
             <Dumbbell className="size-6" />
@@ -41,7 +41,7 @@ export default function BottomNav() {
         <Link
           href="/settings"
           className={`flex flex-1 flex-col items-center gap-1 text-xs font-medium ${
-            settingsActive ? "text-teal-600" : "text-gray-400"
+            settingsActive ? "text-brand-button" : "text-gray-400"
           }`}
         >
           <Settings className="size-5" />
