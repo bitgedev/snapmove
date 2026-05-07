@@ -9,10 +9,12 @@ import { toast } from "sonner";
 const supabase = createClient();
 export default function SettingsForm() {
   const router = useRouter();
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
+      setFullName(user?.user_metadata?.full_name ?? "");
       setEmail(user?.email ?? "");
     });
   }, []);
@@ -32,32 +34,42 @@ export default function SettingsForm() {
   return (
     <>
       <TopBar title="설정" />
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y">
         <section className="px-4 py-6">
-          <h2 className="mb-3 text-base font-semibold text-gray-700">프로필</h2>
+          <h2 className="mb-3 text-base font-semibold text-foreground">
+            프로필
+          </h2>
           <div className="flex justify-between py-2">
-            <span className="text-gray-500">이메일</span>
-            <span className="text-gray-900">{email || "불러오는 중..."}</span>
+            <span className="text-muted-foreground">이름</span>
+            <span className="text-foreground">
+              {fullName || "불러오는 중..."}
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span className="text-muted-foreground">이메일</span>
+            <span className="text-foreground">{email || "불러오는 중..."}</span>
           </div>
         </section>
         <section className="px-4 py-6">
-          <h2 className="mb-3 text-base font-semibold text-gray-700">
+          <h2 className="mb-3 text-base font-semibold text-foreground">
             목표 설정
           </h2>
           <div className="flex justify-between py-2">
-            <span className="text-gray-500">주간 운동 목표</span>
-            <span className="text-gray-900">4회</span>
+            <span className="text-muted-foreground">주간 운동 목표</span>
+            <span className="text-foreground">4회</span>
           </div>
           <div className="flex justify-between py-2">
-            <span className="text-gray-500">목표 체중</span>
-            <span className="text-gray-900">60kg</span>
+            <span className="text-muted-foreground">목표 체중</span>
+            <span className="text-foreground">60kg</span>
           </div>
         </section>
         <section className="px-4 py-6">
-          <h2 className="mb-3 text-base font-semibold text-gray-700">서비스</h2>
+          <h2 className="mb-3 text-base font-semibold text-foreground">
+            서비스
+          </h2>
           <Button
             variant="outline"
-            className="w-full border-red-200 text-red-500 hover:bg-red-50"
+            className="w-full border-destructive/30 text-destructive hover:bg-destructive/5"
             onClick={handleLogout}
             disabled={isLoading}
           >

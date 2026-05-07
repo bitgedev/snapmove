@@ -11,7 +11,7 @@ interface Props {
 export default function DayDetailCard({ selectedDate, sessions }: Props) {
   if (!selectedDate) {
     return (
-      <div className="px-4 py-6 text-center text-sm text-gray-400">
+      <div className="px-4 py-6 text-center text-sm text-muted-foreground">
         날짜를 선택하면 기록을 볼 수 있어요
       </div>
     );
@@ -32,8 +32,8 @@ export default function DayDetailCard({ selectedDate, sessions }: Props) {
   if (!session) {
     return (
       <div className="px-4 py-4">
-        <p className="mb-2 text-sm text-gray-400">{koreanDate}</p>
-        <EmptyState title="이 날은 기록된 운동이 없어요" />
+        <p className="mb-2 text-sm text-muted-foreground">{koreanDate}</p>
+        <EmptyState title="이 날은 운동 기록이 없어요 🏃" />
       </div>
     );
   }
@@ -48,8 +48,8 @@ export default function DayDetailCard({ selectedDate, sessions }: Props) {
     <div className="px-4 py-4">
       {/* 헤더 */}
       <div className="mb-4">
-        <p className="text-sm text-gray-400">{koreanDate}</p>
-        <h2 className="mb-2 text-lg font-bold text-gray-800">
+        <p className="text-sm text-muted-foreground">{koreanDate}</p>
+        <h2 className="mb-2 text-lg font-bold text-foreground">
           {getWorkoutLabel([
             ...new Set(session.exercises.map((ex) => ex.category)),
           ])}
@@ -69,12 +69,12 @@ export default function DayDetailCard({ selectedDate, sessions }: Props) {
       {/* 운동 목록 */}
       <div className="space-y-2">
         {session.exercises.map((ex) => (
-          <div key={ex.name} className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+          <div key={ex.name} className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-2">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-800">{ex.name}</span>
+              <span className="text-sm font-medium text-foreground">{ex.name}</span>
               <ExerciseBadge category={ex.category} muscleGroup={ex.muscleGroup} />
             </div>
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-muted-foreground">
               {ex.category === "strength" && ex.sets && (
                 `${ex.sets.length}세트 · 최대 ${Math.max(...ex.sets.map(s => s.weight))}kg`
               )}
