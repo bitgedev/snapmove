@@ -105,15 +105,16 @@ category에 따라 set 내부 필드가 달라짐:
 └───────────────────────────────┘
 ```
 
-| 탭     | 경로        | 아이콘         | 스타일                             |
-| ------ | ----------- | -------------- | ---------------------------------- |
-| 캘린더 | `/calendar` | `CalendarDays` | 일반 탭 (좌)                       |
-| 운동   | `/workout`  | `Dumbbell`     | 가운데 FAB, teal 원형, -top-8 돌출 |
-| 설정   | `/settings` | `Settings`     | 일반 탭 (우)                       |
+| 탭     | 경로        | 아이콘         | 스타일                                        |
+| ------ | ----------- | -------------- | --------------------------------------------- |
+| 캘린더 | `/calendar` | `CalendarDays` | 일반 탭 (좌)                                  |
+| 운동   | `/workout`  | `Dumbbell`     | 가운데 FAB, brand-button 원형, -top-8 돌출    |
+| 설정   | `/settings` | `Settings`     | 일반 탭 (우)                                  |
 
-- FAB 활성: `bg-teal-700` / 기본: `bg-teal-600`
-- 숨김: `pathname.startsWith("/workout")` (몰입 모드)
+- FAB 활성: `bg-brand-hover` / 기본: `bg-brand-button`
+- **항상 표시** — `/workout`, `/workout/complete` 포함 모든 경로에서 숨기지 않음
 - 레이아웃 여백: `pb-24` (nav 64px + FAB 돌출 32px)
+- "운동 완료" CTA: `fixed bottom-16` (BottomNav h-16 바로 위) pill 버튼 — BottomNav와 겹치지 않음
 
 ---
 
@@ -126,7 +127,7 @@ category에 따라 set 내부 필드가 달라짐:
 | 회원가입      | `/signup`           | ✅ Supabase Auth 연결 |
 | 캘린더 (메인) | `/calendar`         | ✅ 구현 완료          |
 | 운동 기록     | `/workout`          | ✅ 구현 완료          |
-| 인증 카드     | `/workout/complete` | ❌ 미생성             |
+| 인증 카드     | `/workout/complete` | ✅ 구현 완료          |
 | 설정          | `/settings`         | ✅ 구현 완료          |
 
 ---
@@ -240,8 +241,8 @@ src/
 - [x] `src/components/layout/BottomNav.tsx` (CLIENT) ← **3탭+FAB로 재설계 완료**
   - [x] `usePathname()`으로 활성 탭 강조
   - [x] 탭 구성: Calendar(CalendarDays) / Workout FAB(Dumbbell) / Settings(Settings)
-  - [x] `/workout` 경로 진입 시 자동 숨김
-  - [x] FAB: `absolute -top-8 size-14 bg-teal-600 rounded-full shadow-lg`, 활성 시 `bg-teal-700`
+  - [x] **항상 표시** — `/workout`, `/workout/complete` 포함 전 경로 (숨김 없음)
+  - [x] FAB: `absolute -top-8 size-14 bg-brand-button rounded-full shadow-lg`, 활성 시 `bg-brand-hover`
 - [x] `src/components/layout/TopBar.tsx` (CLIENT)
   - [x] `useRouter()`로 뒤로가기 버튼
   - [x] `title` prop 지원
@@ -506,7 +507,7 @@ src/
 
 - [x] `ExerciseCard.tsx` (CLIENT)
   - [x] 운동 이름 헤더 + `ExerciseBadge` (카테고리·근육군) + 우측 삭제 버튼
-  - [x] **삭제 버튼** — 원형 `bg-muted` 배경 + `X` lucide 아이콘 (`h-7 w-7 rounded-full`). hover 시 `bg-destructive/10 text-destructive`로 변해 삭제 의미 직관적 전달
+  - [x] **삭제 버튼** — 원형 `bg-muted` 배경 + `X` lucide 아이콘 (`h-7 w-7 rounded-full`). hover 시 `bg-destructive/10 text-destructive` — 플레인 텍스트에서 명확한 아이콘 버튼으로 개선
   - [x] category에 따라 분기:
     - [x] `"strength"` → `<SetTable>` + `[+ 세트 추가]` 버튼
     - [x] `"cardio"` / `"flexibility"` / `"other"` → `<DurationInput>`
@@ -539,22 +540,34 @@ src/
 
 **인증 카드 페이지 (`/workout/complete`)**
 
-- [x] `workout/complete/page.tsx` (CLIENT) ← **2026-05-07 구현**
+- [x] `workout/complete/page.tsx` (CLIENT) ← **2026-05-07 구현 및 개선**
   - [x] `sessionStorage.getItem("snapmove_pending_session")` 으로 데이터 수신 — 없으면 `/workout` redirect
-  - [x] **4:5 인증 카드** (`aspect-[4/5]`, `bg-gradient-to-br from-brand-hover to-brand`)
-    - [x] 사진 없을 때: 그라디언트 배경 + 카드 내 "사진 추가" 버튼
-    - [x] 사진 있을 때: `<img object-cover>` + 하단 `bg-gradient-to-t from-black/70` 오버레이
-  - [x] **`WorkoutOverlay` 컴포넌트** (카드 내 텍스트 레이어)
-    - [x] 상단: "Snapmove" 브랜드 + 날짜
-    - [x] 하단: 운동 목록 (최대 3종 + "외 N종목") + 구분선 + 총 볼륨 / 세트 / 시간
-  - [x] "저장하고 캘린더로" 버튼 → `sessionStorage` 클리어 + `router.replace("/calendar")`
-  - [x] "사진 추가하기" 버튼 (사진 없을 때만 표시)
-  - [ ] Supabase INSERT (현재 미구현 — Phase 5에서 처리)
-  - [ ] Download 버튼 — html2canvas PNG 저장
+  - [x] **4:5 인증 카드** (`aspect-[4/5]`, `bg-zinc-900`)
+    - [x] 사진 없을 때: 다크 배경 + 카드 탭으로 사진 업로드 트리거 (카메라 아이콘)
+    - [x] 사진 있을 때: `<img object-cover>` + 상하 그라디언트 오버레이 (항상 표시)
+    - [x] 항상-on 그라디언트: 상단 `from-black/65`, 하단 `from-black/90 via-black/50` — 어떤 사진에서도 텍스트 가독성 보장
+    - [x] 오른쪽 상단 X 버튼 → 사진 제거
+  - [x] **레이아웃 프리셋 3종** — 색상이 아닌 구성요소 배치·크기·폰트로 구분 (타임스탬프 앱 스타일)
+    - [x] **스탬프** — 날짜/시간이 하단 좌측에 모노스페이스(`font-mono`) 대형 텍스트. 로고는 상단 우측 워터마크. 스탯은 우측 하단. 필름 카메라 타임스탬프 느낌
+    - [x] **에디토리얼** — 로고+날짜+시간 상단 좌측 세로 스택 (날짜 `text-4xl` 빅타이포). 볼륨 `text-5xl` 히어로 숫자. 구분선으로 나뉜 하단 스탯
+    - [x] **패널** — 하단 frosted panel (`bg-black/45 backdrop-blur-md`). 패널 내 로고·날짜·시간 한 줄 → 태그 → 볼륨/시간. 정보 카드 스타일
+    - [x] 프리셋 셀렉터: 레이아웃 구조를 나타내는 미니어처 썸네일 (CSS 아트)
+  - [x] **항상 표시** — 로고(Snapmove), 날짜, 시간: 토글 불가, 모든 프리셋에서 필수 표시
+  - [x] **토글 가능 항목** (3개): 운동 부위 태그 / 총 볼륨 / 소요 시간
+    - [x] 운동 부위: `muscleGroup` + 비근력 카테고리를 태그 pill로 중복 제거 (`Array.from(new Set(...))`)
+    - [x] 날짜 형식: `${yy}. ${mm}. ${dd}` (예: "26. 05. 07"), `Date.now()` 기반 현지 시간
+    - [x] 시간: `toLocaleTimeString("ko-KR", { hour12: true })` (예: "오후 8:35")
+  - [x] **설정 localStorage 저장** — `"snapmove_card_settings"` 키로 프리셋·토글 상태 유지. 로드 시 구 프리셋 키(`"night"` 등) 자동 sanitize → `"stamp"` 폴백
+  - [x] **사진 규격 안내** — 사진 없을 때 카드 아래에 `text-xs` 표시: "4:5 비율 사진을 권장해요 · JPG / PNG · 최대 10MB"
+  - [x] **버튼 2단 구성** (마케터·프로덕트 기준 역할 분리)
+    - [x] "인증 카드 저장 · 공유" — `Share2` 아이콘, dashed outline secondary 버튼. 설명: "오늘의 기록을 SNS에 공유하거나 갤러리에 저장해요". UI만 구현, 기능 미연결
+    - [x] "기록 저장" — `bg-mint-gradient` primary CTA. 설명: "캘린더에 오늘의 운동이 기록돼요". 클릭 시 `sessionStorage` 클리어 + `router.replace("/calendar")`
+  - [ ] "기록 저장" — Supabase INSERT 연결 (Phase 5에서 처리)
+  - [ ] "인증 카드 저장 · 공유" — html2canvas PNG 저장 + Web Share API 연결
 
 ### 검증 체크리스트
 
-- [ ] `/workout` 접속 시 BottomNav 숨김 확인
+- [x] `/workout` 접속 시 BottomNav 항상 표시 확인 (숨김 없음)
 - [x] `[+ 운동 추가]` 클릭 → Drawer(바텀 시트) 열림/닫힘
 - [x] 운동 선택 시 ExerciseCard 추가 확인
 - [x] 근력 카테고리 선택 시 근육군 셀렉터 표시
@@ -566,11 +579,15 @@ src/
 - [x] 유산소·유연성 운동 시간 합산값 FinishModal 소요시간에 자동 반영
 - [x] 소요시간 직접 수정 시 "자동계산 복원" 버튼 표시
 - [x] "다음 →" 클릭 시 sessionStorage 저장 + `/workout/complete` 이동
-- [x] `/workout/complete` — 4:5 그라디언트 인증 카드 렌더링
-- [x] `/workout/complete` — 사진 추가 시 4:5 미리보기 + 오버레이 표시
-- [x] `/workout/complete` — "저장하고 캘린더로" 클릭 시 sessionStorage 클리어 + `/calendar` 이동
-- [ ] Supabase INSERT 연동
-- [ ] Download 버튼 클릭 시 PNG 저장
+- [x] `/workout/complete` — 4:5 다크 인증 카드 렌더링
+- [x] `/workout/complete` — 사진 추가 시 4:5 미리보기 + 항상-on 오버레이 표시
+- [x] `/workout/complete` — 프리셋 3종(스탬프/에디토리얼/패널) 전환 시 레이아웃 즉시 변경
+- [x] `/workout/complete` — 토글 3종(부위/볼륨/시간) 실시간 반영
+- [x] `/workout/complete` — "기록 저장" 클릭 시 sessionStorage 클리어 + `/calendar` 이동
+- [x] `/workout/complete` — "인증 카드 저장 · 공유" 버튼 UI 표시 (기능 미연결)
+- [x] `/workout/complete` — 사진 없을 때 규격 안내 텍스트 표시
+- [ ] Supabase INSERT 연동 ("기록 저장" 버튼)
+- [ ] html2canvas + Web Share API 연결 ("인증 카드 저장 · 공유" 버튼)
 - [ ] 모바일(375px) — 세트 입력 행 가로 스크롤 없음
 
 ---

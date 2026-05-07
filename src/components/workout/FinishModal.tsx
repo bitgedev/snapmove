@@ -13,14 +13,13 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import ExerciseBadge from "@/components/shared/ExerciseBadge";
-import { ImageIcon, X } from "lucide-react";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   exercises: ExerciseRecord[];
   totalVolume: number;
-  onComplete: (durationMinutes: number, photoFile?: File) => Promise<void>;
+  onComplete: (durationMinutes: number) => Promise<void>;
 }
 
 export default function FinishModal({
@@ -30,7 +29,6 @@ export default function FinishModal({
   totalVolume,
   onComplete,
 }: Props) {
-  const [photoFile, setPhotoFile] = useState<File | undefined>();
   const [durationMinutes, setDurationMinutes] = useState(0);
 
   const calculatedDuration = useMemo(
@@ -41,21 +39,9 @@ export default function FinishModal({
   useEffect(() => {
     if (open) {
       setDurationMinutes(calculatedDuration);
-      setPhotoFile(undefined);
       confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
     }
   }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const previewUrl = useMemo(() => {
-    if (!photoFile) return null;
-    return URL.createObjectURL(photoFile);
-  }, [photoFile]);
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-  }, [previewUrl]);
 
   const totalSets = exercises.flatMap((ex) => ex.sets ?? []).length;
 
@@ -122,7 +108,7 @@ export default function FinishModal({
             {calculatedDuration > 0 &&
               durationMinutes !== calculatedDuration && (
                 <button
-                  className="text-[11px] text-teal-600 hover:underline"
+                  className="text-[11px] text-brand-button hover:underline"
                   onClick={() => setDurationMinutes(calculatedDuration)}
                 >
                   자동계산 복원 ({calculatedDuration}분)
@@ -151,51 +137,21 @@ export default function FinishModal({
           </div>
         </div>
 
-        {/* 사진 */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium">
-            오늘의 사진{" "}
-            <span className="font-normal text-muted-foreground">(선택)</span>
-          </label>
-          {previewUrl ? (
-            <div className="relative">
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="h-32 w-full rounded-xl object-cover"
-              />
-              <button
-                className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white"
-                onClick={() => setPhotoFile(undefined)}
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ) : (
-            <label className="flex h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-muted-foreground/25 transition-colors hover:border-muted-foreground/50">
-              <ImageIcon className="h-5 w-5 text-muted-foreground/50" />
-              <span className="text-xs text-muted-foreground">사진 추가</span>
-              <input
-                type="file"
-                accept="image/*"
-                capture="environment"
-                className="hidden"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) setPhotoFile(e.target.files[0]);
-                }}
-              />
-            </label>
-          )}
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        {/* 버튼 */}
+        <div className="flex flex-col items-center gap-2">
+          <button
+            className="w-full rounded-2xl bg-mint-gradient py-3 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95"
+            onClick={() => onComplete(durationMinutes)}
+          >
+            다음 →
+          </button>
+          <button
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            onClick={() => onOpenChange(false)}
+          >
             취소
-          </Button>
-          <Button onClick={() => onComplete(durationMinutes, photoFile)}>
-            저장하기
-          </Button>
-        </DialogFooter>
+          </button>
+        </div>
       </DialogContent>
     </Dialog>
   );
