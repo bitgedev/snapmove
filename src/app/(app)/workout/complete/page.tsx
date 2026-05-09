@@ -118,6 +118,7 @@ export default function WorkoutCompletePage() {
   const [isCapturing, setIsCapturing] = useState(false);
   const [isSaving, setIsSaving] = useState(true);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -191,7 +192,8 @@ export default function WorkoutCompletePage() {
     new Set([
       ...exercises
         .filter((ex) => ex.muscleGroup)
-        .map((ex) => MUSCLE_GROUP_LABEL[ex.muscleGroup!]),
+        .map((ex) => MUSCLE_GROUP_LABEL[ex.muscleGroup!])
+        .filter(Boolean),
       ...exercises
         .filter((ex) => ex.category !== "strength")
         .map((ex) => CATEGORY_LABEL[ex.category])
@@ -480,17 +482,29 @@ export default function WorkoutCompletePage() {
             accept="image/*"
             className="hidden"
             onChange={(e) => {
-              if (e.target.files?.[0]) setPhotoFile(e.target.files[0]);
+              const file = e.target.files?.[0];
+              if (!file) return;
+              if (file.size > 10 * 1024 * 1024) {
+                setPhotoError("사진은 10MB 이하만 등록할 수 있어요.");
+                e.target.value = "";
+                return;
+              }
+              setPhotoError(null);
+              setPhotoFile(file);
             }}
           />
         </div>
 
-        {/* 사진 규격 안내 */}
-        {!photoFile && (
+        {/* 사진 규격 안내 / 오류 */}
+        {photoError ? (
+          <p className="text-center text-xs leading-relaxed text-destructive">
+            {photoError}
+          </p>
+        ) : !photoFile ? (
           <p className="text-center text-xs leading-relaxed text-muted-foreground/60">
             4:5 비율 사진을 권장해요 · JPG · PNG · 최대 10MB
           </p>
-        )}
+        ) : null}
 
         {/* 설정 패널 */}
         <div className="flex flex-col gap-4 rounded-2xl border bg-card p-4">
