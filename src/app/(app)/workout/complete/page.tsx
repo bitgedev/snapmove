@@ -5,6 +5,7 @@ import { toPng } from "html-to-image";
 import { ExerciseRecord } from "@/types";
 import TopBar from "@/components/layout/TopBar";
 import { Camera, Share2, X } from "lucide-react";
+import Image from "next/image";
 
 type Preset = "stamp" | "editorial" | "panel";
 
@@ -225,13 +226,16 @@ export default function WorkoutCompletePage() {
         <div
           ref={cardRef}
           className={`relative aspect-[4/5] w-full cursor-pointer overflow-hidden rounded-2xl ${cardBg}`}
-onClick={() => !photoFile && fileInputRef.current?.click()}
+          onClick={() => !photoFile && fileInputRef.current?.click()}
         >
           {previewUrl && (
-            <img
+            <Image
               src={previewUrl}
               alt="운동 인증 사진"
-              className="absolute inset-0 h-full w-full object-cover"
+              fill
+              className="object-cover"
+              unoptimized
+              priority
             />
           )}
 
@@ -245,7 +249,9 @@ onClick={() => !photoFile && fileInputRef.current?.click()}
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10">
                   <Camera className="h-5 w-5 text-white/40" />
                 </div>
-                <p className="text-xs text-white/40">오늘 운동 사진 추가하기 📸</p>
+                <p className="text-xs text-white/40">
+                  오늘 운동 사진 추가하기 📸
+                </p>
               </div>
             </div>
           )}
@@ -482,7 +488,9 @@ onClick={() => !photoFile && fileInputRef.current?.click()}
           <div className="h-px bg-border" />
 
           {/* 표시 항목 토글 */}
-          <p className="text-xs font-medium text-muted-foreground">카드에 표시할 항목</p>
+          <p className="text-xs font-medium text-muted-foreground">
+            카드에 표시할 항목
+          </p>
           <div className="flex flex-col divide-y">
             {(
               [
