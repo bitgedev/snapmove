@@ -225,7 +225,7 @@ export default function WorkoutCompletePage() {
         <div
           ref={cardRef}
           className={`relative aspect-[4/5] w-full cursor-pointer overflow-hidden rounded-2xl ${cardBg}`}
-          onClick={() => !photoFile && fileInputRef.current?.click()}
+onClick={() => !photoFile && fileInputRef.current?.click()}
         >
           {previewUrl && (
             <img
@@ -424,7 +424,7 @@ export default function WorkoutCompletePage() {
             </div>
           )}
 
-          {photoFile && (
+          {photoFile && !isCapturing && (
             <button
               className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70"
               onClick={(e) => {
