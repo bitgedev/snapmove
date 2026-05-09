@@ -6,6 +6,7 @@ import { ExerciseRecord } from "@/types";
 import TopBar from "@/components/layout/TopBar";
 import { Camera, Share2, X } from "lucide-react";
 import Image from "next/image";
+import { insertWorkoutLog } from "@/lib/supabase/workout";
 
 type Preset = "stamp" | "editorial" | "panel";
 
@@ -151,6 +152,8 @@ export default function WorkoutCompletePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [isCapturing, setIsCapturing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   if (!session) return null;
 
@@ -184,7 +187,16 @@ export default function WorkoutCompletePage() {
   const toggle = (key: keyof Omit<CardSettings, "preset">) =>
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!session || isSaving) return;
+    setIsSaving(true);
+    setSaveError(null);
+    const { error } = await insertWorkoutLog(session);
+    if (error) {
+      setSaveError(error);
+      setIsSaving(false);
+      return;
+    }
     sessionStorage.removeItem("snapmove_pending_session");
     router.replace("/calendar");
   };
@@ -537,11 +549,15 @@ export default function WorkoutCompletePage() {
           {/* 기록 저장 (primary) */}
           <div className="flex flex-col gap-1.5">
             <button
-              className="w-full rounded-2xl bg-mint-gradient py-3.5 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95"
+              className="w-full rounded-2xl bg-mint-gradient py-3.5 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95 disabled:opacity-50"
               onClick={handleSave}
+              disabled={isSaving}
             >
-              캘린더에 기록하기 ✅
+              {isSaving ? "저장 중..." : "캘린더에 기록하기 ✅"}
             </button>
+            {saveError && (
+              <p className="text-center text-xs text-destructive">{saveError}</p>
+            )}
             <p className="text-center text-xs leading-relaxed text-muted-foreground/70">
               오늘의 운동을 캘린더에 남겨요
             </p>

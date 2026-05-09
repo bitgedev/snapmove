@@ -605,9 +605,22 @@ src/
 
 mock 데이터를 Supabase 실제 데이터로 교체하고, 전체 UX를 점검·마무리한다.
 
-> **실제 구현 범위**: 로그인 유저의 `workout_logs` SELECT로 Calendar 데이터 구동
->
-> **SELECT 쿼리:**
+### 파일 구조
+
+```
+src/lib/supabase/
+├── client.ts       # 브라우저 클라이언트
+├── server.ts       # 서버 클라이언트
+├── types.ts        # DB 타입 (WorkoutLog, WorkoutLogInsert, Exercise)
+└── workout.ts      # workout_logs CRUD
+    ├── insertWorkoutLog(exercises, durationMinutes, date)  → INSERT
+    └── getWorkoutLogsByMonth(year, month)                  → SELECT
+```
+
+> **DB 스키마 변경 (2026-05-09)**: `routine_name`, `category`, `photo_url` 컬럼 삭제.
+> `WorkoutLogInsert` = `{ date, duration_minutes, exercises }` 만 남음.
+
+> **SELECT 쿼리 (`getWorkoutLogsByMonth`)**
 >
 > ```ts
 > supabase
@@ -623,9 +636,11 @@ mock 데이터를 Supabase 실제 데이터로 교체하고, 전체 UX를 점검
 
 **DB 연동**
 
-- [ ] Calendar `/calendar` — mock → Supabase `workout_logs` SELECT
-- [ ] Workout `/workout` — Supabase `workout_logs` INSERT (Phase 4에서 선행 구현)
-- [ ] Settings `/settings` — `supabase.auth.getUser()` 프로필 표시
+- [x] `supabase/types.ts` 정리 — `routine_name` / `category` / `photo_url` 제거, `Exercise` → `ExerciseRecord` 구조 통일
+- [x] `supabase/workout.ts` 작성 — `insertWorkoutLog`, `getWorkoutLogsByMonth`
+- [x] Complete `/workout/complete` — `handleSave`에서 `insertWorkoutLog` 호출
+- [ ] Calendar `/calendar` — `getMockSessionsByMonth` → `getWorkoutLogsByMonth` 교체
+- [x] Settings `/settings` — `supabase.auth.getUser()` 프로필 표시 완료
 - [ ] Supabase RLS 정책 전 테이블 적용 확인
 
 **마무리 폴리시**
