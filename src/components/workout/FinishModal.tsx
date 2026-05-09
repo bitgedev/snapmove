@@ -27,24 +27,31 @@ export default function FinishModal({
   totalVolume,
   onComplete,
 }: Props) {
-  const [durationMinutes, setDurationMinutes] = useState(0);
+  const [customDuration, setCustomDuration] = useState<number | null>(null);
 
   const calculatedDuration = useMemo(
     () => exercises.reduce((sum, ex) => sum + (ex.durationMinutes ?? 0), 0),
     [exercises],
   );
 
+  const durationMinutes = customDuration ?? calculatedDuration;
+
   useEffect(() => {
     if (open) {
-      setDurationMinutes(calculatedDuration);
       confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
     }
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const totalSets = exercises.flatMap((ex) => ex.sets ?? []).length;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        if (!val) setCustomDuration(null);
+        onOpenChange(val);
+      }}
+    >
       <DialogContent showCloseButton={false} className="max-w-sm gap-5">
         <DialogHeader>
           <DialogTitle className="text-center text-base">
@@ -103,26 +110,23 @@ export default function FinishModal({
         <div className="flex flex-col gap-2">
           <div className="flex items-baseline justify-between">
             <label className="text-sm font-medium">소요 시간</label>
-            {calculatedDuration > 0 &&
-              durationMinutes !== calculatedDuration && (
-                <button
-                  className="text-[11px] text-brand-button hover:underline"
-                  onClick={() => setDurationMinutes(calculatedDuration)}
-                >
-                  자동계산 복원 ({calculatedDuration}분)
-                </button>
-              )}
+            {customDuration !== null && (
+              <button
+                className="text-[11px] text-brand-button hover:underline"
+                onClick={() => setCustomDuration(null)}
+              >
+                자동계산 복원 ({calculatedDuration}분)
+              </button>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <Input
               type="text"
               inputMode="numeric"
-              value={durationMinutes === 0 ? "" : String(durationMinutes)}
+              value={customDuration === null ? "" : String(customDuration)}
               onChange={(e) => {
                 const filtered = e.target.value.replace(/[^0-9]/g, "");
-                setDurationMinutes(
-                  filtered === "" ? 0 : parseInt(filtered, 10),
-                );
+                setCustomDuration(filtered === "" ? null : parseInt(filtered, 10));
               }}
               placeholder={
                 calculatedDuration > 0
