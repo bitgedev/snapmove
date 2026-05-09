@@ -47,10 +47,10 @@ const DEFAULT_SETTINGS: CardSettings = {
   showDuration: true,
 };
 
-const PRESETS: Record<Preset, { label: string; cardBg: string }> = {
-  stamp: { label: "스탬프", cardBg: "bg-zinc-900" },
-  editorial: { label: "에디토리얼", cardBg: "bg-zinc-900" },
-  panel: { label: "패널", cardBg: "bg-zinc-900" },
+const PRESETS: Record<Preset, { label: string }> = {
+  stamp: { label: "스탬프" },
+  editorial: { label: "에디토리얼" },
+  panel: { label: "패널" },
 };
 
 function StampThumb({ active }: { active: boolean }) {
@@ -115,6 +115,13 @@ export default function WorkoutCompletePage() {
   const [session, setSession] = useState<PendingSession | null>(null);
   const [photoFile, setPhotoFile] = useState<File | undefined>();
   const [settings, setSettings] = useState<CardSettings>(DEFAULT_SETTINGS);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const [isSaving, setIsSaving] = useState(true);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isSettingsInitialMount = useRef(true);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("snapmove_pending_session");
@@ -122,19 +129,31 @@ export default function WorkoutCompletePage() {
       router.replace("/workout");
       return;
     }
-    setSession(JSON.parse(raw));
-    const saved = localStorage.getItem("snapmove_card_settings");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved) as CardSettings;
-        if (!(parsed.preset in PRESETS))
-          parsed.preset = DEFAULT_SETTINGS.preset;
-        setSettings(parsed);
-      } catch {}
-    }
+    const parsed: PendingSession = JSON.parse(raw);
+    setSession(parsed);
+
+    sessionStorage.removeItem("snapmove_pending_session");
+    insertWorkoutLog(parsed).then(({ error }) => {
+      setIsSaving(false);
+      if (error) setSaveError(error);
+    });
   }, [router]);
 
   useEffect(() => {
+    try {
+      const saved = localStorage.getItem("snapmove_card_settings");
+      if (saved) {
+        const parsed = JSON.parse(saved) as CardSettings;
+        if (parsed.preset in PRESETS) setSettings(parsed);
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    if (isSettingsInitialMount.current) {
+      isSettingsInitialMount.current = false;
+      return;
+    }
     localStorage.setItem("snapmove_card_settings", JSON.stringify(settings));
   }, [settings]);
 
@@ -149,13 +168,12 @@ export default function WorkoutCompletePage() {
     };
   }, [previewUrl]);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [isCapturing, setIsCapturing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
-
-  if (!session) return null;
+  if (!session)
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <p className="text-sm text-muted-foreground">불러오는 중...</p>
+      </div>
+    );
 
   const { exercises, totalVolume, durationMinutes, date } = session;
   const dateObj = new Date(date);
@@ -182,22 +200,24 @@ export default function WorkoutCompletePage() {
   );
 
   const { preset } = settings;
-  const { cardBg } = PRESETS[preset];
 
   const toggle = (key: keyof Omit<CardSettings, "preset">) =>
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const handleSave = async () => {
-    if (!session || isSaving) return;
+    if (isSaving) return;
+    if (!saveError) {
+      router.replace("/calendar");
+      return;
+    }
     setIsSaving(true);
     setSaveError(null);
     const { error } = await insertWorkoutLog(session);
+    setIsSaving(false);
     if (error) {
       setSaveError(error);
-      setIsSaving(false);
       return;
     }
-    sessionStorage.removeItem("snapmove_pending_session");
     router.replace("/calendar");
   };
 
@@ -237,7 +257,7 @@ export default function WorkoutCompletePage() {
         {/* 인증 카드 */}
         <div
           ref={cardRef}
-          className={`relative aspect-[4/5] w-full cursor-pointer overflow-hidden rounded-2xl ${cardBg}`}
+          className="relative aspect-[4/5] w-full cursor-pointer overflow-hidden rounded-2xl bg-zinc-900"
           onClick={() => !photoFile && fileInputRef.current?.click()}
         >
           {previewUrl && (
@@ -549,15 +569,16 @@ export default function WorkoutCompletePage() {
           {/* 기록 저장 (primary) */}
           <div className="flex flex-col gap-1.5">
             <button
-              className="w-full rounded-2xl bg-mint-gradient py-3.5 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95 disabled:opacity-50"
+              className={`w-full rounded-2xl py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 ${saveError ? "bg-destructive" : !isSaving && !saveError ? "bg-emerald-500" : "bg-mint-gradient"}`}
               onClick={handleSave}
               disabled={isSaving}
             >
-              {isSaving ? "저장 중..." : "캘린더에 기록하기 ✅"}
+              {isSaving
+                ? "저장 중..."
+                : saveError
+                  ? "다시 시도하기"
+                  : "✅ 기록 완료! 캘린더 보기"}
             </button>
-            {saveError && (
-              <p className="text-center text-xs text-destructive">{saveError}</p>
-            )}
             <p className="text-center text-xs leading-relaxed text-muted-foreground/70">
               오늘의 운동을 캘린더에 남겨요
             </p>
