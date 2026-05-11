@@ -123,8 +123,12 @@ export default function WorkoutCompletePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const isSettingsInitialMount = useRef(true);
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
+    if (hasProcessed.current) return;
+    hasProcessed.current = true;
+
     const raw = sessionStorage.getItem("snapmove_pending_session");
     if (!raw) {
       router.replace("/workout");
@@ -583,7 +587,7 @@ export default function WorkoutCompletePage() {
           {/* 기록 저장 (primary) */}
           <div className="flex flex-col gap-1.5">
             <button
-              className={`w-full rounded-2xl py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 ${saveError ? "bg-destructive" : !isSaving && !saveError ? "bg-emerald-500" : "bg-mint-gradient"}`}
+              className={`w-full rounded-2xl py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 ${saveError ? "bg-destructive" : "bg-mint-gradient"}`}
               onClick={handleSave}
               disabled={isSaving}
             >
