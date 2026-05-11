@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Users, CheckCircle, ImageIcon, ClipboardList, PlayCircle, Share2 } from 'lucide-react';
+import { Users, CheckCircle, ImageIcon, ClipboardList, PlayCircle, Share2, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 import LandingNav from '@/components/landing/LandingNav';
@@ -117,7 +117,10 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-slate-100 bg-white px-4 py-16 text-center">
         <div className="mx-auto max-w-5xl">
-          <p className="mb-6 text-2xl font-black tracking-tighter text-gray-900">Snapmove</p>
+          <div className="mb-6 flex items-center justify-center gap-1.5">
+            <Zap className="size-6 fill-brand-button text-brand-button" />
+            <span className="text-2xl font-black tracking-tighter text-gray-900">Snapmove</span>
+          </div>
           <div className="mb-8 flex justify-center gap-8 text-sm font-medium text-gray-500">
             <Link href="#" className="hover:text-brand transition-colors">서비스 소개</Link>
             <Link href="#" className="hover:text-brand transition-colors">개인정보처리방침</Link>

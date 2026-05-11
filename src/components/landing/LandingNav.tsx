@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/server';
 import LogoutButton from './LogoutButton';
@@ -11,8 +12,9 @@ export default async function LandingNav() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between">
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-brand transition-opacity hover:opacity-80"
+          className="flex items-center gap-1.5 text-xl font-bold tracking-tight text-brand transition-opacity hover:opacity-80"
         >
+          <Zap className="size-5 fill-brand-button text-brand-button" />
           Snapmove
         </Link>
 
