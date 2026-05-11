@@ -569,9 +569,9 @@ src/
   - [x] 빈 카드 안내 텍스트: "오늘 운동 사진 추가하기 📸"
   - [x] **버튼 2단 구성** (마케터·프로덕트 기준 역할 분리)
     - [x] **"자랑하기 💪"** — `Share2` 아이콘, dashed outline secondary 버튼. 설명: "인증샷 공유 또는 갤러리 저장". `html-to-image` `toPng()` → `navigator.share()` (모바일) / 다운로드 fallback (데스크탑). 파일명: `snapmove-YYMMDD.png`, `pixelRatio: 2`
-    - [x] **"캘린더에 기록하기 ✅"** — `bg-mint-gradient` primary CTA. 설명: "오늘의 운동을 캘린더에 남겨요". 클릭 시 `sessionStorage` 클리어 + `router.replace("/calendar")`
+    - [x] **"✅ 기록 완료! 캘린더 보기"** — `bg-mint-gradient` primary CTA. 설명: "오늘의 운동을 캘린더에 남겨요". 클릭 시 `sessionStorage` 클리어 + `router.replace("/calendar")`
   - [ ] "캘린더에 기록하기" — Supabase INSERT 연결 (Phase 5에서 처리)
-  - [ ] "자랑하기" — html2canvas → html-to-image 교체 완료. Web Share API 공유 시트 제목: "오늘의 운동 인증 💪"
+  - [x] "자랑하기" — html2canvas → html-to-image 교체 완료. Web Share API 공유 시트 제목: "오늘의 운동 인증 💪"
 
 ### 검증 체크리스트
 
@@ -639,7 +639,7 @@ src/lib/supabase/
 - [x] `supabase/types.ts` 정리 — `routine_name` / `category` / `photo_url` 제거, `Exercise` → `ExerciseRecord` 구조 통일
 - [x] `supabase/workout.ts` 작성 — `insertWorkoutLog`, `getWorkoutLogsByMonth`
 - [x] Complete `/workout/complete` — `handleSave`에서 `insertWorkoutLog` 호출
-- [ ] Calendar `/calendar` — `getMockSessionsByMonth` → `getWorkoutLogsByMonth` 교체
+- [x] Calendar `/calendar` — `getMockSessionsByMonth` → `getWorkoutLogsByMonth` 교체
 - [x] Settings `/settings` — `supabase.auth.getUser()` 프로필 표시 완료
 - [ ] Supabase RLS 정책 전 테이블 적용 확인
 

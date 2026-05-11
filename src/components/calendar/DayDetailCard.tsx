@@ -6,13 +6,25 @@ import { getWorkoutLabel } from "@/lib/workout-label";
 interface Props {
   selectedDate: Date | null;
   sessions: WorkoutSession[] | null;
+  loading?: boolean;
 }
 
-export default function DayDetailCard({ selectedDate, sessions }: Props) {
+export default function DayDetailCard({ selectedDate, sessions, loading }: Props) {
   if (!selectedDate) {
     return (
       <div className="px-4 py-6 text-center text-sm text-muted-foreground">
         날짜를 선택하면 기록을 볼 수 있어요
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="animate-pulse space-y-3 px-4 py-4">
+        <div className="h-3 w-20 rounded bg-muted" />
+        <div className="h-5 w-32 rounded bg-muted" />
+        <div className="h-10 rounded-lg bg-muted/40" />
+        <div className="h-10 rounded-lg bg-muted/40" />
       </div>
     );
   }
