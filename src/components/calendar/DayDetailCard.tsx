@@ -39,9 +39,10 @@ export default function DayDetailCard({ selectedDate, sessions, loading }: Props
     weekday: "short",
   });
 
-  const session = sessions?.find((s) => s.date === dateStr) ?? null;
+  const daySessions = sessions?.filter((s) => s.date === dateStr) ?? [];
+  const allExercises = daySessions.flatMap((s) => s.exercises);
 
-  if (!session) {
+  if (daySessions.length === 0) {
     return (
       <div className="px-4 py-4">
         <p className="mb-2 text-sm text-muted-foreground">{koreanDate}</p>
@@ -50,49 +51,39 @@ export default function DayDetailCard({ selectedDate, sessions, loading }: Props
     );
   }
 
-  const totalVolume = session.exercises
+  const totalVolume = allExercises
     .filter((ex) => ex.category === "strength" && ex.sets)
-    .reduce((total, ex) =>
-      total + ex.sets!.reduce((s, set) => s + set.weight * set.reps, 0), 0
-    );
+    .reduce((total, ex) => total + ex.sets!.reduce((s, set) => s + set.weight * set.reps, 0), 0);
+
+  const totalDuration = daySessions.reduce((sum, s) => sum + s.durationMinutes, 0);
 
   return (
     <div className="px-4 py-4">
-      {/* 헤더 */}
-      <div className="mb-4">
-        <p className="text-sm text-muted-foreground">{koreanDate}</p>
-        <h2 className="mb-2 text-lg font-bold text-foreground">
-          {getWorkoutLabel([
-            ...new Set(session.exercises.map((ex) => ex.category)),
-          ])}
-        </h2>
-        <div className="flex items-center gap-2">
-          {totalVolume > 0 && (
-            <span className="rounded-full bg-brand-bg px-3 py-1 text-xs font-medium text-brand-hover">
-              🏋️ {totalVolume.toLocaleString()}kg
-            </span>
-          )}
+      <p className="mb-2 text-sm text-muted-foreground">{koreanDate}</p>
+      <h2 className="mb-2 text-lg font-bold text-foreground">
+        {getWorkoutLabel([...new Set(allExercises.map((ex) => ex.category))])}
+      </h2>
+      <div className="mb-3 flex items-center gap-2">
+        {totalVolume > 0 && (
           <span className="rounded-full bg-brand-bg px-3 py-1 text-xs font-medium text-brand-hover">
-            ⏱️ {session.durationMinutes}분
+            🏋️ {totalVolume.toLocaleString()}kg
           </span>
-        </div>
+        )}
+        <span className="rounded-full bg-brand-bg px-3 py-1 text-xs font-medium text-brand-hover">
+          ⏱️ {totalDuration}분
+        </span>
       </div>
-
-      {/* 운동 목록 */}
       <div className="space-y-2">
-        {session.exercises.map((ex) => (
-          <div key={ex.name} className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-2">
+        {allExercises.map((ex, i) => (
+          <div key={`${ex.name}-${i}`} className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-2">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-foreground">{ex.name}</span>
               <ExerciseBadge category={ex.category} muscleGroup={ex.muscleGroup} />
             </div>
             <span className="text-xs text-muted-foreground">
-              {ex.category === "strength" && ex.sets && (
-                `${ex.sets.length}세트 · 최대 ${Math.max(...ex.sets.map(s => s.weight))}kg`
-              )}
-              {ex.category === "cardio" && ex.durationMinutes && (
-                `${ex.durationMinutes}분`
-              )}
+              {ex.category === "strength" && ex.sets &&
+                `${ex.sets.length}세트 · 최대 ${Math.max(...ex.sets.map((s) => s.weight))}kg`}
+              {ex.category === "cardio" && ex.durationMinutes && `${ex.durationMinutes}분`}
             </span>
           </div>
         ))}
