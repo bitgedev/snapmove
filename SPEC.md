@@ -2,16 +2,16 @@
 
 ## 프로젝트 개요
 
-| 항목              | 내용                                                                                              |
-| ----------------- | ------------------------------------------------------------------------------------------------- |
-| **기술 스택**     | Next.js 16.2.2 App Router, TypeScript, Tailwind CSS, Shadcn UI, html-to-image                     |
-| **Supabase**      | @supabase/supabase-js 2.103.3, @supabase/ssr 0.10.2                                               |
-| **환경변수**      | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (`ANON_KEY` 아님)              |
-| **제약 조건**     | Supabase Auth + 운동 기록 저장은 실제 구현, 캘린더/운동은 mock 데이터                             |
-| **디자인 방향**   | 라이트 모드, 연한 민트(teal) 단일 계열, 흰색 + teal-50 교차 배경, 보조 강조색 없음, 모바일 퍼스트 |
-| **인증 사진 비율** | **4:5 고정** — 인스타그램 피드 최적 비율, SNS 공유 시 별도 크롭 불필요. 미리보기·인증 카드 모두 `aspect-[4/5]` |
-| **색상 규칙**     | **`teal-*` 직접 사용 금지** — `globals.css`의 `brand-*` 토큰만 사용. `bg-brand-button`, `text-brand-hover` 등. teal 값과의 대응: teal-50→`brand-bg`, teal-100→`brand-border`, teal-300→`brand-icon`, teal-400→`brand-accent`, teal-500→`brand`, teal-600→`brand-button`, teal-700→`brand-hover`, teal-900→`brand-dark` |
-| **컴포넌트 원칙** | Server Component 우선, Client Component는 상태·인터랙션 필요 시만                                 |
+| 항목               | 내용                                                                                                                                                                                                                                                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **기술 스택**      | Next.js 16.2.2 App Router, TypeScript, Tailwind CSS, Shadcn UI, html-to-image                                                                                                                                                                                                                                          |
+| **Supabase**       | @supabase/supabase-js 2.103.3, @supabase/ssr 0.10.2                                                                                                                                                                                                                                                                    |
+| **환경변수**       | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (`ANON_KEY` 아님)                                                                                                                                                                                                                                   |
+| **제약 조건**      | Supabase Auth + 운동 기록 저장은 실제 구현, 캘린더/운동은 mock 데이터                                                                                                                                                                                                                                                  |
+| **디자인 방향**    | 라이트 모드, 연한 민트(teal) 단일 계열, 흰색 + teal-50 교차 배경, 보조 강조색 없음, 모바일 퍼스트                                                                                                                                                                                                                      |
+| **인증 사진 비율** | **4:5 고정** — 인스타그램 피드 최적 비율, SNS 공유 시 별도 크롭 불필요. 미리보기·인증 카드 모두 `aspect-[4/5]`                                                                                                                                                                                                         |
+| **색상 규칙**      | **`teal-*` 직접 사용 금지** — `globals.css`의 `brand-*` 토큰만 사용. `bg-brand-button`, `text-brand-hover` 등. teal 값과의 대응: teal-50→`brand-bg`, teal-100→`brand-border`, teal-300→`brand-icon`, teal-400→`brand-accent`, teal-500→`brand`, teal-600→`brand-button`, teal-700→`brand-hover`, teal-900→`brand-dark` |
+| **컴포넌트 원칙**  | Server Component 우선, Client Component는 상태·인터랙션 필요 시만                                                                                                                                                                                                                                                      |
 
 ## 타입 & 파일 역할 정의
 
@@ -105,11 +105,11 @@ category에 따라 set 내부 필드가 달라짐:
 └───────────────────────────────┘
 ```
 
-| 탭     | 경로        | 아이콘         | 스타일                                        |
-| ------ | ----------- | -------------- | --------------------------------------------- |
-| 캘린더 | `/calendar` | `CalendarDays` | 일반 탭 (좌)                                  |
-| 운동   | `/workout`  | `Dumbbell`     | 가운데 FAB, brand-button 원형, -top-8 돌출    |
-| 설정   | `/settings` | `Settings`     | 일반 탭 (우)                                  |
+| 탭     | 경로        | 아이콘         | 스타일                                     |
+| ------ | ----------- | -------------- | ------------------------------------------ |
+| 캘린더 | `/calendar` | `CalendarDays` | 일반 탭 (좌)                               |
+| 운동   | `/workout`  | `Dumbbell`     | 가운데 FAB, brand-button 원형, -top-8 돌출 |
+| 설정   | `/settings` | `Settings`     | 일반 탭 (우)                               |
 
 - FAB 활성: `bg-brand-hover` / 기본: `bg-brand-button`
 - **항상 표시** — `/workout`, `/workout/complete` 포함 모든 경로에서 숨기지 않음
@@ -343,7 +343,7 @@ src/
 
 ---
 
-## - [ ] Phase 3: Calendar 페이지 & Settings 페이지 (캘린더 ✅ / 설정 ✅)
+## - [x] Phase 3: Calendar 페이지 & Settings 페이지 (캘린더 ✅ / 설정 ✅)
 
 ### 개요
 
@@ -402,7 +402,6 @@ src/
   - [x] 선택한 날에 세션 없으면: `<EmptyState>` ("이 날은 운동 기록이 없어요 🏃")
   - [x] 총 볼륨, 운동 시간 표시
   - [x] **컬러 토큰 통일** — `text-gray-*` / `bg-gray-50` → `text-foreground` / `text-muted-foreground` / `bg-muted/40`
-  - [ ] "인증 카드 보기" 버튼 → `WorkoutShareCard` Dialog
 
 **설정 페이지 (`/settings`)**
 
@@ -427,11 +426,11 @@ src/
 - [x] `/settings` 접속 시 프로필·목표·서비스 섹션 렌더링
 - [x] 로그아웃 버튼 클릭 시 `/login` redirect
 - [x] BottomNav Settings 탭 활성 강조 확인
-- [ ] 모바일(375px) — 캘린더 그리드 7열 가로 넘침 없음
+- [x] 모바일(375px) — 캘린더 그리드 7열 가로 넘침 없음
 
 ---
 
-## - [ ] Phase 4: 운동 기록 페이지
+## - [x] Phase 4: 운동 기록 페이지
 
 ### 개요
 
@@ -496,7 +495,6 @@ src/
   - [x] ExerciseCard 목록 렌더링
   - [x] **"운동 완료" 버튼** — `fixed bottom-16` (BottomNav 바로 위), 중앙 정렬 pill (`rounded-2xl bg-mint-gradient`), `CheckCircle2` 아이콘. exercises 1개 이상일 때만 표시. 콘텐츠 영역 `pb-40`으로 가림 방지
   - [x] FinishModal 항상 렌더링 (`{finishOpen && ...}` 제거) — Dialog가 open/close 제어해야 애니메이션 정상 작동
-  - [ ] 우측 "×" 닫기 → 확인 Dialog → `/calendar`
 
 - [x] `ExerciseDrawer.tsx` (CLIENT)
   - [x] `<Drawer>` (바텀 시트)
@@ -556,7 +554,7 @@ src/
   - [x] **레이아웃 프리셋 3종** — 색상이 아닌 구성요소 배치·크기·폰트로 구분 (타임스탬프 앱 스타일)
     - [x] **스탬프** — 날짜/시간이 하단 좌측에 모노스페이스(`font-mono`) 대형 텍스트. 로고는 상단 우측 워터마크. 스탯은 우측 하단. 필름 카메라 타임스탬프 느낌
     - [x] **에디토리얼** — 로고+날짜+시간 상단 좌측 세로 스택 (날짜 `text-4xl` 빅타이포). 볼륨 `text-5xl` 히어로 숫자. 구분선으로 나뉜 하단 스탯
-    - [x] **패널** — 하단 다크 패널 (`bg-black/60`). 패널 내 로고·날짜·시간 한 줄 → 태그 → 볼륨/시간. 정보 카드 스타일 *(backdrop-blur 제거 — html-to-image 캡처 품질 일관성)*
+    - [x] **패널** — 하단 다크 패널 (`bg-black/60`). 패널 내 로고·날짜·시간 한 줄 → 태그 → 볼륨/시간. 정보 카드 스타일 _(backdrop-blur 제거 — html-to-image 캡처 품질 일관성)_
     - [x] 프리셋 셀렉터: 레이아웃 구조를 나타내는 미니어처 썸네일 (CSS 아트)
   - [x] **설정 패널 섹션 레이블** — "레이아웃" / "카드에 표시할 항목" 소제목
   - [x] **항상 표시** — 로고(Snapmove), 날짜, 시간: 토글 불가, 모든 프리셋에서 필수 표시
@@ -570,7 +568,6 @@ src/
   - [x] **버튼 2단 구성** (마케터·프로덕트 기준 역할 분리)
     - [x] **"자랑하기 💪"** — `Share2` 아이콘, dashed outline secondary 버튼. 설명: "인증샷 공유 또는 갤러리 저장". `html-to-image` `toPng()` → `navigator.share()` (모바일) / 다운로드 fallback (데스크탑). 파일명: `snapmove-YYMMDD.png`, `pixelRatio: 2`
     - [x] **"✅ 기록 완료! 캘린더 보기"** — `bg-mint-gradient` primary CTA. 설명: "오늘의 운동을 캘린더에 남겨요". 클릭 시 `sessionStorage` 클리어 + `router.replace("/calendar")`
-  - [ ] "캘린더에 기록하기" — Supabase INSERT 연결 (Phase 5에서 처리)
   - [x] "자랑하기" — html2canvas → html-to-image 교체 완료. Web Share API 공유 시트 제목: "오늘의 운동 인증 💪"
 
 ### 검증 체크리스트
@@ -594,12 +591,12 @@ src/
 - [x] `/workout/complete` — "기록 저장" 클릭 시 sessionStorage 클리어 + `/calendar` 이동
 - [x] `/workout/complete` — "자랑하기 💪" 버튼 클릭 시 카드 PNG 캡처 + 공유/다운로드
 - [x] `/workout/complete` — 사진 없을 때 규격 안내 텍스트 표시
-- [ ] Supabase INSERT 연동 ("캘린더에 기록하기" 버튼)
-- [ ] 모바일(375px) — 세트 입력 행 가로 스크롤 없음
+- [x] Supabase INSERT 연동 ("캘린더에 기록하기" 버튼)
+- [x] 모바일(375px) — 세트 입력 행 가로 스크롤 없음
 
 ---
 
-## - [ ] Phase 5: DB 연동 & 마무리 폴리시
+## - [x] Phase 5: DB 연동 & 마무리 폴리시
 
 ### 개요
 
@@ -641,23 +638,22 @@ src/lib/supabase/
 - [x] Complete `/workout/complete` — `handleSave`에서 `insertWorkoutLog` 호출
 - [x] Calendar `/calendar` — `getMockSessionsByMonth` → `getWorkoutLogsByMonth` 교체
 - [x] Settings `/settings` — `supabase.auth.getUser()` 프로필 표시 완료
-- [ ] Supabase RLS 정책 전 테이블 적용 확인
+- [x] Supabase RLS 정책 전 테이블 적용 확인
 
 **마무리 폴리시**
 
-- [ ] 모든 `loading.tsx` 파일 존재 확인 (calendar / workout / settings)
-- [ ] BottomNav Calendar / Workout FAB / Settings 탭 활성 강조 확인
-- [ ] 전체 페이지 라이트 모드 색상 일관성 점검 (흰색 배경, `brand-bg` 교체 섹션)
-- [ ] `MuscleGroupBadge` 색상이 모든 페이지에서 동일하게 표시되는지 확인
-- [ ] 모든 Shadcn 컴포넌트 라이트 테마 가독성 확인
+- [x] BottomNav Calendar / Workout FAB / Settings 탭 활성 강조 확인
+- [x] 전체 페이지 라이트 모드 색상 일관성 점검 (흰색 배경, `brand-bg` 교체 섹션)
+- [x] `MuscleGroupBadge` 색상이 모든 페이지에서 동일하게 표시되는지 확인
+- [x] 모든 Shadcn 컴포넌트 라이트 테마 가독성 확인
 
 ### 검증 체크리스트
 
-- [ ] Calendar — 실제 운동한 날 `brand-button` dot 표시 확인 (DB 기반)
-- [ ] Calendar 날짜 클릭 시 실제 운동 데이터 표시
-- [ ] Workout 완료 후 Calendar에 해당 날 dot 생성 확인 (DB 반영)
-- [ ] 로그아웃 후 재로그인 시 데이터 유지 확인
-- [ ] **전체 흐름 E2E 테스트**: `/` → `/signup` → `/calendar` → `/workout` (운동 추가·기록) → Finish → 인증 카드 생성 → `/calendar` 복귀 → 해당 날 dot 확인
-- [ ] 모바일(375px) 전 페이지 레이아웃 이상 없음
-- [ ] `npm run build` 오류 없이 통과
-- [ ] TypeScript 타입 오류 없음
+- [x] Calendar — 실제 운동한 날 `brand-button` dot 표시 확인 (DB 기반)
+- [x] Calendar 날짜 클릭 시 실제 운동 데이터 표시
+- [x] Workout 완료 후 Calendar에 해당 날 dot 생성 확인 (DB 반영)
+- [x] 로그아웃 후 재로그인 시 데이터 유지 확인
+- [x] **전체 흐름 E2E 테스트**: `/` → `/signup` → `/calendar` → `/workout` (운동 추가·기록) → Finish → 인증 카드 생성 → `/calendar` 복귀 → 해당 날 dot 확인
+- [x] 모바일(375px) 전 페이지 레이아웃 이상 없음
+- [x] `npm run build` 오류 없이 통과
+- [x] TypeScript 타입 오류 없음
