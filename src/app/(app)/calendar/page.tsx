@@ -11,7 +11,9 @@ const TODAY = new Date();
 
 export default function CalendarPage() {
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(() => new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    () => new Date(),
+  );
   const [sessions, setSessions] = useState<WorkoutSession[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,7 +55,7 @@ export default function CalendarPage() {
         currentMonth={currentMonth}
         onPrev={handlePrev}
         onNext={handleNext}
-        sessionCount={sessions.length}
+        sessionCount={workoutDates.size}
       />
       <CalendarGrid
         currentMonth={currentMonth}
@@ -62,7 +64,11 @@ export default function CalendarPage() {
         selectedDate={selectedDate}
         onSelectDate={setSelectedDate}
       />
-      <DayDetailCard selectedDate={selectedDate} sessions={sessions} loading={isLoading} />
+      <DayDetailCard
+        selectedDate={selectedDate}
+        sessions={sessions}
+        loading={isLoading}
+      />
     </div>
   );
 }
