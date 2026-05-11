@@ -7,12 +7,17 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { createClient } from '@/lib/supabase/client';
+
+const GUEST_EMAIL = 'test@snapmove.com';
+const GUEST_PASSWORD = 'snapmove1234';
 
 export default function LoginForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGuestLoading, setIsGuestLoading] = useState(false);
   const [error, setError] = useState('');
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -33,6 +38,23 @@ export default function LoginForm() {
       return;
     }
 
+    router.push('/calendar');
+    router.refresh();
+  }
+
+  async function handleGuestLogin() {
+    setError('');
+    setIsGuestLoading(true);
+    const supabase = createClient();
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email: GUEST_EMAIL,
+      password: GUEST_PASSWORD,
+    });
+    if (authError) {
+      setError(authError.message);
+      setIsGuestLoading(false);
+      return;
+    }
     router.push('/calendar');
     router.refresh();
   }
@@ -94,6 +116,29 @@ export default function LoginForm() {
           </>
         ) : (
           '로그인'
+        )}
+      </Button>
+
+      <div className="flex items-center gap-3">
+        <Separator className="flex-1" />
+        <span className="text-xs text-muted-foreground">또는</span>
+        <Separator className="flex-1" />
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        disabled={isGuestLoading}
+        onClick={handleGuestLogin}
+        className="w-full border-brand-border text-brand-button hover:bg-brand-bg hover:text-brand-hover"
+      >
+        {isGuestLoading ? (
+          <>
+            <Loader2 className="mr-2 size-4 animate-spin" />
+            입장 중...
+          </>
+        ) : (
+          '게스트로 체험하기'
         )}
       </Button>
     </form>
