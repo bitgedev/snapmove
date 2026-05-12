@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Snapmove — 기록하고 공유하는 운동 트래커",
   description:
-    "오늘의 땀방울을 숫자로 기록하고, 멋진 인증 카드로 간직하세요. 당신의 성장을 Snap하는 가장 쉬운 방법.",
+    "오늘의 땀방울을 기록하고, 멋진 인증 카드로 간직하세요. Snapmove.",
 };
 
 export default function RootLayout({
