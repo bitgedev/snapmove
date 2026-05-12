@@ -480,24 +480,25 @@ export default function WorkoutCompletePage() {
             </button>
           )}
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (!file) return;
-              if (file.size > 10 * 1024 * 1024) {
-                setPhotoError("사진은 10MB 이하만 등록할 수 있어요.");
-                e.target.value = "";
-                return;
-              }
-              setPhotoError(null);
-              setPhotoFile(file);
-            }}
-          />
         </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="absolute h-0 w-0 overflow-hidden opacity-0"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            if (file.size > 10 * 1024 * 1024) {
+              setPhotoError("사진은 10MB 이하만 등록할 수 있어요.");
+              e.target.value = "";
+              return;
+            }
+            setPhotoError(null);
+            setPhotoFile(file);
+          }}
+        />
 
         {/* 사진 규격 안내 / 오류 */}
         {photoError ? (

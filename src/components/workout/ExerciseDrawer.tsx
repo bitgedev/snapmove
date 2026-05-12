@@ -3,6 +3,7 @@ import { ExerciseCategory, MuscleGroup } from "@/types";
 import {
   Drawer,
   DrawerContent,
+  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
@@ -47,6 +48,7 @@ export default function ExerciseDrawer({
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>운동 추가</DrawerTitle>
+          <DrawerDescription className="sr-only">운동을 검색하고 추가하세요</DrawerDescription>
         </DrawerHeader>
         <div className="flex flex-col gap-3 px-4 pb-6">
           <Input
