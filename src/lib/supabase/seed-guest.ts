@@ -1,6 +1,4 @@
-'use server';
-
-import { createClient } from './server';
+import { createClient } from './client';
 
 const SEED_LOGS = [
   {

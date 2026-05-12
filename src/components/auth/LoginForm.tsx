@@ -50,7 +50,7 @@ export default function LoginForm() {
       setIsGuestLoading(false);
       return;
     }
-    await seedGuestData();
+    await seedGuestData().catch(() => {});
     router.push('/calendar');
     router.refresh();
   }
