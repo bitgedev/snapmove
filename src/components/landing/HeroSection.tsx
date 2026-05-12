@@ -35,14 +35,6 @@ export default function HeroSection() {
               지금 시작하기
             </Button>
           </Link>
-          <Link href="/routines">
-            <Button
-              variant="outline"
-              className="h-12 w-48 border-brand-border text-lg font-semibold text-white text-brand-button hover:text-brand-hover transition-colors hover:scale-105 transition-all active:scale-95"
-            >
-              서비스 둘러보기
-            </Button>
-          </Link>
         </div>
       </div>
     </section>
