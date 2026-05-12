@@ -14,8 +14,13 @@ export default function SettingsForm() {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
-      setFullName(user?.user_metadata?.full_name ?? "");
-      setEmail(user?.email ?? "");
+      if (user?.is_anonymous) {
+        setFullName("게스트");
+        setEmail("게스트 체험 계정");
+      } else {
+        setFullName(user?.user_metadata?.full_name ?? "");
+        setEmail(user?.email ?? "");
+      }
     });
   }, []);
   const handleLogout = () => {

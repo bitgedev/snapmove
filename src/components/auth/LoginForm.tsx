@@ -9,9 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { createClient } from '@/lib/supabase/client';
-
-const GUEST_EMAIL = 'test@snapmove.com';
-const GUEST_PASSWORD = 'snapmove1234';
+import { seedGuestData } from '@/lib/supabase/seed-guest';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -46,15 +44,13 @@ export default function LoginForm() {
     setError('');
     setIsGuestLoading(true);
     const supabase = createClient();
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email: GUEST_EMAIL,
-      password: GUEST_PASSWORD,
-    });
+    const { error: authError } = await supabase.auth.signInAnonymously();
     if (authError) {
       setError(authError.message);
       setIsGuestLoading(false);
       return;
     }
+    await seedGuestData();
     router.push('/calendar');
     router.refresh();
   }
