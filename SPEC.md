@@ -142,7 +142,6 @@ category에 따라 set 내부 필드가 달라짐:
 
 ```bash
 # 1. Next.js 프로젝트 생성 (기존 디렉토리에 설치)
-cd /Users/munbichgo-eun/Desktop/snapmove
 npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --no-turbopack --yes
 
 # 2. Shadcn 초기화 (Default style, Zinc color, CSS variables)

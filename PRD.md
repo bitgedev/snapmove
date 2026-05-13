@@ -42,27 +42,29 @@ Snapmove는 **운동 기록(Move)**과 **인증 카드 생성(Snap)** 두 가지
 - Next.js proxy(middleware) 라우팅 보호 — 미인증 시 `/login` redirect
 - 로그인 후 첫 화면: `/calendar`
 
-### Calendar (히스토리) ⚠️ mock 데이터
+### Calendar (히스토리) ✅ 구현 완료
 - 월간 캘린더 그리드 — 운동한 날 teal dot 표시
-- 날짜 클릭 → 해당 날 운동 요약 카드 (루틴명·총 볼륨·운동 시간)
+- 날짜 클릭 → 해당 날 운동 요약 카드 (총 볼륨·운동 시간)
 - 월 이동 내비게이션 (`<` / `>`)
-- 과거 세션의 인증 카드 재확인
+- Supabase DB 기반 실제 세션 데이터 조회
 
-### Workout (운동 기록) ⚠️ UI 설계 완료, DB 연동 예정
+### Workout (운동 기록) ✅ 구현 완료
 - 운동 검색·선택 Drawer (카테고리: 근력 / 유산소 / 유연성 / 기타)
 - 선택한 운동별 세트·무게·횟수 inline 입력 테이블
 - 세트 추가 / 삭제
-- **Finish 버튼** → 운동 시간 수동 입력 → 인증 카드 생성 플로우 진입
+- **Finish 버튼** → 운동 시간 자동계산 + 수동 편집 → 인증 카드 생성 플로우 진입
+- 완료 시 Supabase `workout_logs` 테이블에 저장
 
 ### 인증 카드 (Snap) ✅ 구현 완료
 - `canvas-confetti` 폭죽 효과
-- 카메라 / 갤러리 사진 업로드 (`<input capture="environment">`)
+- 카메라 / 갤러리 사진 업로드 (iOS 카메라·갤러리 선택 시트)
 - 사진 + 운동 데이터(날짜·운동 목록·총 볼륨·운동 시간) 합성
-- 비율 토글: 1:1 / 4:5
-- `html2canvas` PNG 저장, 공유 버튼
+- **4:5 고정 비율** — 인스타그램 피드 최적화
+- **레이아웃 프리셋 3종**: 스탬프 / 에디토리얼 / 패널
+- `html-to-image` PNG 저장, Web Share API 공유 버튼
 
-### Settings (설정) ⚠️ 정적 UI
-- 프로필 (이름, 이메일)
+### Settings (설정) ✅ 구현 완료
+- 프로필 (이름, 이메일) — Supabase Auth 연동
 - 목표 설정 (주간 운동 목표 횟수, 목표 체중)
 - 서비스 (로그아웃)
 
@@ -72,11 +74,11 @@ Snapmove는 **운동 기록(Move)**과 **인증 카드 생성(Snap)** 두 가지
 
 | 구분 | 기술 |
 |---|---|
-| Frontend | Next.js 14+ App Router, TypeScript, Tailwind CSS v4, Shadcn UI |
+| Frontend | Next.js 16.2.2 App Router, TypeScript, Tailwind CSS v4, Shadcn UI |
 | 상태 관리 | React 상태 (Client Component) |
 | UI 패턴 | Server Component 우선, 입력 폼은 Shadcn Drawer |
 | 인증 / DB | Supabase Auth + Supabase Database |
-| 인증 카드 저장 | html2canvas |
+| 인증 카드 저장 | html-to-image |
 | 폭죽 효과 | canvas-confetti |
 | 배포 | Vercel |
 
@@ -108,14 +110,8 @@ Snapmove는 **운동 기록(Move)**과 **인증 카드 생성(Snap)** 두 가지
 
 ---
 
-## 9. TODO
+## 9. Post-MVP 아이디어
 
-### DB 연동 (우선순위 높음)
-- [ ] Workout 세션 기록 → Supabase DB 저장/조회
-- [ ] Calendar 캘린더 → 로그인 유저의 실제 세션 데이터 기반
-- [ ] Supabase RLS(Row Level Security) 정책 적용
-
-### 기능 확장 (Post-MVP)
-- [ ] 무게 증가 그래프 (Settings 또는 Calendar 상세)
-- [ ] 스트릭 히트맵
-- [ ] 소셜 피드 / 친구 기능
+- 무게 증가 그래프 (Settings 또는 Calendar 상세)
+- 스트릭 히트맵
+- 소셜 피드 / 친구 기능
