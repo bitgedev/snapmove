@@ -10,7 +10,15 @@
 
 
 **[→ 서비스 바로가기](https://snapmove.vercel.app)** _(회원가입 없이 게스트 체험 가능)_
-<!-- screenshot -->
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/01-landing.png" width="200"/><br/><sub>랜딩</sub></td>
+    <td align="center"><img src="docs/screenshots/02-login.png" width="200"/><br/><sub>로그인</sub></td>
+    <td align="center"><img src="docs/screenshots/03-calendar.png" width="200"/><br/><sub>캘린더</sub></td>
+    <td align="center"><img src="docs/screenshots/04-workout-complete.png" width="200"/><br/><sub>인증 카드</sub></td>
+  </tr>
+</table>
 
 ---
 
