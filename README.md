@@ -1,83 +1,92 @@
-# 📸 Snapmove
+# Snapmove
 
-> **"기록은 가볍게, 성취는 선명하게"**
-> 복잡한 루틴 관리를 덜어내고, "운동 기록(30초) → 인증 카드 생성 → SNS 공유(클릭 2회)"라는 핵심 경험에 집중한 경량 운동 트래커입니다.
+운동을 기록하고, 완료 순간을 인증 카드로 남기는 모바일 퍼스트 운동 트래커
 
-[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-BaaS-green?logo=supabase)](https://supabase.com/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwindcss)](https://tailwindcss.com/)
-[![Vercel](https://img.shields.io/badge/Vercel-Deployment-black?logo=vercel)](https://vercel.com/)
+![Next.js](https://img.shields.io/badge/Next.js_16-black?style=flat-square&logo=next.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Tailwind](https://img.shields.io/badge/Tailwind_v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
 
----
 
-## 🔗 Live Demo
-
-**[Snapmove 서비스 바로가기](https://snapmove.vercel.app/)**
-*(회원가입 없이 익명(게스트)으로 바로 체험할 수 있습니다.)*
-
-> 📸 *(이미지배치)*
+**[→ 서비스 바로가기](https://snapmove.vercel.app)** _(회원가입 없이 게스트 체험 가능)_
+<!-- screenshot -->
 
 ---
 
-## ✨ Features
+## 주요 기능
 
 | 기능 | 설명 |
 | :--- | :--- |
-| **Auth** | Supabase 기반 소셜/이메일 인증 및 `proxy.ts` 라우트 보호 |
-| **Workout** | 92종 프리셋 기반 카테고리별 맞춤 입력 (근력/유산소/유연성 분기) |
-| **Snap Card** | 4:5 비율 3종 커스텀 레이아웃, 실시간 데이터 합성 및 Web Share API 공유 |
-| **Calendar** | 월간 그리드 기반 운동 히스토리 시각화 및 상세 기록 조회 |
+| **인증** | Supabase Auth 이메일/소셜 로그인, `proxy.ts` 기반 라우트 보호 |
+| **운동 기록** | 92종 프리셋, 카테고리별 입력 분기 (근력: 세트/무게/횟수 · 유산소·유연성: 시간) |
+| **인증 카드** | 4:5 비율 3종 레이아웃, 운동 데이터 실시간 합성, Web Share API / 다운로드 분기 |
+| **캘린더** | 월간 그리드로 운동 히스토리 시각화, 날짜 클릭 시 상세 기록 조회 |
 
 ---
 
-## 🛠️ Tech Stack
+## 기술 스택
 
-| 구분 | 기술 스택 |
+| 구분 | 스택 |
 | :--- | :--- |
-| **Framework** | Next.js 16 (App Router), TypeScript |
-| **Styling** | Tailwind CSS v4, Shadcn UI |
-| **Backend (BaaS)** | Supabase (Database, Auth) |
-| **Image Engine** | html-to-image, canvas-confetti |
+| **프레임워크** | Next.js 16 (App Router), TypeScript |
+| **스타일링** | Tailwind CSS v4, shadcn/ui |
+| **백엔드** | Supabase (PostgreSQL + RLS, Auth) |
+| **이미지 캡처** | html-to-image |
+| **배포** | Vercel |
 
 ---
 
-## 🏗️ Technical Highlights (주요 고민 및 트러블슈팅)
-- **Next.js 16 도입과 의식적인 컴포넌트 분리**
-  - App Router 환경에서 상태와 인터랙션이 필요한 부분만 Client Component로 두고, 나머지는 Server Component로 분리하여 렌더링을 최적화했습니다.
-  - Next.js 16의 미들웨어 변경점에 선제적으로 대응하여 `proxy.ts`를 활용한 라우트 가드를 구현했습니다.
-- **클라이언트 사이드 이미지 캡처 최적화**
-  - 4:5 인스타그램 최적 비율의 3종 인증 카드를 구현했습니다. 
-  - `html-to-image`를 활용한 캡처 시 발생하는 `backdrop-blur` 깨짐 현상과 모바일 환경의 화질 저하 문제를 렌더링 옵션 조절과 오버레이 처리로 해결했습니다.
-  - 기기별 공유 UX를 고려하여 모바일은 네이티브 공유 창(Web Share API), PC는 다운로드로 분기 처리했습니다.
-- **유연성을 고려한 JSONB 데이터 모델링**
-  - 근력(세트/무게)과 유산소(시간) 등 카테고리별로 달라지는 데이터를 효율적으로 관리하기 위해, 무리한 테이블 정규화 대신 JSONB 컬럼을 활용하여 스키마 유연성과 개발 속도를 확보했습니다.
-- **접근성(a11y)을 고려한 컬러 토큰 시스템**
-  - Tailwind 색상을 하드코딩하지 않고 주요 테마를 CSS 변수(`brand-*`)로 추상화하여 유지보수성을 높였습니다. 
-  - 텍스트와 배경 간의 WCAG 명도 대비를 계산하여 어떤 기기에서도 글씨가 명확히 보이도록 설계했습니다.
+## 기술적 고민
+
+**Server / Client Component 분리**
+
+상태·이벤트가 필요한 부분(운동 입력 폼, 캘린더 날짜 선택 등)만 Client Component로 두고 나머지는 Server Component로 유지했습니다. 불필요한 `"use client"` 경계를 줄여 클라이언트 번들을 최소화했습니다.
+
+**Next.js 16 `proxy.ts` 라우트 가드**
+
+Next.js 16에서 `middleware` 컨벤션이 `proxy`로 변경됐습니다. `proxy.ts`로 라우트 가드를 구현해 미인증 접근은 `/login`으로, 인증 후 `/login` 재접근은 `/calendar`로 리다이렉트합니다.
+
+**인증 카드 이미지 캡처**
+
+`backdrop-blur`는 `html-to-image` 캡처 시 렌더링되지 않습니다. solid 오버레이(`bg-black/60`)로 대체해 화면과 캡처 결과를 일치시켰고, `pixelRatio: 2`로 고해상도 출력을 확보했습니다. 모바일은 Web Share API, 데스크탑은 다운로드로 분기했습니다.
+
+**JSONB 운동 데이터 모델링**
+
+근력(세트/무게/횟수)과 유산소(시간)는 데이터 구조가 다릅니다. nullable 컬럼 대신 `exercises`를 JSONB로 설계해 스키마 변경 없이 카테고리를 확장할 수 있게 했습니다. `(user_id, date DESC)` 복합 인덱스로 월별 조회 성능도 확보했습니다.
+
+**CSS 변수 기반 컬러 토큰**
+
+`teal-*` 직접 사용 대신 `--brand-*` 변수로 추상화하고 WCAG 대비율 기준으로 용도를 제한했습니다.
+
 ---
 
-## 📈 Roadmap
+## 시작하기
 
-- [ ] **Offline-first**: PWA 도입으로 네트워크 불안정 환경에서도 기록 보존
-- [ ] **Advanced Analytics**: JSONB 데이터를 활용한 부위별 볼륨 추이 및 PR(개인 최고 기록) 분석 기능
-- [ ] **Social Integration**: 사용자 피드 공유 및 운동 메이트 응원
-
----
-
-## ⚙️ Getting Started
-
-```
-# 환경변수 설정 (.env.local)
-NEXT_PUBLIC_SUPABASE_URL=your_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key
-
+```bash
+git clone https://github.com/bitgedev/snapmove.git
+cd snapmove
 npm install
 npm run dev
 ```
 
+`.env.local`에 아래 값을 설정하세요.
+
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+```
+
 ---
 
-## 📄 License
+## Roadmap
+
+- [ ] PWA + 오프라인 지원 — 네트워크 없이도 운동 기록 보존
+- [ ] 부위별 볼륨 추이 및 PR(개인 최고 기록) 분석
+- [ ] 소셜 피드 — 인증 카드 공유 및 운동 메이트 기능
+
+---
+
+## License
 
 MIT
