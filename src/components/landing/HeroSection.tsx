@@ -29,7 +29,7 @@ export default function HeroSection() {
           성장을 추구하는 사람들을 위한 최적의 운동 트래커
         </p>
 
-        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <div className="mt-8 flex items-center justify-center">
           <Link href="/signup">
             <Button className="h-12 w-48 bg-brand-button text-lg font-semibold text-white shadow-lg shadow-brand-button/30 transition-all hover:scale-105 hover:bg-brand-hover active:scale-95">
               지금 시작하기
