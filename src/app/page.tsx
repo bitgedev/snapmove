@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 
 import LandingNav from '@/components/landing/LandingNav';
 import HeroSection from '@/components/landing/HeroSection';
-import FeaturesSection from '@/components/landing/FeaturesSection';
 
 const stats = [
   { icon: Users, value: '2,400+', label: '기록된 루틴' },
@@ -16,19 +15,19 @@ const steps = [
   {
     step: '01',
     title: '루틴 만들기',
-    description: '원하는 운동을 선택하고 나만의 루틴을 구성하세요.',
+    description: '원하는 운동을 선택하고 나만의 루틴을 구성하세요. 근육군별로 정리된 운동 목록으로 효율적인 프로그램을 만들 수 있습니다.',
     icon: ClipboardList,
   },
   {
     step: '02',
     title: '운동 기록하기',
-    description: '세트별로 무게와 횟수를 기록하며 운동을 진행하세요.',
+    description: '세트별 무게와 반복 횟수를 실시간으로 기록하세요. 이전 기록과 비교하며 꾸준한 성장을 눈으로 확인할 수 있습니다.',
     icon: PlayCircle,
   },
   {
     step: '03',
     title: '성과 공유하기',
-    description: '완료 후 자동 생성된 카드로 나의 성과를 공유하세요.',
+    description: '운동 완료 후 인스타그램용 카드를 즉시 생성하세요. 나의 성과를 아름답게 기록하고 공유할 수 있습니다.',
     icon: Share2,
   },
 ];
@@ -60,8 +59,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <FeaturesSection />
-
         {/* How It Works */}
         <section className="bg-slate-50/50 px-4 py-24 md:py-32">
           <div className="mx-auto max-w-5xl">
@@ -70,6 +67,9 @@ export default function LandingPage() {
                 움직임(<span className="text-brand-button">Move</span>)은 뜨겁게, <br className="md:hidden" />
                 기록(<span className="text-brand-button">Snap</span>)은 선명하게
               </h2>
+              <p className="mt-6 text-base leading-relaxed text-gray-500 max-w-xl mx-auto break-keep">
+                루틴 빌더부터 운동 트래커, 공유 카드까지 — 운동 기록의 모든 과정을 하나의 앱에서 완성하세요.
+              </p>
             </div>
             
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">

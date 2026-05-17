@@ -288,8 +288,7 @@ src/
 └── components/
     ├── landing/
     │   ├── LandingNav.tsx        # SERVER ✅
-    │   ├── HeroSection.tsx       # SERVER ✅
-    │   └── FeaturesSection.tsx   # SERVER ✅
+    │   └── HeroSection.tsx       # SERVER ✅
     └── auth/
         ├── LoginForm.tsx         # CLIENT ✅ — Supabase Auth 연결 완료
         └── SignupForm.tsx        # CLIENT ✅ — Supabase Auth 연결 완료
@@ -301,8 +300,8 @@ src/
 
 - [x] `LandingNav.tsx` (SERVER)
 - [x] `HeroSection.tsx` (SERVER)
-- [x] `FeaturesSection.tsx` — 3열 카드 그리드 (SERVER)
-- [x] How It Works 섹션
+- ~~`FeaturesSection.tsx`~~ — 삭제됨. "How It Works" 섹션과 내용 중복으로 제거
+- [x] How It Works 섹션 — 제목 하단 부제목 추가("루틴 빌더부터 운동 트래커, 공유 카드까지..."), 각 스텝 설명에 기존 FeaturesSection의 상세 설명 통합
 - [x] 하단 CTA 배너
 - [x] Footer
 
